@@ -16,10 +16,8 @@ const { Option } = Select;
 interface DataType {
   key: React.Key;
   id: string;
-  employeeId: string;
-  currentEmployeeId: string;
-  fingerprintId:string;
   department:string;
+  company: string;
   employeeNumber: number;
   timekeepingTimes: number;
   boss:string;
@@ -50,200 +48,32 @@ const DepartmentsListTable: React.FC = () => {
       width:70
     },
     {
-      title: 'Mã nhân viên',
-      dataIndex: 'employeeId',
+      title: 'Tên phòng ban',
+      dataIndex: 'department',
     },
     {
-      title: 'Mã nhân viên hiện tại',
-      dataIndex: 'currentEmployeeId',
+      title: 'Công ty',
+      dataIndex: 'company',
     },
     {
-      title: 'Id vân tay',
-      dataIndex: 'fingerprintId',
-    },
-    {
-        title: 'Họ và tên',
-        dataIndex: 'fullname',
-    },
-    {
-    title: 'Bộ phận',
-    dataIndex: 'department',
+      title: 'Số nhân viên',
+      dataIndex: 'employeeNumber',
     },
     {
       title: 'Số lần chấm công',
       dataIndex: 'timekeepingTimes',
     },
     {
-      title: 'Chức vụ',
-      dataIndex: 'position',
+      title: 'Người quản lý',
+      dataIndex: 'boss',
     },
     {
-      title: 'Số điện thoại cá nhân',
-      dataIndex: 'personalPhoneNumber',
+      title: 'Thư ký',
+      dataIndex: 'secretary',
     },
     {
-      title: 'Số điện thoại công việc',
-      dataIndex: 'workPhoneNumber',
-    },
-    {
-        title: 'Giờ làm việc',
-        dataIndex: 'workHours',
-    },
-    {
-        title: 'Email',
-        dataIndex: 'email',
-    },
-    {
-        title: 'Ngày thôi việc',
-        dataIndex: 'resignationDate',
-    },
-    {
-        title: 'Người quản lý',
-        dataIndex: 'boss',
-        },
-    {
-        title: 'Người huấn luyện',
-        dataIndex: 'mentor',
-    },
-    {
-        title: 'Công ty kiêm nhiệm',
-        dataIndex: 'concurrentCompany',
-    },
-    {
-        title: 'Phòng ban kiêm nhiệm',
-        dataIndex: 'concurrentDepartment',
-    },
-    {
-        title: 'Ngày hết hạn hợp đồng thử việc',
-        dataIndex: 'probationaryExpirationDate',
-    },
-    {
-        title: 'Tỷ lệ hưởng lương thử việc',
-        dataIndex: 'probationarySalaryPercent',
-    },
-    {
-        title: 'Ngày vào làm',
-        dataIndex: 'startDate',
-    },
-    {
-        title: 'Mã số thuế cá nhân',
-        dataIndex: 'personalTaxId',
-    },
-    {
-        title: 'Quản lý chung',
-        dataIndex: 'generalManager',
-    },
-    {
-        title: 'Trưởng bộ phận',
-        dataIndex: 'departmentHead',
-    },
-    {
-        title: 'Thư ký bộ phận',
-        dataIndex: 'secretary',
-    },
-    {
-        title: 'Nơi sinh',
-        dataIndex: 'placeOfBirth',
-    },
-    {
-        title: 'Ngày sinh',
-        dataIndex: 'birthday',
-    },
-    {
-        title: 'Giới tính',
-        dataIndex: 'gender',
-    },
-    {
-        title: 'Địa chỉ thường trú',
-        dataIndex: 'permanentAddress',
-    },
-    {
-        title: 'Quốc gia',
-        dataIndex: 'country',
-    },
-    {
-        title: 'Tỉnh/Thành phố',
-        dataIndex: 'city',
-    },
-    {
-        title: 'Quận/Huyện',
-        dataIndex: 'province',
-    },
-    {
-        title: 'Xã/Phường',
-        dataIndex: 'ward',
-    },
-    {
-        title: 'Dân tộc',
-        dataIndex: 'ethnic',
-    },
-    {
-        title: 'Số CMND',
-        dataIndex: 'nationalId',
-    },
-    {
-        title: 'Nơi cấp CMND',
-        dataIndex: 'placeOfIssuance',
-    },
-    {
-        title: 'Ngày cấp CMND',
-        dataIndex: 'dateOfIssuance',
-    },
-    {
-        title: 'Nơi ở hiện tại',
-        dataIndex: 'currentAddress',
-    },
-    {
-        title: 'Tình trạng hôn nhân',
-        dataIndex: 'maritalStatus',
-    },
-    {
-        title: 'STK ngân hàng',
-        dataIndex: 'bankAccount',
-    },
-    {
-        title: 'Ngân hàng',
-        dataIndex: 'bank',
-    },
-    {
-        title: 'Chi nhánh',
-        dataIndex: 'branch',
-    },
-    {
-        title: 'Số BHXH',
-        dataIndex: 'socialInsuranceNumber',
-    },
-    {
-        title: 'Bằng cấp cao nhất',
-        dataIndex: 'highestDegree',
-    },
-    {
-        title: 'Trường đào tạo',
-        dataIndex: 'trainingSchool',
-    },
-    {
-        title: 'Chứng chỉ',
-        dataIndex: 'certificate',
-    },
-    {
-        title: 'Chuyên ngành',
-        dataIndex: 'major',
-    },
-    {
-        title: 'Loại xe',
-        dataIndex: 'vehicleType',
-    },
-    {
-        title: 'Đăng ký gửi xe',
-        dataIndex: 'parkingRegister',
-    },
-    {
-        title: 'Biển số xe',
-        dataIndex: 'licensePlates',
-    },
-    {
-        title: 'Màu xe',
-        dataIndex: 'vehicleColor',
+      title: 'Phòng ban cấp trên',
+      dataIndex: 'superiorDepartment',
     },
     {
       title: 'Hoạt động',
@@ -263,19 +93,19 @@ const DepartmentsListTable: React.FC = () => {
   ];
   
   const data: DataType[] = [];
-//   for (let i = 0; i < 46; i++) {
-//     data.push({
-//       key: i+1,
-//       id: '512',
-//       department:'Buồng phòng',
-//       company: 'CÔNG TY CỔ PHẦN QUẢN LÝ KHÁCH SẠN & DỊCH VỤ MANDALA - CHI NHÁNH HÒA BÌNH',
-//       employeeNumber: 31,
-//       timekeepingTimes: 3,
-//       boss:'Bùi Thị Yên',
-//       secretary:'Bùi Thị Yên',
-//       superiorDepartment:'Bếp',
-//     });
-//   }
+  for (let i = 0; i < 46; i++) {
+    data.push({
+      key: i+1,
+      id: '512',
+      department:'Buồng phòng',
+      company: 'CÔNG TY CỔ PHẦN QUẢN LÝ KHÁCH SẠN & DỊCH VỤ MANDALA - CHI NHÁNH HÒA BÌNH',
+      employeeNumber: 31,
+      timekeepingTimes: 3,
+      boss:'Bùi Thị Yên',
+      secretary:'Bùi Thị Yên',
+      superiorDepartment:'Bếp',
+    });
+  }
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log('selectedRowKeys changed: ', newSelectedRowKeys);
