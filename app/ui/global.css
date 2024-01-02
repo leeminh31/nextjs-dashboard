@@ -1,6 +1,6 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
 
 input[type='number'] {
   -moz-appearance: textfield;
@@ -15,4 +15,78 @@ input[type='number']::-webkit-inner-spin-button {
 input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.ant-input {
+  border-radius: 0 !important;
+}
+
+.ant-select-selector {
+  border-radius: 0 !important;
+}
+
+.ant-btn-primary {
+  color: #fff !important;
+  background-color: #b98868 !important;
+}
+
+.ant-btn:hover {
+  color: #c7a78f !important;
+  border-color: #c7a78f !important;
+}
+
+.ant-btn-primary:hover {
+  background-color: #c7a78f !important;
+  color: #fff !important;
+}
+
+.ant-select-selector:hover {
+  border-color: #b98868 !important;
+}
+
+.ant-select-focused > .ant-select-selector{
+  border-color: #b98868 !important;
+  box-shadow: none;
+}
+
+.ant-input:hover {
+  border-color: #b98868 !important;
+}
+
+.ant-input:focus-within {
+  border-color: #b98868 !important;
+  box-shadow: none;
+}
+
+.ant-checkbox:hover .ant-checkbox-inner {
+  border-color: #b98868 !important;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #b98868 !important;
+  border-color: #b98868 !important;
+}
+
+.ant-checkbox-indeterminate .ant-checkbox-inner {
+  border-color: #b98868 !important;
+}
+
+.ant-checkbox-indeterminate .ant-checkbox-inner:after {
+  background-color: #b98868 !important;
+}
+
+.ant-checkbox-wrapper:hover .ant-checkbox-inner {
+  border-color: #b98868 !important;
+}
+
+.ant-table-row.ant-table-row-selected >.ant-table-cell {
+  background: #faf3eb !important;
+}
+
+.ant-table-row.ant-table-row-selected >.ant-table-cell-row-hover {
+  background: #f8eee3 !important;
+}
+
+.ant-table-thead .ant-table-cell {
+  background-color: #efe4dc !important;
 }
