@@ -15,7 +15,6 @@ const { Option } = Select;
 
 interface DataType {
   key: React.Key;
-  id: string;
   employeeId: string;
   currentEmployeeId: string;
   fingerprintId:string;
@@ -314,7 +313,7 @@ const DepartmentsListTable: React.FC = () => {
                     <Button type="primary" style={{marginLeft:'12px'}}>Xóa</Button>
                 </Col>
             </Row>
-            <Table scroll={{x:1500, y:500}} rowSelection={rowSelection} columns={columns} dataSource={data} />
+            <Table scroll={{x:5000, y:500}} rowSelection={rowSelection} columns={columns} dataSource={data} />
         </div>
         <Drawer title="Import phòng ban" placement="right" onClose={() => setImportOpen(false)} open={importOpen}>
             <Upload>

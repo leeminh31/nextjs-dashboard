@@ -15,7 +15,6 @@ const { Option } = Select;
 
 interface DataType {
   key: React.Key;
-  id: string;
   department:string;
   company: string;
   employeeNumber: number;
@@ -27,7 +26,7 @@ interface DataType {
 
 
 
-const DepartmentsListTable: React.FC = () => {
+const EmployeeListTable: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [loading, setLoading] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
@@ -96,7 +95,6 @@ const DepartmentsListTable: React.FC = () => {
   for (let i = 0; i < 46; i++) {
     data.push({
       key: i+1,
-      id: '512',
       department:'Buồng phòng',
       company: 'CÔNG TY CỔ PHẦN QUẢN LÝ KHÁCH SẠN & DỊCH VỤ MANDALA - CHI NHÁNH HÒA BÌNH',
       employeeNumber: 31,
@@ -454,4 +452,4 @@ const DepartmentsListTable: React.FC = () => {
   );
 };
 
-export default DepartmentsListTable;
+export default EmployeeListTable;
