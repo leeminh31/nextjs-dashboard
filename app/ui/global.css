@@ -58,8 +58,8 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 .ant-btn {
-  background-color: #b48768;
-  color: #fff;
+  /* background-color: #b48768;
+  color: #fff; */
   margin-left: 5px;
   margin-right: 5px;
 }
@@ -78,7 +78,7 @@ input[type='number']::-webkit-outer-spin-button {
 
 .ant-pagination-item {
   border: 1px solid #dfdfdf !important;
-  border-radius: 0;
+  border-radius: 0 !important;
 }
 
 .ant-pagination-item-active {
@@ -93,6 +93,11 @@ input[type='number']::-webkit-outer-spin-button {
   border-radius: 0 !important;
   border: 1px solid #dfdfdf !important;
 }
+
+.ant-pagination-options-quick-jumper input {
+  border-radius: 0 !important;
+}
+
 .ant-input {
   border-radius: 0 !important;
 }

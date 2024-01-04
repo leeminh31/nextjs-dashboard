@@ -1,4 +1,4 @@
-import DepartmentsListForm from "../employee-list/employee-list-form"
+import DepartmentsListForm from "./departments-list-form"
 import DepartmentsListTable from "./departments-list-table"
 
 const DepartmentsList = () => {

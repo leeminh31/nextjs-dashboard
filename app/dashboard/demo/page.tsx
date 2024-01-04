@@ -11,12 +11,13 @@ import {
 import type { MenuProps } from 'antd';
 import { Layout, Menu, Button, theme, Flex, Avatar } from 'antd';
 import DemoPage from '@/app/ui/demo/demo';
+import DepartmentsList from '@/app/ui/departments-list/departments-list';
+import EmployeeList from '@/app/ui/employee-list/employee-list';
+import StaffTransfer from '@/app/ui/staff-transfer/staff-transfer';
 import {useRouter} from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane, faClock, faCalendarCheck, faCreditCard} from '@fortawesome/free-regular-svg-icons'
 import { faWrench, faArrowRightFromBracket, faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import DepartmentsList from '@/app/ui/departments-list/departments-list';
-import EmployeeList from '@/app/ui/employee-list/employee-list';
 
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -42,9 +43,14 @@ const items: MenuItem[] = [
     getItem('Danh sách phòng ban', 'departments-list'),
     getItem('Danh sách nhân viên', 'employee-list'),
     getItem('Quản lý hợp đồng', 'demo'),
-    getItem('Điều chuyển nhân viên', '4'),
+    getItem('Điều chuyển nhân viên', 'staff-transfer'),
   ]),
-  getItem('Báo cáo chấm công', '5', <FontAwesomeIcon icon={faCreditCard} />),
+  getItem('Báo cáo chấm công', 'sub2', <FontAwesomeIcon icon={faCreditCard} />,[
+    getItem('Báo cáo theo tuần', 'weekly-report'),
+    getItem('Danh sách ca', 'shiftlist'),
+    getItem('Báo cáo theo tháng', 'monthly-report'),
+    getItem('Danh sách chấm công', 'timekeeping-list'),
+  ]),
   getItem('Đơn & giải trình', '6', <FontAwesomeIcon icon={faPaperPlane} />),
 
   getItem('Phép & bù', '7', <FontAwesomeIcon icon={faClock} />),
@@ -68,7 +74,7 @@ const App: React.FC = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const componentsSwtich = (key) => {
+  const componentsSwtich = (key: any) => {
     console.log(key)
     switch (key) {
       case 'demo':
@@ -77,6 +83,8 @@ const App: React.FC = () => {
         return (<DepartmentsList/>);
       case 'employee-list':
         return (<EmployeeList/>);
+      case 'staff-transfer':
+        return (<StaffTransfer/>);
       default:
         break;
     }
