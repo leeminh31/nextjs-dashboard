@@ -313,7 +313,13 @@ const EmployeeListTable: React.FC = () => {
                     <Button type="primary" style={{marginLeft:'12px'}}>Xóa</Button>
                 </Col>
             </Row>
-            <Table scroll={{x:5000, y:500}} rowSelection={rowSelection} columns={columns} dataSource={data} />
+            <Table 
+            scroll={{x:5000, y:500}} 
+            rowSelection={rowSelection} 
+            columns={columns} 
+            dataSource={data} 
+            pagination={{ showQuickJumper:true, total:50 ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}} 
+            />
         </div>
         <Drawer 
         title="Import phòng ban" 

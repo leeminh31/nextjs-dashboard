@@ -18,6 +18,8 @@ import {useRouter} from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane, faClock, faCalendarCheck, faCreditCard} from '@fortawesome/free-regular-svg-icons'
 import { faWrench, faArrowRightFromBracket, faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import ShiftList from '@/app/ui/shift-list/shift-list';
+import TimekeepingList from '@/app/ui/timekeeping-list/timekeeping-list';
 
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -46,8 +48,7 @@ const items: MenuItem[] = [
     getItem('Điều chuyển nhân viên', 'staff-transfer'),
   ]),
   getItem('Báo cáo chấm công', 'sub2', <FontAwesomeIcon icon={faCreditCard} />,[
-    getItem('Báo cáo theo tuần', 'weekly-report'),
-    getItem('Danh sách ca', 'shiftlist'),
+    getItem('Danh sách ca', 'shift-list'),
     getItem('Báo cáo theo tháng', 'monthly-report'),
     getItem('Danh sách chấm công', 'timekeeping-list'),
   ]),
@@ -85,6 +86,10 @@ const App: React.FC = () => {
         return (<EmployeeList/>);
       case 'staff-transfer':
         return (<StaffTransfer/>);
+      case 'shift-list':
+        return (<ShiftList/>);
+      case 'timekeeping-list':
+        return (<TimekeepingList/>);
       default:
         break;
     }
@@ -111,11 +116,11 @@ const App: React.FC = () => {
             </Flex>
             <Flex style={{marginRight: "2rem"}} align={'center'}>
               <Avatar
-                size={{ xs: 12, sm: 16, md: 20, lg: 32, xl: 40, xxl: 50 }}
+                size={{ xs: 10, sm: 14, md: 18, lg: 30, xl: 36, xxl: 40 }}
                 icon={<AntDesignOutlined />}
                 style={{marginRight: "10px"}}
               />
-              HCNS YÊN BUI
+              <h3 style={{margin:0}}>HNCS Yen Bui</h3>
               <FontAwesomeIcon style={{marginLeft: "10px"}} icon={faChevronDown} />
             </Flex>
           </Flex>
