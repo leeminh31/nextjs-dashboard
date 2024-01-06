@@ -339,7 +339,7 @@ const rowSelection: TableRowSelection<DataType> = {
     },
   };
 
-const TimekeepingListTable: React.FC = () => {
+const CompensatoryLeaveTable: React.FC = () => {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -375,6 +375,13 @@ const TimekeepingListTable: React.FC = () => {
         <div style={{paddingLeft:"24px",paddingRight:"24px", backgroundColor:colorBgContainer, marginTop:"20px"}}>
             <Flex justify='space-between' align='center' style={{height:"50px", borderBottom:"1px solid #bbbfc1", marginBottom:"10px"}}>
                 <span><b>Danh sách hợp đồng</b></span>
+                <Row>
+                  <Button type="primary"><HistoryOutlined /></Button>
+                  <Button type="primary" style={{marginLeft:'12px'}}><ExportOutlined /></Button>
+                  <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setImportOpen(true)}>Import</Button>
+                  <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setAddOpen(true)}>Tạo mới</Button>
+                  <Button type="primary" style={{marginLeft:'12px'}}>Xóa</Button>
+                </Row>
             </Flex>
             <Table 
                 scroll={{ x: 3000, y:350}} 
@@ -827,4 +834,4 @@ const TimekeepingListTable: React.FC = () => {
     )
 }
 
-export default TimekeepingListTable;
+export default CompensatoryLeaveTable;

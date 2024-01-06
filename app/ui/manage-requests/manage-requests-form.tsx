@@ -8,7 +8,7 @@ import { Button, Col, Form, Input, Row, Select, Space, theme, DatePicker } from 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-const TimekeepingListForm = () => {
+const ManageRequestsForm = () => {
     const { token } = theme.useToken();
     const [form] = Form.useForm();
     const [expand, setExpand] = useState(false);
@@ -29,15 +29,15 @@ const TimekeepingListForm = () => {
             <Row gutter={24}>
                 <Col span={8}>
                     <Form.Item
-                        label="Ngày chấm công"
+                        label="Mã nhân viên:"
                         labelCol={{style: {width: 120, textAlign:"left"}}}
                     >
-                        <RangePicker/>
+                        <Input placeholder="Vui lòng nhập Tên nhân viên" style={{borderRadius:"0px"}} />
                     </Form.Item>
                 </Col>
                 <Col span={8}>
                     <Form.Item
-                        label="Tên nhân viên"
+                        label="Tên nhân viên:"
                         labelCol={{style: {width: 120, textAlign:"left"}}}
                     >
                         <Input placeholder="Tên nhân viên" style={{borderRadius:"0px"}} />
@@ -45,17 +45,7 @@ const TimekeepingListForm = () => {
                 </Col>
                 <Col span={8}>
                     <Form.Item
-                        label="Mã nhân viên"
-                        labelCol={{style: {width: 120, textAlign:"left"}}}
-                    >
-                        <Input placeholder="Mã nhân viên" style={{borderRadius:"0px"}} />
-                    </Form.Item>
-                </Col>
-            </Row>
-            <Row gutter={24}>
-                <Col span={8}>
-                    <Form.Item
-                        label="Phòng ban"
+                        label="Phòng ban:"
                         labelCol={{style: {width: 120, textAlign:"left"}}}
                     >
                         <Select
@@ -70,10 +60,48 @@ const TimekeepingListForm = () => {
                 </Col>
                 <Col span={8}>
                     <Form.Item
-                        label="Mã vân tay"
+                        label="Khoảng thời gian:"
                         labelCol={{style: {width: 120, textAlign:"left"}}}
                     >
-                        <Input placeholder="Vui lòng nhập Mã vân tay" style={{borderRadius:"0px"}} />
+                        <RangePicker/>
+                    </Form.Item>
+                </Col>
+                <Col span={8}>
+                    <Form.Item
+                        label="Ngày tạo đơn:"
+                        labelCol={{style: {width: 120, textAlign:"left"}}}
+                    >
+                        <DatePicker/>
+                    </Form.Item>
+                </Col>
+                <Col span={8}>
+                    <Form.Item
+                        label="Loại đơn"
+                        labelCol={{style: {width: 120, textAlign:"left"}}}
+                    >
+                        <Select
+                            placeholder="Vui lòng chọn"
+                        >
+                            <Option value="1">Bùi Thị Yên</Option>
+                            <Option value="2">Bùi Thị Yên</Option>
+                            <Option value="3">Bùi Thị Yên</Option>
+                            <Option value="4">Bùi Thị Yên</Option>
+                        </Select>
+                    </Form.Item>
+                </Col>
+                <Col span={8}>
+                    <Form.Item
+                        label="Trạng thái đơn"
+                        labelCol={{style: {width: 120, textAlign:"left"}}}
+                    >
+                        <Select
+                            placeholder="Vui lòng chọn"
+                        >
+                            <Option value="1">Bùi Thị Yên</Option>
+                            <Option value="2">Bùi Thị Yên</Option>
+                            <Option value="3">Bùi Thị Yên</Option>
+                            <Option value="4">Bùi Thị Yên</Option>
+                        </Select>
                     </Form.Item>
                 </Col>
             </Row>
@@ -85,4 +113,4 @@ const TimekeepingListForm = () => {
     )
 }
 
-export default TimekeepingListForm
+export default ManageRequestsForm

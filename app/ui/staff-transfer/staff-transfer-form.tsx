@@ -23,7 +23,7 @@ const StaffTransferForm = () => {
                 <Col span={7}>
                     <Form.Item
                         label="Tên phiếu"
-                        labelCol={{style: {width: 120, textAlign:"left"}}}
+                        labelCol={{style: {width: 80, textAlign:"left"}}}
                     >
                         <Input placeholder="Tên phiếu" style={{borderRadius:"0px"}} />
                     </Form.Item>
@@ -31,7 +31,7 @@ const StaffTransferForm = () => {
                 <Col span={7}>
                     <Form.Item
                         label="Loại phiếu"
-                        labelCol={{style: {width: 120, textAlign:"left"}}}
+                        labelCol={{style: {width: 80, textAlign:"left"}}}
                     >
                         <Select
                             placeholder="Vui lòng chọn"
@@ -46,7 +46,7 @@ const StaffTransferForm = () => {
                 <Col span={7}>
                     <Form.Item
                         label="Ngày tạo"
-                        labelCol={{style: {width: 120, textAlign:"left"}}}
+                        labelCol={{style: {width: 80, textAlign:"left"}}}
                     >
                         <DatePicker placeholder='Ngày tạo' format={dateFormatList} />
                     </Form.Item>
@@ -56,7 +56,7 @@ const StaffTransferForm = () => {
                 <Col span={7}>
                     <Form.Item
                         label="Ngày duyệt"
-                        labelCol={{style: {width: 120, textAlign:"left"}}}
+                        labelCol={{style: {width: 80, textAlign:"left"}}}
                     >
                         <DatePicker placeholder='Ngày duyệt' format={dateFormatList} />
                     </Form.Item>
@@ -64,7 +64,7 @@ const StaffTransferForm = () => {
                 <Col span={7}>
                     <Form.Item
                         label="Nhân viên"
-                        labelCol={{style: {width: 120, textAlign:"left"}}}
+                        labelCol={{style: {width: 80, textAlign:"left"}}}
                     >
                         <Input placeholder="Nhân viên" style={{borderRadius:"0px"}} />
                     </Form.Item>
@@ -72,7 +72,7 @@ const StaffTransferForm = () => {
                 <Col span={7}>
                     <Form.Item
                         label="Trạng thái"
-                        labelCol={{style: {width: 120, textAlign:"left"}}}
+                        labelCol={{style: {width: 80, textAlign:"left"}}}
                     >
                         <Select
                             placeholder="Trạng thái"

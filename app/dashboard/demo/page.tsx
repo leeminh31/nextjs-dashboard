@@ -20,6 +20,10 @@ import { faPaperPlane, faClock, faCalendarCheck, faCreditCard} from '@fortawesom
 import { faWrench, faArrowRightFromBracket, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import ShiftList from '@/app/ui/shift-list/shift-list';
 import TimekeepingList from '@/app/ui/timekeeping-list/timekeeping-list';
+import ManageRequests from '@/app/ui/manage-requests/manage-requests';
+import ManageExplanations from '@/app/ui/manage-explanations/manage-explanations';
+import OnLeave from '@/app/ui/on-leave/on-leave';
+import CompensatoryLeave from '@/app/ui/compensatory-leave/compensatory-leave';
 
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -52,18 +56,20 @@ const items: MenuItem[] = [
     getItem('Báo cáo theo tháng', 'monthly-report'),
     getItem('Danh sách chấm công', 'timekeeping-list'),
   ]),
-  getItem('Đơn & giải trình', '6', <FontAwesomeIcon icon={faPaperPlane} />),
-
-  getItem('Phép & bù', '7', <FontAwesomeIcon icon={faClock} />),
-
-  getItem('Phân ca & xuất báo cáo', 'sub2', <FontAwesomeIcon icon={faArrowRightFromBracket} />, [
-    getItem('Option 9', '8'),
-    getItem('Option 10', '9'),
+  getItem('Đơn & giải trình', 'sub3', <FontAwesomeIcon icon={faPaperPlane} />,[
+    getItem('Quản lý đơn yêu cầu', 'manage-requests'),
+    getItem('Quản lý giải trình', 'manage-explanations'),
   ]),
-  getItem('KPIs', '10', <FontAwesomeIcon icon={faArrowRightFromBracket} />),
-  getItem('Đặt phòng họp', '11', <FontAwesomeIcon icon={faCalendarCheck} />),
-  getItem('Cấu hình khóa', '12', <FontAwesomeIcon icon={faWrench} />),
-  getItem('Báo cáo tuần', '13', <BookOutlined />),
+
+  getItem('Phép & bù', 'sub4', <FontAwesomeIcon icon={faClock} />,[
+    getItem('Quản lý phép', 'on-leave'),
+    getItem('Quản lý bù', 'compensatory-leave'),
+  ]),
+
+  getItem('Phân ca & xuất báo cáo', 'sub5', <FontAwesomeIcon icon={faArrowRightFromBracket} />, [
+    getItem('Xuất báo cáo', 'export-report'),
+    getItem('Phân ca nhân viên', 'staff-shifts'),
+  ]),
 ];
 
 const { Header, Sider, Content } = Layout;
@@ -89,7 +95,15 @@ const App: React.FC = () => {
       case 'shift-list':
         return (<ShiftList/>);
       case 'timekeeping-list':
-        return (<TimekeepingList/>);
+        return (<TimekeepingList />);
+      case 'manage-requests':
+        return (<ManageRequests />);
+      case 'manage-explanations':
+        return (<ManageExplanations />);
+      case 'on-leave':
+        return (<OnLeave/>)
+      case 'compensatory-leave':
+        return (<CompensatoryLeave/>)
       default:
         break;
     }

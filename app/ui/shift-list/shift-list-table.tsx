@@ -204,7 +204,7 @@ const ShiftListTable: React.FC = () => {
             footer= {
                 <Row justify={'end'}>
                     <Space>
-                        <Button>Hủy</Button>
+                        <Button onClick={() => setAddOpen(false)}>Hủy</Button>
                         <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
                     </Space>
                 </Row>
@@ -248,6 +248,12 @@ const ShiftListTable: React.FC = () => {
                         <Form.Item
                         name={'startWorkingHour'}
                         label={'Thời gian bắt đầu làm'}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng nhập Tên ca!',
+                            },
+                        ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
@@ -258,6 +264,12 @@ const ShiftListTable: React.FC = () => {
                         <Form.Item
                         name={'endWorkingHour'}
                         label={'Thời gian kết thúc làm'}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng nhập Tên ca!',
+                            },
+                        ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
@@ -268,6 +280,12 @@ const ShiftListTable: React.FC = () => {
                         <Form.Item
                         name={'startRelaxHour'}
                         label={'Thời gian bắt đầu nghỉ'}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng nhập Tên ca!',
+                            },
+                        ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
@@ -278,6 +296,12 @@ const ShiftListTable: React.FC = () => {
                         <Form.Item
                         name={'endRelaxHour'}
                         label={'Thời gian kết thúc nghỉ'}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng nhập Tên ca!',
+                            },
+                        ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
@@ -433,16 +457,6 @@ const ShiftListTable: React.FC = () => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'timekeeping'}
-                        label={'Số lần chấm công'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Vui lòng nhập Số lần chấm công" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
                         name={'shiftId'}
                         label={'Mã ca nghỉ'}
                         labelCol={{ span:24 }}
@@ -457,6 +471,16 @@ const ShiftListTable: React.FC = () => {
                             </Select>
                         </Form.Item>
                     </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'timekeeping'}
+                        label={'Số lần chấm công'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                            <Input placeholder="Vui lòng nhập Số lần chấm công" />
+                        </Form.Item>
+                    </Col>
                 </Row>
             </Form>
         </Drawer>
@@ -469,7 +493,7 @@ const ShiftListTable: React.FC = () => {
             footer= {
                 <Row justify={'end'}>
                     <Space>
-                        <Button>Hủy</Button>
+                        <Button onClick={() => setUpdateOpen(false)}>Hủy</Button>
                         <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
                     </Space>
                 </Row>
@@ -734,7 +758,7 @@ const ShiftListTable: React.FC = () => {
             footer= {
                 <Row justify={'end'}>
                     <Space>
-                        <Button>Hủy</Button>
+                        <Button onClick={() => setViewOpen(false)}>Hủy</Button>
                         <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
                     </Space>
                 </Row>

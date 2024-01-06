@@ -8,7 +8,7 @@ import { Button, Col, Form, Input, Row, Select, Space, theme, DatePicker } from 
 
 const { Option } = Select;
 
-const DepartmentsListForm = () => {
+const EmployeeListForm = () => {
     const { token } = theme.useToken();
     const [form] = Form.useForm();
     const [expand, setExpand] = useState(false);
@@ -33,7 +33,7 @@ const DepartmentsListForm = () => {
                 <Form.Item
                     name={'employeeName'}
                     label={'Tên'}
-                    labelCol={{style: {width: 120, textAlign:"left"}}}
+                    labelCol={{style: {width: 100, textAlign:"left"}}}
                 >
                     <Input placeholder="Vui lòng nhập Tên nhân viên" />
                 </Form.Item>
@@ -42,7 +42,7 @@ const DepartmentsListForm = () => {
                 <Form.Item
                     name={'employeeId'}
                     label={'Mã nhân viên'}
-                    labelCol={{style: {width: 120, textAlign:"left"}}}
+                    labelCol={{style: {width: 100, textAlign:"left"}}}
                 >
                     <Input placeholder="Vui lòng nhập Mã nhân viên" />
                 </Form.Item>
@@ -51,7 +51,7 @@ const DepartmentsListForm = () => {
                 <Form.Item
                     name={'fingerprintId'}
                     label={'ID vân tay'}
-                    labelCol={{style: {width: 120, textAlign:"left"}}}
+                    labelCol={{style: {width: 100, textAlign:"left"}}}
                 >
                     <Input placeholder="Vui lòng nhập Id vân tay" />
                 </Form.Item>
@@ -62,7 +62,7 @@ const DepartmentsListForm = () => {
                 <Form.Item
                     name={'department'}
                     label={'Phòng ban'}
-                    labelCol={{style: {width: 120, textAlign:"left"}}}
+                    labelCol={{style: {width: 100, textAlign:"left"}}}
                 >
                     <Select placeholder = "Vui lòng chọn">
                         <Option value="1">Bùi Thị Yên</Option>
@@ -77,7 +77,7 @@ const DepartmentsListForm = () => {
                 <Form.Item
                     name={'position'}
                     label={'Chức vụ'}
-                    labelCol={{style: {width: 120, textAlign:"left"}}}
+                    labelCol={{style: {width: 100, textAlign:"left"}}}
                 >
                     <Input placeholder="Vui lòng nhập Chức vụ" />
                 </Form.Item>
@@ -86,9 +86,9 @@ const DepartmentsListForm = () => {
                 <Form.Item
                     name={'resignationDate'}
                     label={'Ngày thôi việc'}
-                    labelCol={{style: {width: 120, textAlign:"left"}}}
+                    labelCol={{style: {width: 100, textAlign:"left"}}}
                 >
-                     <DatePicker placeholder='Vui lòng nhập ngày thôi việc' format={dateFormatList} />
+                    <DatePicker placeholder='Vui lòng nhập ngày thôi việc' format={dateFormatList} />
                 </Form.Item>
             </Col>
         </Row>
@@ -97,7 +97,7 @@ const DepartmentsListForm = () => {
                 <Form.Item
                     name={'employeeEmail'}
                     label={'Email'}
-                    labelCol={{style: {width: 120, textAlign:"left"}}}
+                    labelCol={{style: {width: 100, textAlign:"left"}}}
                 >
                     <Input placeholder="Vui lòng nhập mail" />
                 </Form.Item>
@@ -106,7 +106,7 @@ const DepartmentsListForm = () => {
                 <Form.Item
                     name={'emloyeePhoneNumber'}
                     label={'Số điện thoại'}
-                    labelCol={{style: {width: 120, textAlign:"left"}}}
+                    labelCol={{style: {width: 100, textAlign:"left"}}}
                 >
                     <Input placeholder="Vui lòng nhập Số điện thoại" />
                 </Form.Item>
@@ -130,4 +130,4 @@ const DepartmentsListForm = () => {
     );
 }
 
-export default DepartmentsListForm
+export default EmployeeListForm

@@ -31,130 +31,6 @@ interface DataType {
   status: string;
 }
 
-const columns: ColumnsType<DataType> = [
-    {
-        title: '#',
-        dataIndex: 'key',
-        key: 'key',
-        width:50
-    },
-    {
-        title: 'Mã vân tay',
-        dataIndex: 'fingerprintId',
-        key: 'fingerprintId',
-    },
-    {
-        title: 'Mã nhân viên',
-        dataIndex: 'employeeId',
-        key: 'employeeId',
-    },
-    {
-        title: 'Họ và tên',
-        dataIndex: 'employeeName',
-        key: 'employeeName',
-    },
-    {
-        title: 'Đơn vị/Phòng ban',
-        key: 'department',
-        dataIndex: 'department',
-    },
-    {
-        title: 'Ngày vào làm',
-        key: 'startWorkingDate',
-        dataIndex: 'startWorkingDate',
-    },
-    {
-        title: 'Ngày chấm công',
-        key: 'timekeepingDate',
-        dataIndex: 'timekeepingDate',
-    },
-    {
-        title: 'Thứ',
-        key: 'day',
-        dataIndex: 'day',
-    },
-    {
-        title: 'Công chuẩn',
-        key: 'timekeepingTimes',
-        dataIndex: 'timekeepingTimes',
-    },
-    {
-        title: 'Ca',
-        key: 'shift',
-        dataIndex: 'shift',
-    },
-    {
-      title: 'Chấm công lần 1',
-      key: 'firstTimekeeping',
-      dataIndex: 'firstTimekeeping',
-    },
-    {
-      title: 'Chấm công lần 2',
-      key: 'secondTimekeeping',
-      dataIndex: 'secondTimekeeping',
-    },
-    {
-      title: 'Chấm công lần 3',
-      key: 'thirdTimekeeping',
-      dataIndex: 'thirdTimekeeping',
-    },
-    {
-      title: 'Chấm công lần 4',
-      key: 'fourthTimekeeping',
-      dataIndex: 'fourthTimekeeping',
-    },
-    {
-      title: 'Chấm công lần 5',
-      key: 'fifthTimekeeping',
-      dataIndex: 'fifthTimekeeping',
-    },
-    {
-      title: 'Chấm công lần cuối',
-      key: 'lastTimekeeping',
-      dataIndex: 'lastTimekeeping',
-    },
-    {
-      title: 'Loại giải trình',
-      key: 'typeOfExplanation',
-      dataIndex: 'typeOfExplanation',
-    },
-    {
-      title: 'Loại đơn',
-      key: 'typeOfApplication',
-      dataIndex: 'typeOfApplication',
-    },
-    {
-      title: 'Thời gian đơn',
-      key: 'createdTime',
-      dataIndex: 'createdTime',
-    },
-    {
-      title: 'Đi trễ',
-      key: 'late',
-      dataIndex: 'late',
-    },
-    {
-      title: 'Về sớm',
-      key: 'early',
-      dataIndex: 'early',
-    },
-    {
-      title: 'Thời gian nghỉ lễ',
-      key: 'dayOff',
-      dataIndex: 'dayOff',
-    },
-    {
-      title: 'Tính thêm giờ',
-      key: 'addHours',
-      dataIndex: 'addHours',
-    },
-    {
-      title: 'Thời gian làm việc thực tế',
-      key: 'realWorkingHours',
-      dataIndex: 'realWorkingHours',
-    },
-];
-
 const data: DataType[] = [
   {
     key: '1',
@@ -339,7 +215,7 @@ const rowSelection: TableRowSelection<DataType> = {
     },
   };
 
-const TimekeepingListTable: React.FC = () => {
+const ManageRequestsTable: React.FC = () => {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -350,6 +226,113 @@ const TimekeepingListTable: React.FC = () => {
     const [form] = Form.useForm();
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
     const [value, setValue] = useState(false)
+
+    const columns: ColumnsType<DataType> = [
+      {
+          title: '#',
+          dataIndex: 'key',
+          key: 'key',
+          width:50
+      },
+      {
+          title: 'Trạng thái',
+          dataIndex: 'status',
+          key: 'status',
+      },
+      {
+        title: 'Họ và tên',
+        dataIndex: 'fullname',
+        key: 'fullname',
+      },
+      {
+          title: 'Mã nhân viên',
+          dataIndex: 'employeeId',
+          key: 'employeeId',
+      },
+      {
+          title: 'Công ty',
+          dataIndex: 'company',
+          key: 'company',
+      },
+      {
+          title: 'Phòng ban',
+          key: 'department',
+          dataIndex: 'department',
+      },
+      {
+          title: 'Chức vụ',
+          key: 'role',
+          dataIndex: 'role',
+      },
+      {
+          title: 'Loại đơn',
+          key: 'applicationType',
+          dataIndex: 'applicationType',
+      },
+      {
+          title: 'Vì lý do',
+          key: 'reason',
+          dataIndex: 'reason',
+      },
+      {
+          title: 'Từ ngày',
+          key: 'fromDate',
+          dataIndex: 'fromDate',
+      },
+      {
+          title: 'Đến ngày',
+          key: 'toDate',
+          dataIndex: 'toDate',
+      },
+      {
+        title: 'Số phút',
+        key: 'minutes',
+        dataIndex: 'minutes',
+      },
+      {
+        title: 'Số phút cũ',
+        key: 'oldMinutes',
+        dataIndex: 'oldMinutes',
+      },
+      {
+        title: 'Người duyệt',
+        key: 'approvedBy',
+        dataIndex: 'approvedBy',
+      },
+      {
+        title: 'HCNS duyệt',
+        key: 'HcnsApproved',
+        dataIndex: 'HcnsApproved',
+      },
+      {
+        title: 'Ngày duyệt',
+        key: 'approvedDate',
+        dataIndex: 'approvedDate',
+      },
+      {
+          title: 'Hoạt động',
+          key: 'action',
+          fixed:'right',
+          width:150,
+          align: 'center' as 'center',
+          render: () => (
+            <>
+              <Button 
+              style={{backgroundColor:'transparent', color:'#6c8cad', border:'none'}}
+              onClick={() => setUpdateOpen(true)}
+              >
+                <FontAwesomeIcon icon={faPencil} />
+              </Button>
+              <Button 
+              style={{backgroundColor:'transparent', color:'#6c8cad', border:'none'}}
+              onClick={() => setViewOpen(true)}
+              >
+                <FontAwesomeIcon icon={faEye} />
+              </Button>
+            </>
+          ) 
+      },
+  ];
 
     const closeAddDrawer = () => {
       setAddOpen(false)
@@ -374,10 +357,16 @@ const TimekeepingListTable: React.FC = () => {
       <>  
         <div style={{paddingLeft:"24px",paddingRight:"24px", backgroundColor:colorBgContainer, marginTop:"20px"}}>
             <Flex justify='space-between' align='center' style={{height:"50px", borderBottom:"1px solid #bbbfc1", marginBottom:"10px"}}>
-                <span><b>Danh sách hợp đồng</b></span>
+                <span><b>Danh sách đơn yêu cầu</b></span>
+                <Row>
+                  <Button type="primary" style={{marginLeft:'12px'}}><ExportOutlined /></Button>
+                  <Button type="primary" style={{marginLeft:'12px'}}>Duyệt đơn</Button>
+                  <Button type="primary" style={{marginLeft:'12px'}}>Hủy đơn</Button>
+                  <Button type="primary" style={{marginLeft:'12px'}}>Xóa đơn</Button>
+                </Row>
             </Flex>
             <Table 
-                scroll={{ x: 3000, y:350}} 
+                scroll={{ x: 2000, y:350}} 
                 rowSelection={rowSelection} 
                 columns={columns} 
                 dataSource={data}
@@ -385,303 +374,70 @@ const TimekeepingListTable: React.FC = () => {
             />
         </div>
         <Drawer 
-        title="Import hợp đồng và nhân viên" 
-        placement="right" 
-        onClose={() => setImportOpen(false)} 
-        open={importOpen}
-        footer= {
-          <Row justify={'end'}>
-              <Space>
-                  <Button onClick={() => setImportOpen(false)}>Hủy</Button>
-                  <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-              </Space>
-          </Row>
-        }
-        >
-            <Upload>
-                <p>File upload</p>
-                <Button icon={<UploadOutlined />}>Click to Upload</Button>
-            </Upload>
-            <Space direction='vertical'>
-                <p>Template file</p>
-                <Button type='primary' icon={<DownloadOutlined />}>Tải xuống template</Button>
-            </Space>
-        </Drawer>
-        <Drawer 
             size='large' 
-            title="Thêm mới" 
-            placement="right" 
-            onClose={closeAddDrawer} 
-            open={addOpen} 
-            footer= {
-                <Row justify={'end'}>
-                    <Space>
-                        <Button>Hủy</Button>
-                        <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-                    </Space>
-                </Row>
-            }
-        >
-            <Form form={form} name="insertDepartment" onFinish={onFinish}>
-                <Row gutter={24}>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'contractName'}
-                        label={'Tên hợp đồng'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng nhập Tên hợp đồng!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Vui lòng nhập Tên hợp đồng" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'employeeId'}
-                        label={'Mã nhân viên'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Số lần chấm công" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'employee'}
-                        label={'Nhân viên'}
-                        rules={[
-                          {
-                          required: true,
-                          message: 'Vui lòng nhập Nhân viên!',
-                          },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'department'}
-                        label={'Phòng ban'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'position'}
-                        label={'Chức vụ'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <Input/>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'signDate'}
-                        label={'Ngày ký'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <DatePicker placeholder='Vui lòng nhập Ngày ký' format={dateFormatList} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'startDate'}
-                        label={'Ngày bắt đầu'}
-                        rules={[
-                          {
-                          required: true,
-                          message: 'Vui lòng nhập Ngày bắt đầu!',
-                          },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <DatePicker placeholder='Vui lòng nhập Ngày bắt đầu' format={dateFormatList} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        {
-                        value ? 
-                          <Form.Item
-                          name={'endDate'}
-                          label={'Ngày kết thúc không xác định'}
-                          labelCol={{ span:24 }}
-                          >
-                          </Form.Item> : 
-                          <Form.Item
-                            name={'endDate'}
-                            label={'Ngày kết thúc'}
-                            rules={[
-                              {
-                              required: true,
-                              message: 'Vui lòng nhập Ngày kết thúc!',
-                              },
-                            ]}
-                            labelCol={{ span:24 }}
-                            wrapperCol={{ span:24 }}
-                            >
-                            <DatePicker placeholder='Vui lòng nhập Ngày kết thúc' format={dateFormatList} />
-                          </Form.Item>
-                        }
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'contractType'}
-                        label={'Loại hợp đồng'}
-                        rules={[
-                          {
-                          required: true,
-                          message: 'Vui lòng chọn!',
-                          },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <Select placeholder = "Vui lòng chọn">
-                            <Option value="1">Bùi Thị Yên</Option>
-                            <Option value="2">Bùi Thị Yên</Option>
-                            <Option value="3">Bùi Thị Yên</Option>
-                            <Option value="4">Bùi Thị Yên</Option>
-                            <Option value="5">Bùi Thị Yên</Option>
-                          </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'salaryRate'}
-                        label={'Tỷ lệ hưởng lương'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <Input type={'number'}/>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'workingHours'}
-                        label={'Giờ làm việc'}
-                        rules={[
-                          {
-                          required: true,
-                          message: 'Vui lòng chọn!',
-                          },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <Select placeholder = "Vui lòng chọn">
-                            <Option value="1">Bùi Thị Yên</Option>
-                            <Option value="2">Bùi Thị Yên</Option>
-                            <Option value="3">Bùi Thị Yên</Option>
-                            <Option value="4">Bùi Thị Yên</Option>
-                            <Option value="5">Bùi Thị Yên</Option>
-                          </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'salary'}
-                        label={'Tiền công, lương tháng'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <Input type={'number'} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'salary'}
-                        label={'Hợp đồng không xác định thời hạn'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <Radio.Group defaultValue={false} onChange={onChange} value={value}>
-                            <Radio value={true}>True</Radio>
-                            <Radio value={false}>False</Radio>
-                          </Radio.Group>
-                        </Form.Item>
-                    </Col>
-                </Row>
-            </Form>
-        </Drawer>
-        <Drawer 
-            size='large' 
-            title="Thông tin chi tiết" 
+            title="Sửa đơn" 
             placement="right" 
             onClose={closeUpdateDrawer} 
             open={updateOpen} 
             footer= {
                 <Row justify={'end'}>
                     <Space>
-                        <Button>Hủy</Button>
+                        <Button onClick={() => setUpdateOpen(false)}>Hủy</Button>
                         <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
                     </Space>
                 </Row>
             }
         >
-            <Form form={form} name="updateDepartment" onFinish={onFinish}>
+            <Form form={form} name="updateApplication" onFinish={onFinish}>
                 <Row gutter={24}>
                     <Col span={12}>
                         <Form.Item
-                        name={'departmentName'}
-                        label={'Tên phòng ban'}
+                        name={'approvedBy'}
+                        label={'Người duyệt'}
                         rules={[
                             {
                             required: true,
-                            message: 'Vui lòng nhập tên phòng ban!',
+                            message: 'Vui lòng chọn!',
                             },
                         ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Tên phòng ban" />
+                            <Select placeholder = "Vui lòng chọn">
+                                <Option value="1">Bùi Thị Yên</Option>
+                                <Option value="2">Bùi Thị Yên</Option>
+                                <Option value="3">Bùi Thị Yên</Option>
+                                <Option value="4">Bùi Thị Yên</Option>
+                                <Option value="5">Bùi Thị Yên</Option>
+                            </Select>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'timekeepingTimes'}
-                        label={'Số lần chấm công'}
+                        name={'applicationType'}
+                        label={'Loại đơn'}
                         rules={[
                             {
                             required: true,
-                            message: 'Vui lòng nhập số lần chấm công!',
+                            message: 'Vui lòng chọn!',
                             },
                         ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Số lần chấm công" />
+                            <Select placeholder = "Vui lòng chọn">
+                                <Option value="1">Bùi Thị Yên</Option>
+                                <Option value="2">Bùi Thị Yên</Option>
+                                <Option value="3">Bùi Thị Yên</Option>
+                                <Option value="4">Bùi Thị Yên</Option>
+                                <Option value="5">Bùi Thị Yên</Option>
+                            </Select>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'boss'}
-                        label={'Người quản lý'}
+                        name={'company'}
+                        label={'Công ty'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
@@ -696,8 +452,8 @@ const TimekeepingListTable: React.FC = () => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'secretary'}
-                        label={'Thư ký'}
+                        name={'reason'}
+                        label={'Vì lý do'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
@@ -712,18 +468,62 @@ const TimekeepingListTable: React.FC = () => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'supervisorDepartment'}
-                        label={'Phòng ban cấp trên'}
+                        name={'reasonDescription'}
+                        label={'Lý do'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
+                            <Input/>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'minutes'}
+                        label={'Số phút'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                            <Input type={'number'}/>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'fromDate'}
+                        label={'Từ ngày'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                            <DatePicker />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'toDate'}
+                        label={'Đến ngày'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                            <DatePicker />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'workCoefficient'}
+                        label={'Hệ số công'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                            <Input type={'number'}/>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'coefficientsSalary'}
+                        label={'Hệ số lương'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                            <Input type={'number'}/>
                         </Form.Item>
                     </Col>
                 </Row>
@@ -738,48 +538,28 @@ const TimekeepingListTable: React.FC = () => {
             footer= {
                 <Row justify={'end'}>
                     <Space>
-                        <Button>Hủy</Button>
+                        <Button onClick={() => setViewOpen(false)}>Hủy</Button>
                         <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
                     </Space>
                 </Row>
             }
         >
-            <Form form={form} name="viewDepartment" onFinish={onFinish}>
+            <Form form={form} name="viewApplication" onFinish={onFinish}>
                 <Row gutter={24}>
                     <Col span={12}>
                         <Form.Item
-                        name={'departmentName'}
-                        label={'Tên phòng ban'}
+                        name={'approvedBy'}
+                        label={'Người duyệt'}
                         rules={[
                             {
                             required: true,
-                            message: 'Vui lòng nhập tên phòng ban!',
+                            message: 'Vui lòng chọn!',
                             },
                         ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Tên phòng ban" disabled={true} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'timekeepingTimes'}
-                        label={'Số lần chấm công'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Số lần chấm công" disabled={true} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'boss'}
-                        label={'Người quản lý'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn" disabled={true}>
+                            <Select placeholder = "Vui lòng chọn" disabled>
                                 <Option value="1">Bùi Thị Yên</Option>
                                 <Option value="2">Bùi Thị Yên</Option>
                                 <Option value="3">Bùi Thị Yên</Option>
@@ -790,12 +570,18 @@ const TimekeepingListTable: React.FC = () => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'secretary'}
-                        label={'Thư ký'}
+                        name={'applicationType'}
+                        label={'Loại đơn'}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng chọn!',
+                            },
+                        ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Select placeholder = "Vui lòng chọn" disabled={true}>
+                            <Select placeholder = "Vui lòng chọn" disabled>
                                 <Option value="1">Bùi Thị Yên</Option>
                                 <Option value="2">Bùi Thị Yên</Option>
                                 <Option value="3">Bùi Thị Yên</Option>
@@ -806,18 +592,94 @@ const TimekeepingListTable: React.FC = () => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'supervisorDepartment'}
-                        label={'Phòng ban cấp trên'}
+                        name={'company'}
+                        label={'Công ty'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Select placeholder = "Vui lòng chọn" disabled={true}>
+                            <Select placeholder = "Vui lòng chọn" disabled>
                                 <Option value="1">Bùi Thị Yên</Option>
                                 <Option value="2">Bùi Thị Yên</Option>
                                 <Option value="3">Bùi Thị Yên</Option>
                                 <Option value="4">Bùi Thị Yên</Option>
                                 <Option value="5">Bùi Thị Yên</Option>
                             </Select>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'reason'}
+                        label={'Vì lý do'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                            <Select placeholder = "Vui lòng chọn" disabled>
+                                <Option value="1">Bùi Thị Yên</Option>
+                                <Option value="2">Bùi Thị Yên</Option>
+                                <Option value="3">Bùi Thị Yên</Option>
+                                <Option value="4">Bùi Thị Yên</Option>
+                                <Option value="5">Bùi Thị Yên</Option>
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'reasonDescription'}
+                        label={'Lý do'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                            <Input disabled/>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'minutes'}
+                        label={'Số phút'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                            <Input type={'number'} disabled/>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'fromDate'}
+                        label={'Từ ngày'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                            <DatePicker disabled/>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'toDate'}
+                        label={'Đến ngày'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                            <DatePicker disabled/>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'workCoefficient'}
+                        label={'Hệ số công'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                            <Input type={'number'} disabled/>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'coefficientsSalary'}
+                        label={'Hệ số lương'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                            <Input type={'number'} disabled/>
                         </Form.Item>
                     </Col>
                 </Row>
@@ -827,4 +689,4 @@ const TimekeepingListTable: React.FC = () => {
     )
 }
 
-export default TimekeepingListTable;
+export default ManageRequestsTable;

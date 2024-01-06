@@ -125,6 +125,11 @@ const DepartmentsListTable: React.FC = () => {
     form.resetFields()
   }
 
+  const closeViewDrawer = () => {
+    setViewOpen(false)
+    form.resetFields()
+  }
+
   const onFinish = (values: any) => {
     console.log('Received values of form: ', values);
   };
@@ -181,7 +186,7 @@ const DepartmentsListTable: React.FC = () => {
             footer= {
                 <Row justify={'end'}>
                     <Space>
-                        <Button>Hủy</Button>
+                        <Button onClick={() => setAddOpen(false)}>Hủy</Button>
                         <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
                     </Space>
                 </Row>
@@ -281,7 +286,7 @@ const DepartmentsListTable: React.FC = () => {
             footer= {
                 <Row justify={'end'}>
                     <Space>
-                        <Button>Hủy</Button>
+                        <Button onClick={() => setUpdateOpen(false)}>Hủy</Button>
                         <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
                     </Space>
                 </Row>
@@ -381,7 +386,7 @@ const DepartmentsListTable: React.FC = () => {
             footer= {
                 <Row justify={'end'}>
                     <Space>
-                        <Button>Hủy</Button>
+                        <Button onClick={() => setViewOpen(false)}>Hủy</Button>
                         <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
                     </Space>
                 </Row>

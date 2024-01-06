@@ -8,7 +8,7 @@ import { Button, Col, Form, Input, Row, Select, Space, theme, DatePicker } from 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-const TimekeepingListForm = () => {
+const OnLeaveForm = () => {
     const { token } = theme.useToken();
     const [form] = Form.useForm();
     const [expand, setExpand] = useState(false);
@@ -85,4 +85,4 @@ const TimekeepingListForm = () => {
     )
 }
 
-export default TimekeepingListForm
+export default OnLeaveForm

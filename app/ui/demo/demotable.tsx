@@ -31,94 +31,7 @@ interface DataType {
   status: string;
 }
 
-const columns: ColumnsType<DataType> = [
-    {
-        title: '#',
-        dataIndex: 'key',
-        key: 'key',
-        width:50
-    },
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-    },
-    {
-        title: 'Nhân viên',
-        dataIndex: 'employee',
-        key: 'employee',
-    },
-    {
-        title: 'Mã nhân viên',
-        dataIndex: 'employeeId',
-        key: 'employeeId',
-    },
-    {
-        title: 'Tên hợp đồng',
-        dataIndex: 'contract',
-        key: 'contract',
-    },
-    {
-        title: 'Phòng ban',
-        key: 'department',
-        dataIndex: 'department',
-    },
-    {
-        title: 'Chức vụ',
-        key: 'role',
-        dataIndex: 'role',
-    },
-    {
-        title: 'Ngày ký',
-        key: 'signDate',
-        dataIndex: 'signDate',
-    },
-    {
-        title: 'Ngày bắt đầu',
-        key: 'startDate',
-        dataIndex: 'startDate',
-    },
-    {
-        title: 'Ngày kết thúc',
-        key: 'endDate',
-        dataIndex: 'endDate',
-    },
-    {
-        title: 'Loại hợp đồng',
-        key: 'contractType',
-        dataIndex: 'contractType',
-    },
-    {
-      title: 'Trạng thái',
-      key: 'status',
-      dataIndex: 'status',
-      render: (status) => {
-        let color = status === 'Đang chạy' ? 'green' : 'volcano'
-        return (
-          <Tag color={color} >
-              {status.toUpperCase()}
-          </Tag>
-        )
-      }
-    },
-    {
-        title: 'Hoạt động',
-        key: 'action',
-        fixed:'right',
-        width:150,
-        align: 'center' as 'center',
-        render: () => (
-          <>
-            <Button style={{backgroundColor:'transparent', color:'#6c8cad', border:'none'}}>
-              <FontAwesomeIcon icon={faPencil} />
-            </Button>
-            <Button style={{backgroundColor:'transparent', color:'#6c8cad', border:'none'}}>
-              <FontAwesomeIcon icon={faEye} />
-            </Button>
-          </>
-        ) 
-    },
-];
+
 
 const data: DataType[] = [
   {
@@ -316,6 +229,101 @@ const DemoTable: React.FC = () => {
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
     const [value, setValue] = useState(false)
 
+    const columns: ColumnsType<DataType> = [
+      {
+          title: '#',
+          dataIndex: 'key',
+          key: 'key',
+          width:50
+      },
+      {
+          title: 'ID',
+          dataIndex: 'id',
+          key: 'id',
+      },
+      {
+          title: 'Nhân viên',
+          dataIndex: 'employee',
+          key: 'employee',
+      },
+      {
+          title: 'Mã nhân viên',
+          dataIndex: 'employeeId',
+          key: 'employeeId',
+      },
+      {
+          title: 'Tên hợp đồng',
+          dataIndex: 'contract',
+          key: 'contract',
+      },
+      {
+          title: 'Phòng ban',
+          key: 'department',
+          dataIndex: 'department',
+      },
+      {
+          title: 'Chức vụ',
+          key: 'role',
+          dataIndex: 'role',
+      },
+      {
+          title: 'Ngày ký',
+          key: 'signDate',
+          dataIndex: 'signDate',
+      },
+      {
+          title: 'Ngày bắt đầu',
+          key: 'startDate',
+          dataIndex: 'startDate',
+      },
+      {
+          title: 'Ngày kết thúc',
+          key: 'endDate',
+          dataIndex: 'endDate',
+      },
+      {
+          title: 'Loại hợp đồng',
+          key: 'contractType',
+          dataIndex: 'contractType',
+      },
+      {
+        title: 'Trạng thái',
+        key: 'status',
+        dataIndex: 'status',
+        render: (status) => {
+          let color = status === 'Đang chạy' ? 'green' : 'volcano'
+          return (
+            <Tag color={color} >
+                {status.toUpperCase()}
+            </Tag>
+          )
+        }
+      },
+      {
+          title: 'Hoạt động',
+          key: 'action',
+          fixed:'right',
+          width:150,
+          align: 'center' as 'center',
+          render: () => (
+            <>
+              <Button 
+              style={{backgroundColor:'transparent', color:'#6c8cad', border:'none'}}
+              onClick={() => setUpdateOpen(true)}
+              >
+                <FontAwesomeIcon icon={faPencil} />
+              </Button>
+              <Button 
+              style={{backgroundColor:'transparent', color:'#6c8cad', border:'none'}}
+              onClick={() => setViewOpen(true)}
+              >
+                <FontAwesomeIcon icon={faEye} />
+              </Button>
+            </>
+          ) 
+      },
+  ];
+
     const closeAddDrawer = () => {
       setAddOpen(false)
       form.resetFields()
@@ -323,6 +331,11 @@ const DemoTable: React.FC = () => {
   
     const closeUpdateDrawer = () => {
       setUpdateOpen(false)
+      form.resetFields()
+    }
+
+    const closeViewDrawer = () => {
+      setViewOpen(false)
       form.resetFields()
     }
 
@@ -388,13 +401,13 @@ const DemoTable: React.FC = () => {
             footer= {
                 <Row justify={'end'}>
                     <Space>
-                        <Button>Hủy</Button>
+                        <Button onClick={() => setAddOpen(false)}>Hủy</Button>
                         <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
                     </Space>
                 </Row>
             }
         >
-            <Form form={form} name="insertDepartment" onFinish={onFinish}>
+            <Form form={form} name="insertContract" onFinish={onFinish}>
                 <Row gutter={24}>
                     <Col span={12}>
                         <Form.Item
@@ -610,40 +623,34 @@ const DemoTable: React.FC = () => {
             footer= {
                 <Row justify={'end'}>
                     <Space>
-                        <Button>Hủy</Button>
+                        <Button onClick={() => setUpdateOpen(false)}>Hủy</Button>
                         <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
                     </Space>
                 </Row>
             }
         >
-            <Form form={form} name="updateDepartment" onFinish={onFinish}>
+            <Form form={form} name="updateContract" onFinish={onFinish}>
                 <Row gutter={24}>
                     <Col span={12}>
                         <Form.Item
-                        name={'departmentName'}
-                        label={'Tên phòng ban'}
+                        name={'contractName'}
+                        label={'Tên hợp đồng'}
                         rules={[
                             {
                             required: true,
-                            message: 'Vui lòng nhập tên phòng ban!',
+                            message: 'Vui lòng nhập Tên hợp đồng!',
                             },
                         ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Tên phòng ban" />
+                            <Input placeholder="Vui lòng nhập Tên hợp đồng" />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'timekeepingTimes'}
-                        label={'Số lần chấm công'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng nhập số lần chấm công!',
-                            },
-                        ]}
+                        name={'employeeId'}
+                        label={'Mã nhân viên'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
@@ -652,8 +659,14 @@ const DemoTable: React.FC = () => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'boss'}
-                        label={'Người quản lý'}
+                        name={'employee'}
+                        label={'Nhân viên'}
+                        rules={[
+                          {
+                          required: true,
+                          message: 'Vui lòng nhập Nhân viên!',
+                          },
+                        ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
@@ -668,8 +681,8 @@ const DemoTable: React.FC = () => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'secretary'}
-                        label={'Thư ký'}
+                        name={'department'}
+                        label={'Phòng ban'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
@@ -684,18 +697,140 @@ const DemoTable: React.FC = () => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'supervisorDepartment'}
-                        label={'Phòng ban cấp trên'}
+                        name={'position'}
+                        label={'Chức vụ'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
+                          <Input/>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'signDate'}
+                        label={'Ngày ký'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                          <DatePicker placeholder='Vui lòng nhập Ngày ký' format={dateFormatList} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'startDate'}
+                        label={'Ngày bắt đầu'}
+                        rules={[
+                          {
+                          required: true,
+                          message: 'Vui lòng nhập Ngày bắt đầu!',
+                          },
+                        ]}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                          <DatePicker placeholder='Vui lòng nhập Ngày bắt đầu' format={dateFormatList} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        {
+                        value ? 
+                          <Form.Item
+                          name={'endDate'}
+                          label={'Ngày kết thúc không xác định'}
+                          labelCol={{ span:24 }}
+                          >
+                          </Form.Item> : 
+                          <Form.Item
+                            name={'endDate'}
+                            label={'Ngày kết thúc'}
+                            rules={[
+                              {
+                              required: true,
+                              message: 'Vui lòng nhập Ngày kết thúc!',
+                              },
+                            ]}
+                            labelCol={{ span:24 }}
+                            wrapperCol={{ span:24 }}
+                            >
+                            <DatePicker placeholder='Vui lòng nhập Ngày kết thúc' format={dateFormatList} />
+                          </Form.Item>
+                        }
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'contractType'}
+                        label={'Loại hợp đồng'}
+                        rules={[
+                          {
+                          required: true,
+                          message: 'Vui lòng chọn!',
+                          },
+                        ]}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                          <Select placeholder = "Vui lòng chọn">
+                            <Option value="1">Bùi Thị Yên</Option>
+                            <Option value="2">Bùi Thị Yên</Option>
+                            <Option value="3">Bùi Thị Yên</Option>
+                            <Option value="4">Bùi Thị Yên</Option>
+                            <Option value="5">Bùi Thị Yên</Option>
+                          </Select>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'salaryRate'}
+                        label={'Tỷ lệ hưởng lương'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                          <Input type={'number'}/>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'workingHours'}
+                        label={'Giờ làm việc'}
+                        rules={[
+                          {
+                          required: true,
+                          message: 'Vui lòng chọn!',
+                          },
+                        ]}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                          <Select placeholder = "Vui lòng chọn">
+                            <Option value="1">Bùi Thị Yên</Option>
+                            <Option value="2">Bùi Thị Yên</Option>
+                            <Option value="3">Bùi Thị Yên</Option>
+                            <Option value="4">Bùi Thị Yên</Option>
+                            <Option value="5">Bùi Thị Yên</Option>
+                          </Select>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'salary'}
+                        label={'Tiền công, lương tháng'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                          <Input type={'number'} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'salary'}
+                        label={'Hợp đồng không xác định thời hạn'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                          <Radio.Group defaultValue={false} onChange={onChange} value={value}>
+                            <Radio value={true}>True</Radio>
+                            <Radio value={false}>False</Radio>
+                          </Radio.Group>
                         </Form.Item>
                     </Col>
                 </Row>
@@ -705,53 +840,59 @@ const DemoTable: React.FC = () => {
             size='large' 
             title="Thông tin chi tiết" 
             placement="right" 
-            onClose={() => setViewOpen(false)} 
+            onClose={closeViewDrawer} 
             open={viewOpen} 
             footer= {
                 <Row justify={'end'}>
                     <Space>
-                        <Button>Hủy</Button>
+                        <Button onClick={() => setViewOpen(false)}>Hủy</Button>
                         <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
                     </Space>
                 </Row>
             }
         >
-            <Form form={form} name="viewDepartment" onFinish={onFinish}>
+            <Form form={form} name="viewContract" onFinish={onFinish}>
                 <Row gutter={24}>
                     <Col span={12}>
                         <Form.Item
-                        name={'departmentName'}
-                        label={'Tên phòng ban'}
+                        name={'contractName'}
+                        label={'Tên hợp đồng'}
                         rules={[
                             {
                             required: true,
-                            message: 'Vui lòng nhập tên phòng ban!',
+                            message: 'Vui lòng nhập Tên hợp đồng!',
                             },
                         ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Tên phòng ban" disabled={true} />
+                            <Input placeholder="Vui lòng nhập Tên hợp đồng" disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'timekeepingTimes'}
-                        label={'Số lần chấm công'}
+                        name={'employeeId'}
+                        label={'Mã nhân viên'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Số lần chấm công" disabled={true} />
+                            <Input placeholder="Số lần chấm công" disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'boss'}
-                        label={'Người quản lý'}
+                        name={'employee'}
+                        label={'Nhân viên'}
+                        rules={[
+                          {
+                          required: true,
+                          message: 'Vui lòng nhập Nhân viên!',
+                          },
+                        ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Select placeholder = "Vui lòng chọn" disabled={true}>
+                            <Select placeholder = "Vui lòng chọn" disabled>
                                 <Option value="1">Bùi Thị Yên</Option>
                                 <Option value="2">Bùi Thị Yên</Option>
                                 <Option value="3">Bùi Thị Yên</Option>
@@ -762,12 +903,12 @@ const DemoTable: React.FC = () => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'secretary'}
-                        label={'Thư ký'}
+                        name={'department'}
+                        label={'Phòng ban'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Select placeholder = "Vui lòng chọn" disabled={true}>
+                            <Select placeholder = "Vui lòng chọn" disabled>
                                 <Option value="1">Bùi Thị Yên</Option>
                                 <Option value="2">Bùi Thị Yên</Option>
                                 <Option value="3">Bùi Thị Yên</Option>
@@ -778,18 +919,140 @@ const DemoTable: React.FC = () => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'supervisorDepartment'}
-                        label={'Phòng ban cấp trên'}
+                        name={'position'}
+                        label={'Chức vụ'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Select placeholder = "Vui lòng chọn" disabled={true}>
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
+                          <Input disabled/>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'signDate'}
+                        label={'Ngày ký'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                          <DatePicker placeholder='Vui lòng nhập Ngày ký' format={dateFormatList} disabled/>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'startDate'}
+                        label={'Ngày bắt đầu'}
+                        rules={[
+                          {
+                          required: true,
+                          message: 'Vui lòng nhập Ngày bắt đầu!',
+                          },
+                        ]}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                          <DatePicker placeholder='Vui lòng nhập Ngày bắt đầu' format={dateFormatList} disabled />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        {
+                        value ? 
+                          <Form.Item
+                          name={'endDate'}
+                          label={'Ngày kết thúc không xác định'}
+                          labelCol={{ span:24 }}
+                          >
+                          </Form.Item> : 
+                          <Form.Item
+                            name={'endDate'}
+                            label={'Ngày kết thúc'}
+                            rules={[
+                              {
+                              required: true,
+                              message: 'Vui lòng nhập Ngày kết thúc!',
+                              },
+                            ]}
+                            labelCol={{ span:24 }}
+                            wrapperCol={{ span:24 }}
+                            >
+                            <DatePicker placeholder='Vui lòng nhập Ngày kết thúc' format={dateFormatList} disabled/>
+                          </Form.Item>
+                        }
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'contractType'}
+                        label={'Loại hợp đồng'}
+                        rules={[
+                          {
+                          required: true,
+                          message: 'Vui lòng chọn!',
+                          },
+                        ]}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                          <Select placeholder = "Vui lòng chọn" disabled>
+                            <Option value="1">Bùi Thị Yên</Option>
+                            <Option value="2">Bùi Thị Yên</Option>
+                            <Option value="3">Bùi Thị Yên</Option>
+                            <Option value="4">Bùi Thị Yên</Option>
+                            <Option value="5">Bùi Thị Yên</Option>
+                          </Select>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'salaryRate'}
+                        label={'Tỷ lệ hưởng lương'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                          <Input type={'number'} disabled/>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'workingHours'}
+                        label={'Giờ làm việc'}
+                        rules={[
+                          {
+                          required: true,
+                          message: 'Vui lòng chọn!',
+                          },
+                        ]}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                          <Select placeholder = "Vui lòng chọn" disabled>
+                            <Option value="1">Bùi Thị Yên</Option>
+                            <Option value="2">Bùi Thị Yên</Option>
+                            <Option value="3">Bùi Thị Yên</Option>
+                            <Option value="4">Bùi Thị Yên</Option>
+                            <Option value="5">Bùi Thị Yên</Option>
+                          </Select>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'salary'}
+                        label={'Tiền công, lương tháng'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                          <Input type={'number'} disabled/>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'salary'}
+                        label={'Hợp đồng không xác định thời hạn'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                          <Radio.Group defaultValue={false} onChange={onChange} value={value} disabled>
+                            <Radio value={true}>True</Radio>
+                            <Radio value={false}>False</Radio>
+                          </Radio.Group>
                         </Form.Item>
                     </Col>
                 </Row>
