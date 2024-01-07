@@ -29,18 +29,50 @@ const CompensatoryLeaveForm = () => {
             <Row gutter={24}>
                 <Col span={8}>
                     <Form.Item
-                        label="Ngày chấm công"
+                        label="Năm"
                         labelCol={{style: {width: 120, textAlign:"left"}}}
                     >
-                        <RangePicker/>
+                        <DatePicker picker='year'/>
                     </Form.Item>
                 </Col>
                 <Col span={8}>
                     <Form.Item
-                        label="Tên nhân viên"
+                        label="Loại hợp đồng"
                         labelCol={{style: {width: 120, textAlign:"left"}}}
                     >
-                        <Input placeholder="Tên nhân viên" style={{borderRadius:"0px"}} />
+                        <Select
+                            placeholder="Vui lòng chọn"
+                        >
+                            <Option value="1">Bùi Thị Yên</Option>
+                            <Option value="2">Bùi Thị Yên</Option>
+                            <Option value="3">Bùi Thị Yên</Option>
+                            <Option value="4">Bùi Thị Yên</Option>
+                        </Select>
+                    </Form.Item>
+                </Col>
+                <Col span={8}>
+                    <Form.Item
+                        label="Ngày tính"
+                        labelCol={{style: {width: 120, textAlign:"left"}}}
+                    >
+                        <DatePicker />
+                    </Form.Item>
+                </Col>
+            </Row>
+            <Row gutter={24}>
+                <Col span={8}>
+                    <Form.Item
+                        label="Nhân viên"
+                        labelCol={{style: {width: 120, textAlign:"left"}}}
+                    >
+                        <Select
+                            placeholder="Vui lòng chọn"
+                        >
+                            <Option value="1">Bùi Thị Yên</Option>
+                            <Option value="2">Bùi Thị Yên</Option>
+                            <Option value="3">Bùi Thị Yên</Option>
+                            <Option value="4">Bùi Thị Yên</Option>
+                        </Select>
                     </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -51,8 +83,6 @@ const CompensatoryLeaveForm = () => {
                         <Input placeholder="Mã nhân viên" style={{borderRadius:"0px"}} />
                     </Form.Item>
                 </Col>
-            </Row>
-            <Row gutter={24}>
                 <Col span={8}>
                     <Form.Item
                         label="Phòng ban"
@@ -70,10 +100,10 @@ const CompensatoryLeaveForm = () => {
                 </Col>
                 <Col span={8}>
                     <Form.Item
-                        label="Mã vân tay"
+                        label="Chức vụ"
                         labelCol={{style: {width: 120, textAlign:"left"}}}
                     >
-                        <Input placeholder="Vui lòng nhập Mã vân tay" style={{borderRadius:"0px"}} />
+                        <Input placeholder="Chức vụ" style={{borderRadius:"0px"}} />
                     </Form.Item>
                 </Col>
             </Row>

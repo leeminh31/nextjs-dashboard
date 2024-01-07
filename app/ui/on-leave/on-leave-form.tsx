@@ -29,30 +29,27 @@ const OnLeaveForm = () => {
             <Row gutter={24}>
                 <Col span={8}>
                     <Form.Item
-                        label="Ngày chấm công"
+                        label="Năm"
                         labelCol={{style: {width: 120, textAlign:"left"}}}
                     >
-                        <RangePicker/>
+                        <DatePicker picker='year'/>
                     </Form.Item>
                 </Col>
                 <Col span={8}>
                     <Form.Item
-                        label="Tên nhân viên"
+                        label="Nhân viên"
                         labelCol={{style: {width: 120, textAlign:"left"}}}
                     >
-                        <Input placeholder="Tên nhân viên" style={{borderRadius:"0px"}} />
+                        <Select
+                            placeholder="Vui lòng chọn"
+                        >
+                            <Option value="1">Bùi Thị Yên</Option>
+                            <Option value="2">Bùi Thị Yên</Option>
+                            <Option value="3">Bùi Thị Yên</Option>
+                            <Option value="4">Bùi Thị Yên</Option>
+                        </Select>
                     </Form.Item>
                 </Col>
-                <Col span={8}>
-                    <Form.Item
-                        label="Mã nhân viên"
-                        labelCol={{style: {width: 120, textAlign:"left"}}}
-                    >
-                        <Input placeholder="Mã nhân viên" style={{borderRadius:"0px"}} />
-                    </Form.Item>
-                </Col>
-            </Row>
-            <Row gutter={24}>
                 <Col span={8}>
                     <Form.Item
                         label="Phòng ban"
@@ -70,10 +67,26 @@ const OnLeaveForm = () => {
                 </Col>
                 <Col span={8}>
                     <Form.Item
-                        label="Mã vân tay"
+                        label="Mã nhân viên"
                         labelCol={{style: {width: 120, textAlign:"left"}}}
                     >
-                        <Input placeholder="Vui lòng nhập Mã vân tay" style={{borderRadius:"0px"}} />
+                        <Input placeholder="Mã nhân viên" style={{borderRadius:"0px"}} />
+                    </Form.Item>
+                </Col>
+                <Col span={8}>
+                    <Form.Item
+                        label="Chức vụ"
+                        labelCol={{style: {width: 120, textAlign:"left"}}}
+                    >
+                        <Input placeholder="Vui lòng nhập Chức vụ" style={{borderRadius:"0px"}} />
+                    </Form.Item>
+                </Col>
+                <Col span={8}>
+                    <Form.Item
+                        label="Ngày tính phép"
+                        labelCol={{style: {width: 120, textAlign:"left"}}}
+                    >
+                        <DatePicker />
                     </Form.Item>
                 </Col>
             </Row>

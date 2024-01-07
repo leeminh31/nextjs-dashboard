@@ -303,7 +303,7 @@ const DemoTable: React.FC = () => {
           title: 'Hoạt động',
           key: 'action',
           fixed:'right',
-          width:150,
+          width:100,
           align: 'center' as 'center',
           render: () => (
             <>
@@ -354,15 +354,13 @@ const DemoTable: React.FC = () => {
             <Flex justify='space-between' align='center' style={{height:"50px", borderBottom:"1px solid #bbbfc1", marginBottom:"10px"}}>
                 <span><b>Danh sách hợp đồng</b></span>
                 <Row>
-                  <Button type="primary"><HistoryOutlined /></Button>
-                  <Button type="primary" style={{marginLeft:'12px'}}><ExportOutlined /></Button>
                   <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setImportOpen(true)}>Import</Button>
                   <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setAddOpen(true)}>Tạo mới</Button>
                   <Button type="primary" style={{marginLeft:'12px'}}>Xóa</Button>
                 </Row>
             </Flex>
             <Table 
-                scroll={{ x: 1500, y:350}} 
+                scroll={{ x: 1500, y:500}} 
                 rowSelection={rowSelection} 
                 columns={columns} 
                 dataSource={data}

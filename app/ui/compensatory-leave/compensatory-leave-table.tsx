@@ -33,126 +33,921 @@ interface DataType {
 
 const columns: ColumnsType<DataType> = [
     {
-        title: '#',
-        dataIndex: 'key',
-        key: 'key',
-        width:50
+      title: '#',
+      dataIndex: 'key',
+      key: 'key',
+      width:50
     },
     {
-        title: 'Mã vân tay',
-        dataIndex: 'fingerprintId',
-        key: 'fingerprintId',
+      title: 'Ngày tính bù',
+      dataIndex: 'compensatoryDays',
+      key: 'compensatoryDays',
+      width:150
     },
     {
-        title: 'Mã nhân viên',
-        dataIndex: 'employeeId',
-        key: 'employeeId',
+      title: 'Mã nhân sự',
+      dataIndex: 'employeeId',
+      key: 'employeeId',
+      width:150
     },
     {
-        title: 'Họ và tên',
-        dataIndex: 'employeeName',
-        key: 'employeeName',
+      title: 'Họ và tên',
+      dataIndex: 'employeeName',
+      key: 'employeeName',
+      width:150
     },
     {
-        title: 'Đơn vị/Phòng ban',
-        key: 'department',
-        dataIndex: 'department',
+      title: 'Ngày vào làm',
+      key: 'startWorkingDate',
+      dataIndex: 'startWorkingDate',
+      width:150
     },
     {
-        title: 'Ngày vào làm',
-        key: 'startWorkingDate',
-        dataIndex: 'startWorkingDate',
+      title: 'Cấp bậc',
+      key: 'rank',
+      dataIndex: 'rank',
+      width:100
     },
     {
-        title: 'Ngày chấm công',
-        key: 'timekeepingDate',
-        dataIndex: 'timekeepingDate',
+      title: 'Phòng ban',
+      key: 'department',
+      dataIndex: 'department',
+      width:150
     },
     {
-        title: 'Thứ',
-        key: 'day',
-        dataIndex: 'day',
+      title: 'Chức vụ',
+      key: 'position',
+      dataIndex: 'position',
+      width:100
     },
     {
-        title: 'Công chuẩn',
-        key: 'timekeepingTimes',
-        dataIndex: 'timekeepingTimes',
+      title: 'Ngày nghỉ việc',
+      key: 'endWorkingDate',
+      dataIndex: 'endWorkingDate',
+      width:150
     },
     {
-        title: 'Ca',
-        key: 'shift',
-        dataIndex: 'shift',
+      title: 'Ngày ký HĐLĐ',
+      key: 'signDate',
+      dataIndex: 'signDate',
+      width:150
     },
     {
-      title: 'Chấm công lần 1',
-      key: 'firstTimekeeping',
-      dataIndex: 'firstTimekeeping',
+      title: 'Loại hợp đồng',
+      key: 'contractType',
+      dataIndex: 'contractType',
     },
     {
-      title: 'Chấm công lần 2',
-      key: 'secondTimekeeping',
-      dataIndex: 'secondTimekeeping',
+      title: 'Tháng 1',
+      key: 'january',
+      dataIndex: 'january',
+      width:750,
+      children: [
+        {
+          title: 'Phát sinh tăng',
+          dataIndex: 'havingIncreased',
+          key: 'havingIncreased',
+          width:250,
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Sử dụng',
+          dataIndex: 'used',
+          key: 'used',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Tăng ca',
+          dataIndex: 'overtime',
+          key: 'overtime',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+      ],
     },
     {
-      title: 'Chấm công lần 3',
-      key: 'thirdTimekeeping',
-      dataIndex: 'thirdTimekeeping',
+      title: 'Tháng 2',
+      key: 'february',
+      dataIndex: 'february',
+      children: [
+        {
+          title: 'Phát sinh tăng',
+          dataIndex: 'havingIncreased',
+          key: 'havingIncreased',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Sử dụng',
+          dataIndex: 'used',
+          key: 'used',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Tăng ca',
+          dataIndex: 'overtime',
+          key: 'overtime',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+      ],
     },
     {
-      title: 'Chấm công lần 4',
-      key: 'fourthTimekeeping',
-      dataIndex: 'fourthTimekeeping',
+      title: 'Tháng 3',
+      key: 'march',
+      dataIndex: 'march',
+      children: [
+        {
+          title: 'Phát sinh tăng',
+          dataIndex: 'havingIncreased',
+          key: 'havingIncreased',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Sử dụng',
+          dataIndex: 'used',
+          key: 'used',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Tăng ca',
+          dataIndex: 'overtime',
+          key: 'overtime',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+      ],
     },
     {
-      title: 'Chấm công lần 5',
-      key: 'fifthTimekeeping',
-      dataIndex: 'fifthTimekeeping',
+      title: 'Tháng 4',
+      key: 'april',
+      dataIndex: 'april',
+      children: [
+        {
+          title: 'Phát sinh tăng',
+          dataIndex: 'havingIncreased',
+          key: 'havingIncreased',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Sử dụng',
+          dataIndex: 'used',
+          key: 'used',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Tăng ca',
+          dataIndex: 'overtime',
+          key: 'overtime',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+      ],
     },
     {
-      title: 'Chấm công lần cuối',
-      key: 'lastTimekeeping',
-      dataIndex: 'lastTimekeeping',
+      title: 'Tháng 5',
+      key: 'may',
+      dataIndex: 'may',
+      children: [
+        {
+          title: 'Phát sinh tăng',
+          dataIndex: 'havingIncreased',
+          key: 'havingIncreased',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Sử dụng',
+          dataIndex: 'used',
+          key: 'used',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Tăng ca',
+          dataIndex: 'overtime',
+          key: 'overtime',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+      ],
     },
     {
-      title: 'Loại giải trình',
-      key: 'typeOfExplanation',
-      dataIndex: 'typeOfExplanation',
+      title: 'Tháng 6',
+      key: 'june',
+      dataIndex: 'june',
+      children: [
+        {
+          title: 'Phát sinh tăng',
+          dataIndex: 'havingIncreased',
+          key: 'havingIncreased',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Sử dụng',
+          dataIndex: 'used',
+          key: 'used',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Tăng ca',
+          dataIndex: 'overtime',
+          key: 'overtime',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+      ],
     },
     {
-      title: 'Loại đơn',
-      key: 'typeOfApplication',
-      dataIndex: 'typeOfApplication',
+      title: 'Tháng 7',
+      key: 'july',
+      dataIndex: 'july',
+      children: [
+        {
+          title: 'Phát sinh tăng',
+          dataIndex: 'havingIncreased',
+          key: 'havingIncreased',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Sử dụng',
+          dataIndex: 'used',
+          key: 'used',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Tăng ca',
+          dataIndex: 'overtime',
+          key: 'overtime',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+      ],
     },
     {
-      title: 'Thời gian đơn',
-      key: 'createdTime',
-      dataIndex: 'createdTime',
+      title: 'Tháng 8',
+      key: 'august',
+      dataIndex: 'august',
+      children: [
+        {
+          title: 'Phát sinh tăng',
+          dataIndex: 'havingIncreased',
+          key: 'havingIncreased',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Sử dụng',
+          dataIndex: 'used',
+          key: 'used',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Tăng ca',
+          dataIndex: 'overtime',
+          key: 'overtime',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+      ],
     },
     {
-      title: 'Đi trễ',
-      key: 'late',
-      dataIndex: 'late',
+      title: 'Tháng 9',
+      key: 'september',
+      dataIndex: 'september',
+      children: [
+        {
+          title: 'Phát sinh tăng',
+          dataIndex: 'havingIncreased',
+          key: 'havingIncreased',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Sử dụng',
+          dataIndex: 'used',
+          key: 'used',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Tăng ca',
+          dataIndex: 'overtime',
+          key: 'overtime',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+      ],
     },
     {
-      title: 'Về sớm',
-      key: 'early',
-      dataIndex: 'early',
+      title: 'Tháng 10',
+      key: 'october',
+      dataIndex: 'october',
+      children: [
+        {
+          title: 'Phát sinh tăng',
+          dataIndex: 'havingIncreased',
+          key: 'havingIncreased',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Sử dụng',
+          dataIndex: 'used',
+          key: 'used',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Tăng ca',
+          dataIndex: 'overtime',
+          key: 'overtime',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+      ],
     },
     {
-      title: 'Thời gian nghỉ lễ',
-      key: 'dayOff',
-      dataIndex: 'dayOff',
+      title: 'Tháng 11',
+      key: 'november',
+      dataIndex: 'november',
+      children: [
+        {
+          title: 'Phát sinh tăng',
+          dataIndex: 'havingIncreased',
+          key: 'havingIncreased',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Sử dụng',
+          dataIndex: 'used',
+          key: 'used',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Tăng ca',
+          dataIndex: 'overtime',
+          key: 'overtime',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+      ],
     },
     {
-      title: 'Tính thêm giờ',
-      key: 'addHours',
-      dataIndex: 'addHours',
+      title: 'Tháng 12',
+      key: 'december',
+      dataIndex: 'december',
+      children: [
+        {
+          title: 'Phát sinh tăng',
+          dataIndex: 'havingIncreased',
+          key: 'havingIncreased',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Sử dụng',
+          dataIndex: 'used',
+          key: 'used',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+        {
+          title: 'Tăng ca',
+          dataIndex: 'overtime',
+          key: 'overtime',
+          children: [
+            {
+              title: 'Thử việc',
+              dataIndex: 'probation',
+              key: 'probation',
+              width:100,
+            },
+            {
+              title: 'Chính thức',
+              dataIndex: 'official',
+              key: 'official',
+              width:150,
+            },
+          ],
+        },
+      ],
     },
     {
-      title: 'Thời gian làm việc thực tế',
-      key: 'realWorkingHours',
-      dataIndex: 'realWorkingHours',
+      title: 'Tổng tăng (phút)',
+      dataIndex: 'totalIncrementbyMinutes',
+      key: 'totalIncrementbyMinutes',
+      children: [
+        {
+          title: 'Thử việc',
+          dataIndex: 'probation',
+          key: 'probation',
+          width:100,
+        },
+        {
+          title: 'Chính thức',
+          dataIndex: 'official',
+          key: 'official',
+          width:150,
+        },
+        {
+          title: 'TV-OVT',
+          dataIndex: 'tv-ovt',
+          key: 'tv-ovt',
+          width:100,
+        },
+        {
+          title: 'CT-OVT',
+          dataIndex: 'ct-ovt',
+          key: 'ct-ovt',
+          width:100,
+        },
+      ],
     },
+    {
+      title: 'Tổng dùng (phút)',
+      dataIndex: 'totalUsingByMinutes',
+      key: 'totalUsingByMinutes',
+      children: [
+        {
+          title: 'Thử việc',
+          dataIndex: 'probation',
+          key: 'probation',
+          width:100,
+        },
+        {
+          title: 'Chính thức',
+          dataIndex: 'official',
+          key: 'official',
+          width:150,
+        },
+      ],
+    },
+    {
+      title: 'Còn lại (Ngày)',
+      dataIndex: 'leftByDays',
+      key: 'leftByDays',
+      children: [
+        {
+          title: 'Thử việc',
+          dataIndex: 'probation',
+          key: 'probation',
+          width:100,
+        },
+        {
+          title: 'Chính thức',
+          dataIndex: 'official',
+          key: 'official',
+          width:150,
+        },
+        {
+          title: 'Còn lại',
+          dataIndex: 'left',
+          key: 'left',
+          width:100,
+        },
+      ],
+    },
+    {
+      title: 'Ghi chú',
+      dataIndex: 'description',
+      key: 'description',
+      width:100,
+    }
 ];
 
 const data: DataType[] = [
@@ -374,25 +1169,22 @@ const CompensatoryLeaveTable: React.FC = () => {
       <>  
         <div style={{paddingLeft:"24px",paddingRight:"24px", backgroundColor:colorBgContainer, marginTop:"20px"}}>
             <Flex justify='space-between' align='center' style={{height:"50px", borderBottom:"1px solid #bbbfc1", marginBottom:"10px"}}>
-                <span><b>Danh sách hợp đồng</b></span>
+                <span><b>Quản lý bù</b></span>
                 <Row>
-                  <Button type="primary"><HistoryOutlined /></Button>
-                  <Button type="primary" style={{marginLeft:'12px'}}><ExportOutlined /></Button>
                   <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setImportOpen(true)}>Import</Button>
-                  <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setAddOpen(true)}>Tạo mới</Button>
-                  <Button type="primary" style={{marginLeft:'12px'}}>Xóa</Button>
                 </Row>
             </Flex>
             <Table 
-                scroll={{ x: 3000, y:350}} 
+                size='small'
+                scroll={{ x: 10000, y:500}} 
                 rowSelection={rowSelection} 
                 columns={columns} 
                 dataSource={data}
-                pagination={{ showQuickJumper:true, total:50 ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}}  
+                pagination={{ showQuickJumper:true ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}}  
             />
         </div>
         <Drawer 
-        title="Import hợp đồng và nhân viên" 
+        title="Import phép và bù" 
         placement="right" 
         onClose={() => setImportOpen(false)} 
         open={importOpen}
@@ -413,422 +1205,6 @@ const CompensatoryLeaveTable: React.FC = () => {
                 <p>Template file</p>
                 <Button type='primary' icon={<DownloadOutlined />}>Tải xuống template</Button>
             </Space>
-        </Drawer>
-        <Drawer 
-            size='large' 
-            title="Thêm mới" 
-            placement="right" 
-            onClose={closeAddDrawer} 
-            open={addOpen} 
-            footer= {
-                <Row justify={'end'}>
-                    <Space>
-                        <Button>Hủy</Button>
-                        <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-                    </Space>
-                </Row>
-            }
-        >
-            <Form form={form} name="insertDepartment" onFinish={onFinish}>
-                <Row gutter={24}>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'contractName'}
-                        label={'Tên hợp đồng'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng nhập Tên hợp đồng!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Vui lòng nhập Tên hợp đồng" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'employeeId'}
-                        label={'Mã nhân viên'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Số lần chấm công" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'employee'}
-                        label={'Nhân viên'}
-                        rules={[
-                          {
-                          required: true,
-                          message: 'Vui lòng nhập Nhân viên!',
-                          },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'department'}
-                        label={'Phòng ban'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'position'}
-                        label={'Chức vụ'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <Input/>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'signDate'}
-                        label={'Ngày ký'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <DatePicker placeholder='Vui lòng nhập Ngày ký' format={dateFormatList} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'startDate'}
-                        label={'Ngày bắt đầu'}
-                        rules={[
-                          {
-                          required: true,
-                          message: 'Vui lòng nhập Ngày bắt đầu!',
-                          },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <DatePicker placeholder='Vui lòng nhập Ngày bắt đầu' format={dateFormatList} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        {
-                        value ? 
-                          <Form.Item
-                          name={'endDate'}
-                          label={'Ngày kết thúc không xác định'}
-                          labelCol={{ span:24 }}
-                          >
-                          </Form.Item> : 
-                          <Form.Item
-                            name={'endDate'}
-                            label={'Ngày kết thúc'}
-                            rules={[
-                              {
-                              required: true,
-                              message: 'Vui lòng nhập Ngày kết thúc!',
-                              },
-                            ]}
-                            labelCol={{ span:24 }}
-                            wrapperCol={{ span:24 }}
-                            >
-                            <DatePicker placeholder='Vui lòng nhập Ngày kết thúc' format={dateFormatList} />
-                          </Form.Item>
-                        }
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'contractType'}
-                        label={'Loại hợp đồng'}
-                        rules={[
-                          {
-                          required: true,
-                          message: 'Vui lòng chọn!',
-                          },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <Select placeholder = "Vui lòng chọn">
-                            <Option value="1">Bùi Thị Yên</Option>
-                            <Option value="2">Bùi Thị Yên</Option>
-                            <Option value="3">Bùi Thị Yên</Option>
-                            <Option value="4">Bùi Thị Yên</Option>
-                            <Option value="5">Bùi Thị Yên</Option>
-                          </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'salaryRate'}
-                        label={'Tỷ lệ hưởng lương'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <Input type={'number'}/>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'workingHours'}
-                        label={'Giờ làm việc'}
-                        rules={[
-                          {
-                          required: true,
-                          message: 'Vui lòng chọn!',
-                          },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <Select placeholder = "Vui lòng chọn">
-                            <Option value="1">Bùi Thị Yên</Option>
-                            <Option value="2">Bùi Thị Yên</Option>
-                            <Option value="3">Bùi Thị Yên</Option>
-                            <Option value="4">Bùi Thị Yên</Option>
-                            <Option value="5">Bùi Thị Yên</Option>
-                          </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'salary'}
-                        label={'Tiền công, lương tháng'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <Input type={'number'} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'salary'}
-                        label={'Hợp đồng không xác định thời hạn'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <Radio.Group defaultValue={false} onChange={onChange} value={value}>
-                            <Radio value={true}>True</Radio>
-                            <Radio value={false}>False</Radio>
-                          </Radio.Group>
-                        </Form.Item>
-                    </Col>
-                </Row>
-            </Form>
-        </Drawer>
-        <Drawer 
-            size='large' 
-            title="Thông tin chi tiết" 
-            placement="right" 
-            onClose={closeUpdateDrawer} 
-            open={updateOpen} 
-            footer= {
-                <Row justify={'end'}>
-                    <Space>
-                        <Button>Hủy</Button>
-                        <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-                    </Space>
-                </Row>
-            }
-        >
-            <Form form={form} name="updateDepartment" onFinish={onFinish}>
-                <Row gutter={24}>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'departmentName'}
-                        label={'Tên phòng ban'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng nhập tên phòng ban!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Tên phòng ban" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'timekeepingTimes'}
-                        label={'Số lần chấm công'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng nhập số lần chấm công!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Số lần chấm công" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'boss'}
-                        label={'Người quản lý'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'secretary'}
-                        label={'Thư ký'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'supervisorDepartment'}
-                        label={'Phòng ban cấp trên'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                </Row>
-            </Form>
-        </Drawer>
-        <Drawer 
-            size='large' 
-            title="Thông tin chi tiết" 
-            placement="right" 
-            onClose={() => setViewOpen(false)} 
-            open={viewOpen} 
-            footer= {
-                <Row justify={'end'}>
-                    <Space>
-                        <Button>Hủy</Button>
-                        <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-                    </Space>
-                </Row>
-            }
-        >
-            <Form form={form} name="viewDepartment" onFinish={onFinish}>
-                <Row gutter={24}>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'departmentName'}
-                        label={'Tên phòng ban'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng nhập tên phòng ban!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Tên phòng ban" disabled={true} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'timekeepingTimes'}
-                        label={'Số lần chấm công'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Số lần chấm công" disabled={true} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'boss'}
-                        label={'Người quản lý'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn" disabled={true}>
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'secretary'}
-                        label={'Thư ký'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn" disabled={true}>
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'supervisorDepartment'}
-                        label={'Phòng ban cấp trên'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn" disabled={true}>
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                </Row>
-            </Form>
         </Drawer>
       </>
     )

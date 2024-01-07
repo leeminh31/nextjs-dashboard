@@ -193,7 +193,26 @@ input[type='number']::-webkit-outer-spin-button {
   width: 100%;
 }
 
+.ant-table-cell >.ant-btn {
+  padding: 0 !important;
+}
 
+.ant-card {
+  height: 100%;
+}
+
+.ant-card-bordered {
+  border: 2px solid #BC846F !important;
+}
+
+.ant-card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 20px;
+  height: 100%;
+}
 
 .ant-table-body::-webkit-scrollbar-thumb {
   background-color: #8b5f41 !important;

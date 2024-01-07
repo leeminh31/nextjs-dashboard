@@ -24,6 +24,8 @@ import ManageRequests from '@/app/ui/manage-requests/manage-requests';
 import ManageExplanations from '@/app/ui/manage-explanations/manage-explanations';
 import OnLeave from '@/app/ui/on-leave/on-leave';
 import CompensatoryLeave from '@/app/ui/compensatory-leave/compensatory-leave';
+import ExportReport from '@/app/ui/export-report/export-report';
+import StaffShifts from '@/app/ui/staff-shifts/staff-shifts';
 
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -104,6 +106,10 @@ const App: React.FC = () => {
         return (<OnLeave/>)
       case 'compensatory-leave':
         return (<CompensatoryLeave/>)
+      case 'export-report':
+        return (<ExportReport/>)
+      case 'staff-shifts':
+        return (<StaffShifts/>)
       default:
         break;
     }
