@@ -1176,7 +1176,7 @@ const CompensatoryLeaveTable: React.FC = () => {
             </Flex>
             <Table 
                 size='small'
-                scroll={{ x: 10000, y:500}} 
+                scroll={{ x: 11700, y:500}} 
                 rowSelection={rowSelection} 
                 columns={columns} 
                 dataSource={data}

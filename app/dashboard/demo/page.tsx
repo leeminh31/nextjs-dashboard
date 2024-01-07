@@ -26,6 +26,7 @@ import OnLeave from '@/app/ui/on-leave/on-leave';
 import CompensatoryLeave from '@/app/ui/compensatory-leave/compensatory-leave';
 import ExportReport from '@/app/ui/export-report/export-report';
 import StaffShifts from '@/app/ui/staff-shifts/staff-shifts';
+import MonthlyReport from '@/app/ui/monthly-report/monthly-report';
 
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -110,6 +111,8 @@ const App: React.FC = () => {
         return (<ExportReport/>)
       case 'staff-shifts':
         return (<StaffShifts/>)
+      case 'monthly-report':
+        return (<MonthlyReport/>)
       default:
         break;
     }
