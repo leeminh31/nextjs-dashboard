@@ -5,7 +5,7 @@ import { DownOutlined } from '@ant-design/icons';
 import { Button, Col, DatePicker, Form, Input, Row, Select, Space, theme } from 'antd';
 const { Option } = Select;
 
-const MonthlyReportForm = () => {
+const MonthlyReportForm = ({onChangeDate}:any) => {
     const { token } = theme.useToken();
     const [form] = Form.useForm();
     const [expand, setExpand] = useState(false);
@@ -24,7 +24,7 @@ const MonthlyReportForm = () => {
                         label="Khoảng thời gian"
                         labelCol={{span:24}}
                     >
-                        <DatePicker picker='month' />
+                        <DatePicker format={'MM/YYYY'} picker='month' onChange={(e) =>onChangeDate(e)}/>
                     </Form.Item>
                 </Col>
                 <Col span={7}>
