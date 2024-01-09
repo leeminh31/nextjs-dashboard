@@ -28,8 +28,7 @@ const ShiftListForm = () => {
             <Col span={7}>
                 <Form.Item
                     name={'shiftName'}
-                    label={'Tên ca'}
-                    labelCol={{style: {width: 120, textAlign:"left"}}}
+                    label={'Tên: '}
                 >
                     <Input placeholder="Vui lòng nhập Tên ca" />
                 </Form.Item>

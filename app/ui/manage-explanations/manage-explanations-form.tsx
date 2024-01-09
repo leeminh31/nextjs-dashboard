@@ -101,7 +101,7 @@ const ManageExplanationsForm = () => {
                 </Col>
                 <Col span={8}>
                     <Form.Item
-                        label="Người duyệt:"
+                        label="Ngày vi phạm:"
                         labelCol={{style: {width: 120, textAlign:"left"}}}
                     >
                         <DatePicker/>

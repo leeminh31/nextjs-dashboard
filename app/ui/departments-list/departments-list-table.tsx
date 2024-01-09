@@ -140,8 +140,6 @@ const DepartmentsListTable: React.FC = () => {
             <Row justify={'space-between'} style={{marginBottom:'24px'}}>
                 <span style={{textAlign:'center'}}><b>Quản lý phòng ban</b></span>
                 <Col>
-                    <Button type="primary"><HistoryOutlined /></Button>
-                    <Button type="primary" style={{marginLeft:'12px'}}><ExportOutlined /></Button>
                     <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setImportOpen(true)}>Import</Button>
                     <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setAddOpen(true)}>Thêm mới</Button>
                     <Button type="primary" style={{marginLeft:'12px'}}>Xóa</Button>

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, TimePicker, Radio } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faClockRotateLeft, faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
+import { faClockRotateLeft, faArrowUpRightFromSquare, faL } from '@fortawesome/free-solid-svg-icons'
 import {
     EditTwoTone,
     EyeTwoTone,
@@ -35,6 +35,14 @@ const ShiftListTable: React.FC = () => {
   const [viewOpen, setViewOpen] = useState(false);
   const [value, setValue] = useState(false);
   const [form] = Form.useForm();
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [breakfast, setBreakfast] =  useState(false);
+  const [lunch, setLunch] = useState(false);
+  const [dinner, setDinner] = useState(false);
+  const [nightMeal, setNightMeal] = useState(false);
+  const [shiftOff, setShiftOff] = useState(false);
+  const [splitShift, setSplitShift] = useState(false);
+  const [nightShift, setNightShift] = useState(false);
 
   const columns: ColumnsType<DataType> = [
     {
@@ -126,6 +134,15 @@ const ShiftListTable: React.FC = () => {
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
+  const handleOnChangeShiftRadio = (groupIndex:number, e:any) => {
+    if(e.target.value) {
+        setIsDisabled(true)
+    } else {
+        setIsDisabled(false)
+    }
+    groupIndex === 1 ? setShiftOff(e.target.value) : groupIndex === 2 ? setNightShift(e.target.value) : setSplitShift(e.target.value) 
+  }
+
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
@@ -158,7 +175,7 @@ const ShiftListTable: React.FC = () => {
     <>
         <div style={{backgroundColor:'#fff', padding:'24px'}}>
             <Row justify={'space-between'} style={{marginBottom:'24px'}}>
-                <span style={{textAlign:'center'}}><b>Quản lý phòng ban</b></span>
+                <span style={{textAlign:'center'}}><b>Danh sách ca</b></span>
                 <Col>
                     <Button type="primary" style={{marginLeft:'12px'}}><ExportOutlined /></Button>
                     <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setAddOpen(true)}>Thêm mới</Button>
@@ -174,28 +191,6 @@ const ShiftListTable: React.FC = () => {
             />
         </div>
         <Drawer 
-        title="Import phòng ban" 
-        placement="right" 
-        onClose={() => setImportOpen(false)} 
-        open={importOpen} 
-        footer= {
-          <Row justify={'end'}>
-              <Space>
-                  <Button onClick={() => setImportOpen(false)}>Hủy</Button>
-                  <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-              </Space>
-          </Row>
-        }>
-            <Upload>
-                <p>File upload</p>
-                <Button icon={<UploadOutlined />}>Click to Upload</Button>
-            </Upload>
-            <Space direction='vertical'>
-                <p>Template file</p>
-                <Button type='primary' icon={<DownloadOutlined />}>Tải xuống template</Button>
-            </Space>
-        </Drawer>
-        <Drawer 
             size='large' 
             title="Thêm mới" 
             placement="right" 
@@ -210,7 +205,7 @@ const ShiftListTable: React.FC = () => {
                 </Row>
             }
         >
-            <Form form={form} name="insertDepartment" onFinish={onFinish}>
+            <Form form={form} name="insertShiftList" onFinish={onFinish}>
                 <Row gutter={24}>
                     <Col span={12}>
                         <Form.Item
@@ -310,7 +305,7 @@ const ShiftListTable: React.FC = () => {
                     </Col>
                     <Col span={8}>
                         <Form.Item
-                        name={'shiffOff'}
+                        name={'shiftOff'}
                         label={'Ca nghỉ'}
                         rules={[
                             {
@@ -322,28 +317,7 @@ const ShiftListTable: React.FC = () => {
                         wrapperCol={{ span:24 }}
                         >
                             <Row>
-                                <Radio.Group>
-                                    <Radio>Có</Radio>
-                                    <Radio>Không</Radio>
-                                </Radio.Group>
-                            </Row>
-                        </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                        <Form.Item
-                        name={'splitShiff'}
-                        label={'Ca gãy'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng nhập Tên ca!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Row>
-                                <Radio.Group onChange={onChange} value={value}>
+                                <Radio.Group onChange={(e) => handleOnChangeShiftRadio(1,e)} value={shiftOff} disabled={shiftOff === false && isDisabled === true}>
                                     <Radio value={true}>Có</Radio>
                                     <Radio value={false}>Không</Radio>
                                 </Radio.Group>
@@ -352,7 +326,28 @@ const ShiftListTable: React.FC = () => {
                     </Col>
                     <Col span={8}>
                         <Form.Item
-                        name={'shiffOff'}
+                        name={'nightShift'}
+                        label={'Ca đêm'}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng nhập Tên ca!',
+                            },
+                        ]}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                            <Row>
+                                <Radio.Group onChange={(e) => handleOnChangeShiftRadio(2,e)} value={nightShift} disabled={nightShift === false && isDisabled === true}>
+                                    <Radio value={true}>Có</Radio>
+                                    <Radio value={false}>Không</Radio>
+                                </Radio.Group>
+                            </Row>
+                        </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                        <Form.Item
+                        name={'splitShift'}
                         label={'Ca gãy'}
                         rules={[
                             {
@@ -364,9 +359,9 @@ const ShiftListTable: React.FC = () => {
                         wrapperCol={{ span:24 }}
                         >
                             <Row>
-                                <Radio.Group>
-                                    <Radio>Có</Radio>
-                                    <Radio>Không</Radio>
+                                <Radio.Group onChange={(e) => handleOnChangeShiftRadio(3,e)} value={splitShift} disabled={splitShift === false && isDisabled === true}>
+                                    <Radio value={true}>Có</Radio>
+                                    <Radio value={false}>Không</Radio>
                                 </Radio.Group>
                             </Row>
                         </Form.Item>
@@ -385,9 +380,9 @@ const ShiftListTable: React.FC = () => {
                         wrapperCol={{ span:24 }}
                         >
                             <Row>
-                                <Radio.Group>
-                                    <Radio>Có</Radio>
-                                    <Radio>Không</Radio>
+                                <Radio.Group onChange={(e) => setBreakfast(e.target.value)} value={breakfast}>
+                                    <Radio value={true}>Có</Radio>
+                                    <Radio value={false}>Không</Radio>
                                 </Radio.Group>
                             </Row>
                         </Form.Item>
@@ -406,7 +401,7 @@ const ShiftListTable: React.FC = () => {
                         wrapperCol={{ span:24 }}
                         >
                             <Row>
-                                <Radio.Group onChange={onChange} value={value}>
+                                <Radio.Group onChange={(e) => setLunch(e.target.value)} value={lunch}>
                                     <Radio value={true}>Có</Radio>
                                     <Radio value={false}>Không</Radio>
                                 </Radio.Group>
@@ -427,9 +422,9 @@ const ShiftListTable: React.FC = () => {
                         wrapperCol={{ span:24 }}
                         >
                             <Row>
-                                <Radio.Group>
-                                    <Radio>Có</Radio>
-                                    <Radio>Không</Radio>
+                                <Radio.Group onChange={(e) => setDinner(e.target.value)} value={dinner}>
+                                    <Radio value={true}>Có</Radio>
+                                    <Radio value={false}>Không</Radio>
                                 </Radio.Group>
                             </Row>
                         </Form.Item>
@@ -448,9 +443,9 @@ const ShiftListTable: React.FC = () => {
                         wrapperCol={{ span:24 }}
                         >
                             <Row>
-                                <Radio.Group>
-                                    <Radio>Có</Radio>
-                                    <Radio>Không</Radio>
+                                <Radio.Group onChange={(e) => setNightMeal(e.target.value)} value={nightMeal}>
+                                    <Radio value={true}>Có</Radio>
+                                    <Radio value={false}>Không</Radio>
                                 </Radio.Group>
                             </Row>
                         </Form.Item>
@@ -499,7 +494,7 @@ const ShiftListTable: React.FC = () => {
                 </Row>
             }
         >
-            <Form form={form} name="updateDepartment" onFinish={onFinish}>
+            <Form form={form} name="updateShiftList" onFinish={onFinish}>
                 <Row gutter={24}>
                     <Col span={12}>
                         <Form.Item
@@ -537,6 +532,12 @@ const ShiftListTable: React.FC = () => {
                         <Form.Item
                         name={'startWorkingHour'}
                         label={'Thời gian bắt đầu làm'}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng nhập Tên ca!',
+                            },
+                        ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
@@ -547,6 +548,12 @@ const ShiftListTable: React.FC = () => {
                         <Form.Item
                         name={'endWorkingHour'}
                         label={'Thời gian kết thúc làm'}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng nhập Tên ca!',
+                            },
+                        ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
@@ -557,6 +564,12 @@ const ShiftListTable: React.FC = () => {
                         <Form.Item
                         name={'startRelaxHour'}
                         label={'Thời gian bắt đầu nghỉ'}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng nhập Tên ca!',
+                            },
+                        ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
@@ -567,6 +580,12 @@ const ShiftListTable: React.FC = () => {
                         <Form.Item
                         name={'endRelaxHour'}
                         label={'Thời gian kết thúc nghỉ'}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng nhập Tên ca!',
+                            },
+                        ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
@@ -575,7 +594,7 @@ const ShiftListTable: React.FC = () => {
                     </Col>
                     <Col span={8}>
                         <Form.Item
-                        name={'shiffOff'}
+                        name={'shiftOff'}
                         label={'Ca nghỉ'}
                         rules={[
                             {
@@ -587,28 +606,7 @@ const ShiftListTable: React.FC = () => {
                         wrapperCol={{ span:24 }}
                         >
                             <Row>
-                                <Radio.Group>
-                                    <Radio>Có</Radio>
-                                    <Radio>Không</Radio>
-                                </Radio.Group>
-                            </Row>
-                        </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                        <Form.Item
-                        name={'splitShiff'}
-                        label={'Ca gãy'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng nhập Tên ca!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Row>
-                                <Radio.Group onChange={onChange} value={value}>
+                                <Radio.Group onChange={(e) => handleOnChangeShiftRadio(1,e)} value={shiftOff} disabled={shiftOff === false && isDisabled === true}>
                                     <Radio value={true}>Có</Radio>
                                     <Radio value={false}>Không</Radio>
                                 </Radio.Group>
@@ -617,7 +615,28 @@ const ShiftListTable: React.FC = () => {
                     </Col>
                     <Col span={8}>
                         <Form.Item
-                        name={'shiffOff'}
+                        name={'nightShift'}
+                        label={'Ca đêm'}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng nhập Tên ca!',
+                            },
+                        ]}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                            <Row>
+                                <Radio.Group onChange={(e) => handleOnChangeShiftRadio(2,e)} value={nightShift} disabled={nightShift === false && isDisabled === true}>
+                                    <Radio value={true}>Có</Radio>
+                                    <Radio value={false}>Không</Radio>
+                                </Radio.Group>
+                            </Row>
+                        </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                        <Form.Item
+                        name={'splitShift'}
                         label={'Ca gãy'}
                         rules={[
                             {
@@ -629,9 +648,9 @@ const ShiftListTable: React.FC = () => {
                         wrapperCol={{ span:24 }}
                         >
                             <Row>
-                                <Radio.Group>
-                                    <Radio>Có</Radio>
-                                    <Radio>Không</Radio>
+                                <Radio.Group onChange={(e) => handleOnChangeShiftRadio(3,e)} value={splitShift} disabled={splitShift === false && isDisabled === true}>
+                                    <Radio value={true}>Có</Radio>
+                                    <Radio value={false}>Không</Radio>
                                 </Radio.Group>
                             </Row>
                         </Form.Item>
@@ -650,9 +669,9 @@ const ShiftListTable: React.FC = () => {
                         wrapperCol={{ span:24 }}
                         >
                             <Row>
-                                <Radio.Group>
-                                    <Radio>Có</Radio>
-                                    <Radio>Không</Radio>
+                                <Radio.Group onChange={(e) => setBreakfast(e.target.value)} value={breakfast}>
+                                    <Radio value={true}>Có</Radio>
+                                    <Radio value={false}>Không</Radio>
                                 </Radio.Group>
                             </Row>
                         </Form.Item>
@@ -671,7 +690,7 @@ const ShiftListTable: React.FC = () => {
                         wrapperCol={{ span:24 }}
                         >
                             <Row>
-                                <Radio.Group onChange={onChange} value={value}>
+                                <Radio.Group onChange={(e) => setLunch(e.target.value)} value={lunch}>
                                     <Radio value={true}>Có</Radio>
                                     <Radio value={false}>Không</Radio>
                                 </Radio.Group>
@@ -692,9 +711,9 @@ const ShiftListTable: React.FC = () => {
                         wrapperCol={{ span:24 }}
                         >
                             <Row>
-                                <Radio.Group>
-                                    <Radio>Có</Radio>
-                                    <Radio>Không</Radio>
+                                <Radio.Group onChange={(e) => setDinner(e.target.value)} value={dinner}>
+                                    <Radio value={true}>Có</Radio>
+                                    <Radio value={false}>Không</Radio>
                                 </Radio.Group>
                             </Row>
                         </Form.Item>
@@ -713,21 +732,11 @@ const ShiftListTable: React.FC = () => {
                         wrapperCol={{ span:24 }}
                         >
                             <Row>
-                                <Radio.Group>
-                                    <Radio>Có</Radio>
-                                    <Radio>Không</Radio>
+                                <Radio.Group onChange={(e) => setNightMeal(e.target.value)} value={nightMeal}>
+                                    <Radio value={true}>Có</Radio>
+                                    <Radio value={false}>Không</Radio>
                                 </Radio.Group>
                             </Row>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'timekeeping'}
-                        label={'Số lần chấm công'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Vui lòng nhập Số lần chấm công" />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -746,6 +755,16 @@ const ShiftListTable: React.FC = () => {
                             </Select>
                         </Form.Item>
                     </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'timekeeping'}
+                        label={'Số lần chấm công'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                            <Input placeholder="Vui lòng nhập Số lần chấm công" />
+                        </Form.Item>
+                    </Col>
                 </Row>
             </Form>
         </Drawer>
@@ -753,18 +772,18 @@ const ShiftListTable: React.FC = () => {
             size='large' 
             title="Thông tin chi tiết" 
             placement="right" 
-            onClose={closeViewDrawer} 
+            onClose={() => setViewOpen(false)} 
             open={viewOpen} 
             footer= {
                 <Row justify={'end'}>
                     <Space>
-                        <Button onClick={() => setViewOpen(false)}>Hủy</Button>
+                        <Button onClick={() => setViewOpen(false)} >Hủy</Button>
                         <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
                     </Space>
                 </Row>
             }
         >
-            <Form form={form} name="viewDepartment" onFinish={onFinish}>
+            <Form form={form} name="viewShiftList" onFinish={onFinish}>
                 <Row gutter={24}>
                     <Col span={12}>
                         <Form.Item
@@ -779,7 +798,7 @@ const ShiftListTable: React.FC = () => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Vui lòng nhập Tên ca" disabled />
+                            <Input placeholder="Vui lòng nhập Tên ca" disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -802,6 +821,12 @@ const ShiftListTable: React.FC = () => {
                         <Form.Item
                         name={'startWorkingHour'}
                         label={'Thời gian bắt đầu làm'}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng nhập Tên ca!',
+                            },
+                        ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
@@ -812,6 +837,12 @@ const ShiftListTable: React.FC = () => {
                         <Form.Item
                         name={'endWorkingHour'}
                         label={'Thời gian kết thúc làm'}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng nhập Tên ca!',
+                            },
+                        ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
@@ -822,6 +853,12 @@ const ShiftListTable: React.FC = () => {
                         <Form.Item
                         name={'startRelaxHour'}
                         label={'Thời gian bắt đầu nghỉ'}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng nhập Tên ca!',
+                            },
+                        ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
@@ -832,15 +869,21 @@ const ShiftListTable: React.FC = () => {
                         <Form.Item
                         name={'endRelaxHour'}
                         label={'Thời gian kết thúc nghỉ'}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng nhập Tên ca!',
+                            },
+                        ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <TimePicker style={{width:'100%', height:'40px'}} popupStyle={{width:'30%'}} use12Hours format="h:mm a" disabled />
+                            <TimePicker style={{width:'100%', height:'40px'}} popupStyle={{width:'30%'}} use12Hours format="h:mm a" disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={8}>
                         <Form.Item
-                        name={'shiffOff'}
+                        name={'shiftOff'}
                         label={'Ca nghỉ'}
                         rules={[
                             {
@@ -852,28 +895,7 @@ const ShiftListTable: React.FC = () => {
                         wrapperCol={{ span:24 }}
                         >
                             <Row>
-                                <Radio.Group disabled>
-                                    <Radio>Có</Radio>
-                                    <Radio>Không</Radio>
-                                </Radio.Group>
-                            </Row>
-                        </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                        <Form.Item
-                        name={'splitShiff'}
-                        label={'Ca gãy'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng nhập Tên ca!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Row>
-                                <Radio.Group onChange={onChange} value={value} disabled>
+                                <Radio.Group onChange={(e) => handleOnChangeShiftRadio(1,e)} value={shiftOff} disabled >
                                     <Radio value={true}>Có</Radio>
                                     <Radio value={false}>Không</Radio>
                                 </Radio.Group>
@@ -882,7 +904,28 @@ const ShiftListTable: React.FC = () => {
                     </Col>
                     <Col span={8}>
                         <Form.Item
-                        name={'shiffOff'}
+                        name={'nightShift'}
+                        label={'Ca đêm'}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng nhập Tên ca!',
+                            },
+                        ]}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                            <Row>
+                                <Radio.Group onChange={(e) => handleOnChangeShiftRadio(2,e)} value={nightShift} disabled>
+                                    <Radio value={true}>Có</Radio>
+                                    <Radio value={false}>Không</Radio>
+                                </Radio.Group>
+                            </Row>
+                        </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                        <Form.Item
+                        name={'splitShift'}
                         label={'Ca gãy'}
                         rules={[
                             {
@@ -894,9 +937,9 @@ const ShiftListTable: React.FC = () => {
                         wrapperCol={{ span:24 }}
                         >
                             <Row>
-                                <Radio.Group disabled>
-                                    <Radio>Có</Radio>
-                                    <Radio>Không</Radio>
+                                <Radio.Group onChange={(e) => handleOnChangeShiftRadio(3,e)} value={splitShift} disabled>
+                                    <Radio value={true}>Có</Radio>
+                                    <Radio value={false}>Không</Radio>
                                 </Radio.Group>
                             </Row>
                         </Form.Item>
@@ -915,9 +958,9 @@ const ShiftListTable: React.FC = () => {
                         wrapperCol={{ span:24 }}
                         >
                             <Row>
-                                <Radio.Group disabled>
-                                    <Radio>Có</Radio>
-                                    <Radio>Không</Radio>
+                                <Radio.Group onChange={(e) => setBreakfast(e.target.value)} value={breakfast} disabled>
+                                    <Radio value={true}>Có</Radio>
+                                    <Radio value={false}>Không</Radio>
                                 </Radio.Group>
                             </Row>
                         </Form.Item>
@@ -936,7 +979,7 @@ const ShiftListTable: React.FC = () => {
                         wrapperCol={{ span:24 }}
                         >
                             <Row>
-                                <Radio.Group onChange={onChange} value={value} disabled>
+                                <Radio.Group onChange={(e) => setLunch(e.target.value)} value={lunch} disabled>
                                     <Radio value={true}>Có</Radio>
                                     <Radio value={false}>Không</Radio>
                                 </Radio.Group>
@@ -957,9 +1000,9 @@ const ShiftListTable: React.FC = () => {
                         wrapperCol={{ span:24 }}
                         >
                             <Row>
-                                <Radio.Group disabled>
-                                    <Radio>Có</Radio>
-                                    <Radio>Không</Radio>
+                                <Radio.Group onChange={(e) => setDinner(e.target.value)} value={dinner} disabled>
+                                    <Radio value={true}>Có</Radio>
+                                    <Radio value={false}>Không</Radio>
                                 </Radio.Group>
                             </Row>
                         </Form.Item>
@@ -978,21 +1021,11 @@ const ShiftListTable: React.FC = () => {
                         wrapperCol={{ span:24 }}
                         >
                             <Row>
-                                <Radio.Group disabled>
-                                    <Radio>Có</Radio>
-                                    <Radio>Không</Radio>
+                                <Radio.Group onChange={(e) => setNightMeal(e.target.value)} value={nightMeal} disabled>
+                                    <Radio value={true}>Có</Radio>
+                                    <Radio value={false}>Không</Radio>
                                 </Radio.Group>
                             </Row>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'timekeeping'}
-                        label={'Số lần chấm công'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Vui lòng nhập Số lần chấm công" disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -1009,6 +1042,16 @@ const ShiftListTable: React.FC = () => {
                                 <Option value="4">Bùi Thị Yên</Option>
                                 <Option value="5">Bùi Thị Yên</Option>
                             </Select>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                        name={'timekeeping'}
+                        label={'Số lần chấm công'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                            <Input placeholder="Vui lòng nhập Số lần chấm công" disabled/>
                         </Form.Item>
                     </Col>
                 </Row>

@@ -308,10 +308,8 @@ const EmployeeListTable: React.FC = () => {
     <>
         <div style={{backgroundColor:'#fff', padding:'24px'}}>
             <Row justify={'space-between'} style={{marginBottom:'24px'}}>
-                <span style={{textAlign:'center'}}><b>Quản lý phòng ban</b></span>
+                <span style={{textAlign:'center'}}><b>Danh sách nhân viên</b></span>
                 <Col>
-                    <Button type="primary"><HistoryOutlined /></Button>
-                    <Button type="primary" style={{marginLeft:'12px'}}><ExportOutlined /></Button>
                     <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setAddOpen(true)}>Thêm mới</Button>
                     <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setAddOpen(true)}>Tạo tài khoản</Button>
                     <Button type="primary" style={{marginLeft:'12px'}}>Xóa</Button>

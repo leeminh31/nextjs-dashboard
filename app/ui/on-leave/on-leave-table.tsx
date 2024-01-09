@@ -476,7 +476,7 @@ const OnLeaveTable: React.FC = () => {
       <>  
         <div style={{paddingLeft:"24px",paddingRight:"24px", backgroundColor:colorBgContainer, marginTop:"20px"}}>
             <Flex justify='space-between' align='center' style={{height:"50px", borderBottom:"1px solid #bbbfc1", marginBottom:"10px"}}>
-                <span><b>Danh sách hợp đồng</b></span>
+                <span><b>Quản lý phép</b></span>
                 <Row>
                   <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setImportOpen(true)}>Import</Button>
                 </Row>
