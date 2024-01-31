@@ -53,7 +53,7 @@ const DepartmentsListForm = () => {
                 <Form.Item
                     name={'superiorDepartments'}
                     label={'Phòng ban cấp trên'}
-                    labelCol={{style: {width: 120, textAlign:"left"}}}
+                    labelCol={{style: {width: 140, textAlign:"left"}}}
                 >
                     <Select placeholder = "Vui lòng chọn">
                         <Option value="1">Bùi Thị Yên</Option>

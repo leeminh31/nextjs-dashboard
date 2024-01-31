@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState } from 'react';
 import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

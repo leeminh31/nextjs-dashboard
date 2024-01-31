@@ -5,7 +5,7 @@ import { DownOutlined } from '@ant-design/icons';
 import { Button, Col, Form, Input, Row, Select, Space, theme } from 'antd';
 const { Option } = Select;
 
-const DemoForm = () => {
+const ContractForm = () => {
     const { token } = theme.useToken();
     const [form] = Form.useForm();
     const [expand, setExpand] = useState(false);
@@ -116,4 +116,4 @@ const DemoForm = () => {
     )
 }
 
-export default DemoForm
+export default ContractForm
