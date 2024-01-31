@@ -1,5 +1,5 @@
-import DemoForm from "./demoform"
-import DemoTable from "./demotable"
+import DemoForm from "./contract-form"
+import DemoTable from "./contract-table"
 
 const DemoPage = () => {
     return (

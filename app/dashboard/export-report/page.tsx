@@ -1,7 +1,12 @@
 import { Col, DatePicker, Row, Button } from "antd"
 import { DownloadOutlined } from "@ant-design/icons"
+import { Metadata } from 'next';
 
-const ExportReport = () => {
+export const metadata: Metadata = {
+    title: 'Xuất báo cáo',
+};
+
+const ExportReportPage = () => {
     return (
         <>
             <Row style={{padding:'24px'}}>
@@ -53,4 +58,4 @@ const ExportReport = () => {
     )
 }
 
-export default ExportReport
+export default ExportReportPage

@@ -217,7 +217,7 @@ const rowSelection: TableRowSelection<DataType> = {
     },
   };
 
-const DemoTable: React.FC = () => {
+const ContractTable: React.FC = () => {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -1060,4 +1060,4 @@ const DemoTable: React.FC = () => {
     )
 }
 
-export default DemoTable;
+export default ContractTable;
