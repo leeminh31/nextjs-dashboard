@@ -26,6 +26,10 @@ input[type='number']::-webkit-outer-spin-button {
   z-index: 9;
 }
 
+.ant-table-wrapper .ant-table-cell-scrollbar {
+  box-shadow: none !important;
+}
+
 .ant-menu-item-selected {
   background-color: #faf3eb !important;
   color: #aa9485 !important;
@@ -231,8 +235,8 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 .ant-table-body::-webkit-scrollbar {
-  width: 17px;
-  height: 17px;
+  width: 10px;
+  height: 10px;
   /* width of the entire scrollbar */
 }
 
