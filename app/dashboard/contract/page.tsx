@@ -1,5 +1,4 @@
-import ContractForm from "@/app/ui/contract/contract-form"
-import ContractTable from "@/app/ui/contract/contract-table"
+import Contract from '@/app/ui/contract/contract';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -9,8 +8,7 @@ export const metadata: Metadata = {
 const ContractPage = () => {
     return (
         <>
-            <ContractForm/>
-            <ContractTable/>
+            <Contract/>
         </>
     )
 }

@@ -1,5 +1,4 @@
-import CompensatoryLeaveForm from '@/app/ui/compensatory-leave/compensatory-leave-form';
-import CompensatoryLeaveTable from '@/app/ui/compensatory-leave/compensatory-leave-table';
+import CompensatoryLeave from '@/app/ui/compensatory-leave/compensatory-leave';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -9,8 +8,7 @@ export const metadata: Metadata = {
 export default function CompensatoryLeavePage() {
   return (
     <>
-      <CompensatoryLeaveForm/>
-      <CompensatoryLeaveTable/>
+        <CompensatoryLeave/>
     </>
   );
 }

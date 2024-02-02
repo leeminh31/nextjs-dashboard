@@ -19,11 +19,6 @@ const ManageExplanationsForm = () => {
         padding:'24px'
     };
 
-    // const disabledDate: RangePickerProps['disabledDate'] = (current) => {
-    //     // Can not select days before today and today
-    //     return current && current < dayjs().endOf('day');
-    // };
-
     return (
         <Form style={formStyle} name="advanced_search">
             <Row gutter={24}>

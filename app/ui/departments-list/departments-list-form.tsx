@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DownOutlined } from '@ant-design/icons';
-import { Button, Col, Form, Input, Row, Select, Space, theme } from 'antd';
+import { Button, Col, Form, Input, Row, Select, Space, theme, Skeleton } from 'antd';
 
 const { Option } = Select;
 
@@ -10,6 +10,7 @@ const DepartmentsListForm = () => {
     const { token } = theme.useToken();
     const [form] = Form.useForm();
     const [expand, setExpand] = useState(false);
+    const [loading, setLoading] =useState(true);
   
     const formStyle: React.CSSProperties = {
       maxWidth: 'none',
@@ -21,9 +22,14 @@ const DepartmentsListForm = () => {
     const onFinish = (values: any) => {
       console.log('Received values of form: ', values);
     };
+
+    useEffect(() => {
+      setLoading(false)
+    }, [])
   
     return (
-      <Form form={form} name="advanced_search" style={formStyle} onFinish={onFinish}>
+      <Skeleton loading = {loading} active>
+        <Form form={form} name="advanced_search" style={formStyle} onFinish={onFinish}>
         <Row gutter={24}>
             <Col span={7}>
                 <Form.Item
@@ -80,6 +86,7 @@ const DepartmentsListForm = () => {
           </Space>
         </div>
       </Form>
+      </Skeleton>
     );
 }
 

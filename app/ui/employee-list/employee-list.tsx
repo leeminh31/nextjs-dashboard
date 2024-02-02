@@ -1,9 +1,9 @@
 'use-client'
-
 import EmployeeListForm from "./employee-list-form"
 import EmployeeListTable from "./employee-list-table"
 
 const EmployeeList = () => {
+
     return (
         <>
             <EmployeeListForm />

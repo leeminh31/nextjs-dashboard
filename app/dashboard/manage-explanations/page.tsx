@@ -1,5 +1,4 @@
-import ManageExplanationsForm from "@/app/ui/manage-explanations/manage-explanations-form"
-import ManageExplanationsTable from "@/app/ui/manage-explanations/manage-explanations-table"
+import ManageExplanations from '@/app/ui/manage-explanations/manage-explanations';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -9,8 +8,7 @@ export const metadata: Metadata = {
 const ManageExplanationsPage = () => {
     return (
         <>
-            <ManageExplanationsForm />
-            <ManageExplanationsTable />
+            <ManageExplanations/>
         </>
     )
 }

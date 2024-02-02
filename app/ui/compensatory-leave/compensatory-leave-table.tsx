@@ -1,20 +1,14 @@
 'use client'
 
-import React, {useState} from 'react';
-import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, theme, Flex, Tag, DatePicker, Radio } from 'antd';
-import type { RadioChangeEvent } from 'antd';
+import React, {useEffect, useState} from 'react';
+import { Button, Table, Row, Space, Drawer, Upload, Form, Select, theme, Flex, Skeleton } from 'antd';
 import {
-  EditTwoTone,
-  EyeTwoTone,
-  HistoryOutlined,
-  ExportOutlined,
   UploadOutlined,
   DownloadOutlined,
 } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import type { TableRowSelection } from 'antd/es/table/interface';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faClockRotateLeft,faArrowUpRightFromSquare, faPencil, faEye } from '@fortawesome/free-solid-svg-icons'
+import ImportCompensatoryLeave from './import-compensatory-leave';
 const { Option } = Select;
 
 interface DataType {
@@ -1139,73 +1133,34 @@ const CompensatoryLeaveTable: React.FC = () => {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
     const [importOpen, setImportOpen] = useState(false);
-    const [addOpen, setAddOpen] = useState(false);
-    const [updateOpen, setUpdateOpen] = useState(false);
-    const [viewOpen, setViewOpen] = useState(false);
+    const [loading, setLoading] = useState(true)
     const [form] = Form.useForm();
-    const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
-    const [value, setValue] = useState(false)
 
-    const closeAddDrawer = () => {
-      setAddOpen(false)
-      form.resetFields()
-    }
-  
-    const closeUpdateDrawer = () => {
-      setUpdateOpen(false)
-      form.resetFields()
-    }
-
-    const onChange = (e: RadioChangeEvent) => {
-      console.log('radio checked', e.target.value);
-      setValue(e.target.value);
-    };
-
-    const onFinish = (values: any) => {
-      console.log('Received values of form: ', values);
-    };
+    useEffect(() => {
+      setLoading(false);
+    },[])
 
     return (
       <>  
-        <div style={{paddingLeft:"24px",paddingRight:"24px", backgroundColor:colorBgContainer, marginTop:"20px"}}>
-            <Flex justify='space-between' align='center' style={{height:"50px", borderBottom:"1px solid #bbbfc1", marginBottom:"10px"}}>
-                <span><b>Quản lý bù</b></span>
-                <Row>
-                  <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setImportOpen(true)}>Import</Button>
-                </Row>
-            </Flex>
-            <Table 
-                size='small'
-                scroll={{ x: 11700, y:500}} 
-                rowSelection={rowSelection} 
-                columns={columns} 
-                dataSource={data}
-                pagination={{ showQuickJumper:true ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}}  
-            />
-        </div>
-        <Drawer 
-        title="Import phép và bù" 
-        placement="right" 
-        onClose={() => setImportOpen(false)} 
-        open={importOpen}
-        footer= {
-          <Row justify={'end'}>
-              <Space>
-                  <Button onClick={() => setImportOpen(false)}>Hủy</Button>
-                  <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-              </Space>
-          </Row>
-        }
-        >
-            <Upload>
-                <p>File upload</p>
-                <Button icon={<UploadOutlined />}>Click to Upload</Button>
-            </Upload>
-            <Space direction='vertical'>
-                <p>Template file</p>
-                <Button type='primary' icon={<DownloadOutlined />}>Tải xuống template</Button>
-            </Space>
-        </Drawer>
+        <Skeleton loading = {loading} active>
+          <div style={{paddingLeft:"24px",paddingRight:"24px", backgroundColor:colorBgContainer, marginTop:"20px"}}>
+              <Flex justify='space-between' align='center' style={{height:"50px", borderBottom:"1px solid #bbbfc1", marginBottom:"10px"}}>
+                  <span><b>Quản lý bù</b></span>
+                  <Row>
+                    <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setImportOpen(true)}>Import</Button>
+                  </Row>
+              </Flex>
+              <Table 
+                  size='small'
+                  scroll={{ x: 11700, y:500}} 
+                  rowSelection={rowSelection} 
+                  columns={columns} 
+                  dataSource={data}
+                  pagination={{ showQuickJumper:true ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}}  
+              />
+          </div>
+        </Skeleton>
+        <ImportCompensatoryLeave/>
       </>
     )
 }

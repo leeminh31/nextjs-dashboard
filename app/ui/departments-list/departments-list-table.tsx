@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select } from 'antd';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faClockRotateLeft, faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
+import React, { useEffect, useState } from 'react';
+import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, Skeleton } from 'antd';
 import {
     EditTwoTone,
     EyeTwoTone,
-    HistoryOutlined,
-    ExportOutlined,
     UploadOutlined,
     DownloadOutlined,
   } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
+import ImportDepartmentsList from './import-departments-list';
+import CreateDepartmentsList from './create-departments-list';
+import UpdateDepartmentsList from './update-departments-list';
+import ViewDepartmentsList from './view-departments-list';
 const { Option } = Select;
 
 interface DataType {
@@ -28,7 +28,7 @@ interface DataType {
 
 const DepartmentsListTable: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [importOpen, setImportOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [updateOpen, setUpdateOpen] = useState(false);
@@ -134,341 +134,35 @@ const DepartmentsListTable: React.FC = () => {
     console.log('Received values of form: ', values);
   };
 
+  useEffect(() => {
+    setLoading(false)
+  },[])
+
   return (
     <>
-        <div style={{backgroundColor:'#fff', padding:'24px'}}>
-            <Row justify={'space-between'} style={{marginBottom:'24px'}}>
-                <span style={{textAlign:'center'}}><b>Quản lý phòng ban</b></span>
-                <Col>
-                    <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setImportOpen(true)}>Import</Button>
-                    <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setAddOpen(true)}>Thêm mới</Button>
-                    <Button type="primary" style={{marginLeft:'12px'}}>Xóa</Button>
-                </Col>
-            </Row>
-            <Table 
-            scroll={{x:1500, y:500}} 
-            rowSelection={rowSelection} 
-            columns={columns} 
-            dataSource={data} 
-            pagination={{ showQuickJumper:true, total:50 ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}} 
-            />
-        </div>
-        <Drawer 
-        title="Import phòng ban" 
-        placement="right" 
-        onClose={() => setImportOpen(false)} 
-        open={importOpen} 
-        footer= {
-          <Row justify={'end'}>
-              <Space>
-                  <Button onClick={() => setImportOpen(false)}>Hủy</Button>
-                  <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-              </Space>
-          </Row>
-        }>
-            <Upload>
-                <p>File upload</p>
-                <Button icon={<UploadOutlined />}>Click to Upload</Button>
-            </Upload>
-            <Space direction='vertical'>
-                <p>Template file</p>
-                <Button type='primary' icon={<DownloadOutlined />}>Tải xuống template</Button>
-            </Space>
-        </Drawer>
-        <Drawer 
-            size='large' 
-            title="Thêm mới" 
-            placement="right" 
-            onClose={closeAddDrawer} 
-            open={addOpen} 
-            footer= {
-                <Row justify={'end'}>
-                    <Space>
-                        <Button onClick={() => setAddOpen(false)}>Hủy</Button>
-                        <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-                    </Space>
-                </Row>
-            }
-        >
-            <Form form={form} name="insertDepartment" onFinish={onFinish}>
-                <Row gutter={24}>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'departmentName'}
-                        label={'Tên phòng ban'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng nhập tên phòng ban!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Tên phòng ban" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'timekeepingTimes'}
-                        label={'Số lần chấm công'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng nhập số lần chấm công!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Số lần chấm công" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'boss'}
-                        label={'Người quản lý'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'secretary'}
-                        label={'Thư ký'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'supervisorDepartment'}
-                        label={'Phòng ban cấp trên'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
+        <Skeleton loading={loading} active>
+            <div style={{backgroundColor:'#fff', padding:'24px'}}>
+                <Row justify={'space-between'} style={{marginBottom:'24px'}}>
+                    <span style={{textAlign:'center'}}><b>Quản lý phòng ban</b></span>
+                    <Col>
+                        <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setImportOpen(true)}>Import</Button>
+                        <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setAddOpen(true)}>Thêm mới</Button>
+                        <Button type="primary" style={{marginLeft:'12px'}}>Xóa</Button>
                     </Col>
                 </Row>
-            </Form>
-        </Drawer>
-        <Drawer 
-            size='large' 
-            title="Thông tin chi tiết" 
-            placement="right" 
-            onClose={closeUpdateDrawer} 
-            open={updateOpen} 
-            footer= {
-                <Row justify={'end'}>
-                    <Space>
-                        <Button onClick={() => setUpdateOpen(false)}>Hủy</Button>
-                        <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-                    </Space>
-                </Row>
-            }
-        >
-            <Form form={form} name="updateDepartment" onFinish={onFinish}>
-                <Row gutter={24}>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'departmentName'}
-                        label={'Tên phòng ban'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng nhập tên phòng ban!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Tên phòng ban" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'timekeepingTimes'}
-                        label={'Số lần chấm công'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng nhập số lần chấm công!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Số lần chấm công" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'boss'}
-                        label={'Người quản lý'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'secretary'}
-                        label={'Thư ký'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'supervisorDepartment'}
-                        label={'Phòng ban cấp trên'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                </Row>
-            </Form>
-        </Drawer>
-        <Drawer 
-            size='large' 
-            title="Thông tin chi tiết" 
-            placement="right" 
-            onClose={() => setViewOpen(false)} 
-            open={viewOpen} 
-            footer= {
-                <Row justify={'end'}>
-                    <Space>
-                        <Button onClick={() => setViewOpen(false)}>Hủy</Button>
-                        <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-                    </Space>
-                </Row>
-            }
-        >
-            <Form form={form} name="viewDepartment" onFinish={onFinish}>
-                <Row gutter={24}>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'departmentName'}
-                        label={'Tên phòng ban'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng nhập tên phòng ban!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Tên phòng ban" disabled={true} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'timekeepingTimes'}
-                        label={'Số lần chấm công'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Số lần chấm công" disabled={true} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'boss'}
-                        label={'Người quản lý'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn" disabled={true}>
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'secretary'}
-                        label={'Thư ký'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn" disabled={true}>
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'supervisorDepartment'}
-                        label={'Phòng ban cấp trên'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn" disabled={true}>
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                </Row>
-            </Form>
-        </Drawer>
+                <Table 
+                scroll={{x:1500, y:500}} 
+                rowSelection={rowSelection} 
+                columns={columns} 
+                dataSource={data} 
+                pagination={{ showQuickJumper:true, total:50 ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}} 
+                />
+            </div>
+        </Skeleton>
+        <ImportDepartmentsList show={importOpen} close={() => setImportOpen(false)} />
+        <CreateDepartmentsList show={addOpen} close={() => setAddOpen(false)} />
+        <UpdateDepartmentsList show={updateOpen} close={() => setUpdateOpen(false)} />
+        <ViewDepartmentsList show={viewOpen} close={() => setViewOpen(false)} />
     </>
   );
 };

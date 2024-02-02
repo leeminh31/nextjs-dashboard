@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import type { MenuProps } from 'antd';
-import { Layout, Menu, Button, theme, Flex, Avatar } from 'antd';
+import { Layout, Menu, Button, theme, Flex, Avatar, Skeleton } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {usePathname, useRouter} from 'next/navigation';
 import { faPaperPlane, faClock, faCalendarCheck, faCreditCard} from '@fortawesome/free-regular-svg-icons'
@@ -66,6 +66,7 @@ const items: MenuItem[] = [
 export default function LayoutDashboard({ children }: { children: React.ReactNode }) {
   const [current, setCurrent] = useState('')
   const [collapsed, setCollapsed] = useState(false);
+  const [loading, setLoading] = useState(true);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -75,10 +76,12 @@ export default function LayoutDashboard({ children }: { children: React.ReactNod
 
   useEffect(() => {
     setCurrent(pathname)
+    setLoading(false)
   },[])
 
   return (
-    <Layout>
+    <Skeleton loading={loading} active>
+      <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }}>
           <Flex justify= {'space-between'}>
             <Flex>
@@ -133,5 +136,6 @@ export default function LayoutDashboard({ children }: { children: React.ReactNod
           </Content>
         </Layout>
       </Layout>
+    </Skeleton>
   );
 }
