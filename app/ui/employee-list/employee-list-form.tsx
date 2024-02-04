@@ -38,7 +38,7 @@ const EmployeeListForm = () => {
                     <Col span={7}>
                         <Form.Item
                             name={'employeeName'}
-                            label={'Tên'}
+                            label={'Tên nhân viên'}
                             labelCol={{style: {width: 100, textAlign:"left"}}}
                         >
                             <Input placeholder="Vui lòng nhập Tên nhân viên" />
@@ -86,35 +86,6 @@ const EmployeeListForm = () => {
                             labelCol={{style: {width: 100, textAlign:"left"}}}
                         >
                             <Input placeholder="Vui lòng nhập Chức vụ" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={7}>
-                        <Form.Item
-                            name={'resignationDate'}
-                            label={'Ngày thôi việc'}
-                            labelCol={{style: {width: 100, textAlign:"left"}}}
-                        >
-                            <DatePicker placeholder='Vui lòng nhập ngày thôi việc' format={dateFormatList} />
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row gutter={24}>
-                    <Col span={7}>
-                        <Form.Item
-                            name={'employeeEmail'}
-                            label={'Email'}
-                            labelCol={{style: {width: 100, textAlign:"left"}}}
-                        >
-                            <Input placeholder="Vui lòng nhập mail" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={7}>
-                        <Form.Item
-                            name={'emloyeePhoneNumber'}
-                            label={'Số điện thoại'}
-                            labelCol={{style: {width: 100, textAlign:"left"}}}
-                        >
-                            <Input placeholder="Vui lòng nhập Số điện thoại" />
                         </Form.Item>
                     </Col>
                 </Row>

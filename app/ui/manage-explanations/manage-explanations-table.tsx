@@ -1,7 +1,7 @@
 'use client'
 
-import React, {useState} from 'react';
-import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, theme, Flex, Tag, DatePicker, Radio } from 'antd';
+import React, {useEffect, useState} from 'react';
+import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, theme, Flex, Tag, DatePicker, Radio, Skeleton } from 'antd';
 import type { RadioChangeEvent } from 'antd';
 import {
   EditTwoTone,
@@ -223,6 +223,7 @@ const ManageExplanationsTable: React.FC = () => {
     const [addOpen, setAddOpen] = useState(false);
     const [updateOpen, setUpdateOpen] = useState(false);
     const [viewOpen, setViewOpen] = useState(false);
+    const [loading, setLoading] = useState(true)
     const [form] = Form.useForm();
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
     const [value, setValue] = useState(false)
@@ -363,26 +364,32 @@ const ManageExplanationsTable: React.FC = () => {
       console.log('Received values of form: ', values);
     };
 
+    useEffect(() => {
+      setLoading(false)
+    },[])
+
     return (
       <>  
-        <div style={{paddingLeft:"24px",paddingRight:"24px", backgroundColor:colorBgContainer, marginTop:"20px"}}>
-        <Flex justify='space-between' align='center' style={{height:"50px", borderBottom:"1px solid #bbbfc1", marginBottom:"10px"}}>
-                <span><b>Yêu cầu giải trình</b></span>
-                <Row>
-                  <Button type="primary" style={{marginLeft:'12px'}}><ExportOutlined /></Button>
-                  <Button type="primary" style={{marginLeft:'12px'}} >Duyệt</Button>
-                  <Button type="primary" style={{marginLeft:'12px'}} >Từ chối</Button>
-                  <Button type="primary" style={{marginLeft:'12px'}}>Xóa</Button>
-                </Row>
+        <Skeleton loading={loading} active>
+          <div style={{paddingLeft:"24px",paddingRight:"24px", backgroundColor:colorBgContainer, marginTop:"20px"}}>
+            <Flex justify='space-between' align='center' style={{height:"50px", borderBottom:"1px solid #bbbfc1", marginBottom:"10px"}}>
+              <span><b>Yêu cầu giải trình</b></span>
+              <Row>
+                <Button type="primary" style={{marginLeft:'12px'}}><ExportOutlined /></Button>
+                <Button type="primary" style={{marginLeft:'12px'}} >Duyệt</Button>
+                <Button type="primary" style={{marginLeft:'12px'}} >Từ chối</Button>
+                <Button type="primary" style={{marginLeft:'12px'}}>Xóa</Button>
+              </Row>
             </Flex>
-            <Table 
-                scroll={{ x: 2000, y:350}} 
-                rowSelection={rowSelection} 
-                columns={columns} 
-                dataSource={data}
-                pagination={{ showQuickJumper:true, total:50 ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}}  
-            />
-        </div>
+              <Table 
+                  scroll={{ x: 2000, y:350}} 
+                  rowSelection={rowSelection} 
+                  columns={columns} 
+                  dataSource={data}
+                  pagination={{ showQuickJumper:true, total:50 ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}}  
+              />
+          </div>
+        </Skeleton>
         <Drawer 
             title="Sửa giải trình" 
             placement="right" 

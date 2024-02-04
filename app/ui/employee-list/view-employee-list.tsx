@@ -1,57 +1,18 @@
 import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, Skeleton, DatePicker } from 'antd';
 const {Option} = Select
-import { HRMSystemApi } from '@/app/constant/constant';
 
-const CreateEmployeeList = (props:any) => {
-    const {show,close} = props
+const ViewEmployeeList = (props:any) => {
+    const {show, close} = props
     const [form] = Form.useForm()
 
-    const onFinish = async (values: any) => {
-        console.log('Received values of form: ', values);
+    const onFinish = () => {
 
-        
-
-        const requestData = {
-            maNhanVien: values.maNhanVien,
-            hoTen: values.hoTen,
-            chucVu: values.chucVu,
-            mail: values.mail,
-            ngaySinh: values.ngaySinh,
-            soCCCD: values.soCCCD,
-            ngayCap: values.ngayCap,
-            queQuan: values.queQuan,
-            noiOHienTai: values.noiOHienTai,
-            nguoiThanLienHe: values.nguoiThanLienHe,
-            soDienThoaiNguoiLienHe: values.soDienThoaiNguoiLienHe,
-            stkNganHang: values.stkNganHang,
-            nganHang: values.nganHang,
-            maPhongBan: parseInt(values.maPhongBan),
-            soDienThoai: values.soDienThoai,
-            IDVanTay: parseInt(values.IDVanTay)
-        }
-
-        try {
-            const response = await fetch(HRMSystemApi+'/NhanVien/create', {
-              method: "POST", // or 'PUT'
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(requestData),
-            });
-        
-            const result = await response.json();
-            console.log("Success:", result);
-          } catch (error) {
-            console.error("Error:", error);
-          }
-    };
-
-
+    }
 
     return (
         <Drawer 
             size='large' 
-            title="Thêm nhân viên mới" 
+            title="Thông tin chi tiết" 
             placement="right" 
             onClose={close} 
             open={show} 
@@ -59,16 +20,15 @@ const CreateEmployeeList = (props:any) => {
                 <Row justify={'end'}>
                     <Space>
                         <Button onClick={close}>Hủy</Button>
-                        <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
                     </Space>
                 </Row>
             }
         >
-            <Form form={form} name="insertEmployee" onFinish={onFinish}>
+            <Form form={form} name="viewEmployee" onFinish={onFinish}>
                 <Row gutter={24}>
                     <Col span={12}>
                         <Form.Item
-                        name={'maNhanVien'}
+                        name={'employeeId'}
                         label={'Mã nhân viên'}
                         rules={[
                             {
@@ -79,12 +39,12 @@ const CreateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Mã nhân viên" />
+                            <Input placeholder="Mã nhân viên" disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'hoTen'}
+                        name={'employeeName'}
                         label={'Tên nhân viên'}
                         rules={[
                             {
@@ -95,27 +55,27 @@ const CreateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Tên nhân viên" />
+                            <Input placeholder="Tên nhân viên" disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'chucVu'}
+                        name={'position'}
                         label={'Chức vụ'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Chức vụ" />
+                            <Input placeholder="Chức vụ" disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'maPhongBan'}
+                        name={'department'}
                         label={'Phòng ban'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Select placeholder = "Vui lòng chọn">
+                            <Select placeholder = "Vui lòng chọn" disabled>
                                 <Option value="1">Bùi Thị Yên</Option>
                                 <Option value="2">Bùi Thị Yên</Option>
                                 <Option value="3">Bùi Thị Yên</Option>
@@ -126,12 +86,12 @@ const CreateEmployeeList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'IDVanTay'}
+                        name={'fingerprintId'}
                         label={'ID vân tay'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' placeholder='ID vân tay' />
+                            <Input type='number' placeholder='ID vân tay' disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -141,37 +101,37 @@ const CreateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder='Mail công việc' />
+                            <Input placeholder='Mail công việc' disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'ngaySinh'}
+                        name={'dateOfBirth'}
                         label={'Ngày sinh'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <DatePicker placeholder='Ngày sinh' />
+                            <DatePicker placeholder='Ngày sinh' disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'soDienThoai'}
+                        name={'phone'}
                         label={'Số điện thoại'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' maxLength={20} placeholder='Số điện thoại'/>
+                            <Input type='number' maxLength={20} placeholder='Số điện thoại' disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'soCCCD'}
+                        name={'identityCard'}
                         label={'Căn cước công dân'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' maxLength={20} placeholder='Căn cước công dân' />
+                            <Input type='number' maxLength={20} placeholder='Căn cước công dân' disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -181,67 +141,67 @@ const CreateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <DatePicker placeholder='Ngày cấp' />
+                            <DatePicker placeholder='Ngày cấp' disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'queQuan'}
+                        name={'hometown'}
                         label={'Quê quán'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder='Quê quán' />
+                            <Input placeholder='Quê quán' disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'noiOHienTai'}
+                        name={'currentAddress'}
                         label={'Nơi ở hiện tại'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder='Nơi ở hiện tại' />
+                            <Input placeholder='Nơi ở hiện tại' disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'nguoiThanLienHe'}
+                        name={'relative'}
                         label={'Người thân liên hệ'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder='Người thân liên hệ' />
+                            <Input placeholder='Người thân liên hệ' disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'soDienThoaiNguoiThanLienHe'}
+                        name={'relativePhone'}
                         label={'Số điện thoại người thân liên hệ'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' placeholder='Số điện thoại người thân liên hệ' />
+                            <Input type='number' placeholder='Số điện thoại người thân liên hệ' disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'stkNganHang'}
+                        name={'bankAccount'}
                         label={'Số tài khoản ngân hàng'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' placeholder='Số tài khoản ngân hàng' />
+                            <Input type='number' placeholder='Số tài khoản ngân hàng' disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'nganHang'}
+                        name={'bank'}
                         label={'Ngân hàng'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='text' placeholder='Ngân hàng' />
+                            <Input type='text' placeholder='Ngân hàng' disabled/>
                         </Form.Item>
                     </Col>
                 </Row>
@@ -250,4 +210,4 @@ const CreateEmployeeList = (props:any) => {
     )
 }
 
-export default CreateEmployeeList
+export default ViewEmployeeList

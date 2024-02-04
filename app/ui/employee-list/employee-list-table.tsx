@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, Skeleton } from 'antd';
+import 'dotenv/config'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClockRotateLeft, faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -11,9 +12,14 @@ import {
     ExportOutlined,
     UploadOutlined,
     DownloadOutlined,
+    LockTwoTone,
   } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import CreateEmployeeList from './create-employee-list';
+import UpdateEmployeeList from './update-employee-list';
+import ViewEmployeeList from './view-employee-list';
+import ChangePassword from './change-password';
+
 const { Option } = Select;
 
 interface DataType {
@@ -36,13 +42,14 @@ const EmployeeListTable: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [importOpen, setImportOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
   const [updateOpen, setUpdateOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
   const [form] = Form.useForm();
 
   const columns: ColumnsType<DataType> = [
     {
-      title: '#',
+      title: 'STT',
       dataIndex: 'key',
       width:50
     },
@@ -51,208 +58,37 @@ const EmployeeListTable: React.FC = () => {
       dataIndex: 'employeeId',
     },
     {
-      title: 'Mã nhân viên hiện tại',
-      dataIndex: 'currentEmployeeId',
-    },
-    {
       title: 'Id vân tay',
       dataIndex: 'fingerprintId',
     },
     {
-        title: 'Họ và tên',
-        dataIndex: 'fullname',
+        title: 'Tên nhân viên',
+        dataIndex: 'employeeName',
     },
     {
-    title: 'Bộ phận',
-    dataIndex: 'department',
+        title: 'Chức vụ',
+        dataIndex: 'position',
+      },
+    {
+        title: 'Phòng ban',
+        dataIndex: 'department',
     },
     {
-      title: 'Số lần chấm công',
-      dataIndex: 'timekeepingTimes',
+        title: 'Mail công việc',
+        dataIndex: 'mail',
     },
-    {
-      title: 'Chức vụ',
-      dataIndex: 'position',
-    },
-    // {
-    //   title: 'Số điện thoại cá nhân',
-    //   dataIndex: 'personalPhoneNumber',
-    // },
-    // {
-    //   title: 'Số điện thoại công việc',
-    //   dataIndex: 'workPhoneNumber',
-    // },
-    // {
-    //     title: 'Giờ làm việc',
-    //     dataIndex: 'workHours',
-    // },
-    // {
-    //     title: 'Email',
-    //     dataIndex: 'email',
-    // },
-    // {
-    //     title: 'Ngày thôi việc',
-    //     dataIndex: 'resignationDate',
-    // },
-    // {
-    //     title: 'Người quản lý',
-    //     dataIndex: 'boss',
-    //     },
-    // {
-    //     title: 'Người huấn luyện',
-    //     dataIndex: 'mentor',
-    // },
-    // {
-    //     title: 'Công ty kiêm nhiệm',
-    //     dataIndex: 'concurrentCompany',
-    // },
-    // {
-    //     title: 'Phòng ban kiêm nhiệm',
-    //     dataIndex: 'concurrentDepartment',
-    // },
-    // {
-    //     title: 'Ngày hết hạn hợp đồng thử việc',
-    //     dataIndex: 'probationaryExpirationDate',
-    // },
-    // {
-    //     title: 'Tỷ lệ hưởng lương thử việc',
-    //     dataIndex: 'probationarySalaryPercent',
-    // },
-    // {
-    //     title: 'Ngày vào làm',
-    //     dataIndex: 'startDate',
-    // },
-    // {
-    //     title: 'Mã số thuế cá nhân',
-    //     dataIndex: 'personalTaxId',
-    // },
-    // {
-    //     title: 'Quản lý chung',
-    //     dataIndex: 'generalManager',
-    // },
-    // {
-    //     title: 'Trưởng bộ phận',
-    //     dataIndex: 'departmentHead',
-    // },
-    // {
-    //     title: 'Thư ký bộ phận',
-    //     dataIndex: 'secretary',
-    // },
-    // {
-    //     title: 'Nơi sinh',
-    //     dataIndex: 'placeOfBirth',
-    // },
-    // {
-    //     title: 'Ngày sinh',
-    //     dataIndex: 'birthday',
-    // },
-    // {
-    //     title: 'Giới tính',
-    //     dataIndex: 'gender',
-    // },
-    // {
-    //     title: 'Địa chỉ thường trú',
-    //     dataIndex: 'permanentAddress',
-    // },
-    // {
-    //     title: 'Quốc gia',
-    //     dataIndex: 'country',
-    // },
-    // {
-    //     title: 'Tỉnh/Thành phố',
-    //     dataIndex: 'city',
-    // },
-    // {
-    //     title: 'Quận/Huyện',
-    //     dataIndex: 'province',
-    // },
-    // {
-    //     title: 'Xã/Phường',
-    //     dataIndex: 'ward',
-    // },
-    // {
-    //     title: 'Dân tộc',
-    //     dataIndex: 'ethnic',
-    // },
-    // {
-    //     title: 'Số CMND',
-    //     dataIndex: 'nationalId',
-    // },
-    // {
-    //     title: 'Nơi cấp CMND',
-    //     dataIndex: 'placeOfIssuance',
-    // },
-    // {
-    //     title: 'Ngày cấp CMND',
-    //     dataIndex: 'dateOfIssuance',
-    // },
-    // {
-    //     title: 'Nơi ở hiện tại',
-    //     dataIndex: 'currentAddress',
-    // },
-    // {
-    //     title: 'Tình trạng hôn nhân',
-    //     dataIndex: 'maritalStatus',
-    // },
-    // {
-    //     title: 'STK ngân hàng',
-    //     dataIndex: 'bankAccount',
-    // },
-    // {
-    //     title: 'Ngân hàng',
-    //     dataIndex: 'bank',
-    // },
-    // {
-    //     title: 'Chi nhánh',
-    //     dataIndex: 'branch',
-    // },
-    // {
-    //     title: 'Số BHXH',
-    //     dataIndex: 'socialInsuranceNumber',
-    // },
-    // {
-    //     title: 'Bằng cấp cao nhất',
-    //     dataIndex: 'highestDegree',
-    // },
-    // {
-    //     title: 'Trường đào tạo',
-    //     dataIndex: 'trainingSchool',
-    // },
-    // {
-    //     title: 'Chứng chỉ',
-    //     dataIndex: 'certificate',
-    // },
-    // {
-    //     title: 'Chuyên ngành',
-    //     dataIndex: 'major',
-    // },
-    // {
-    //     title: 'Loại xe',
-    //     dataIndex: 'vehicleType',
-    // },
-    // {
-    //     title: 'Đăng ký gửi xe',
-    //     dataIndex: 'parkingRegister',
-    // },
-    // {
-    //     title: 'Biển số xe',
-    //     dataIndex: 'licensePlates',
-    // },
-    // {
-    //     title: 'Màu xe',
-    //     dataIndex: 'vehicleColor',
-    // },
     {
       title: 'Hoạt động',
       dataIndex: 'action',
       fixed:'right',
       align:'center',
-      width:150,
+      width:200,
       render: () => {
           return (
               <Space style={{gap:'16px'}}>
                   <Button icon={<EditTwoTone />} style={{backgroundColor:'transparent', border:'none', boxShadow:'none'}} onClick={() => setUpdateOpen(true)}></Button>
                   <Button icon={<EyeTwoTone />} style={{backgroundColor:'transparent', border:'none', boxShadow:'none'}} onClick={() => setViewOpen(true)}></Button>
+                  <Button icon={<LockTwoTone />} style={{backgroundColor:'transparent', border:'none', boxShadow:'none'}} onClick={() => setChangePasswordOpen(true)}></Button>
               </Space>
           )
       }
@@ -309,6 +145,7 @@ const EmployeeListTable: React.FC = () => {
 
   useEffect(() => {
     setLoading(false)
+    console.log(process.env.API_URL)
   },[])
 
   return (
@@ -320,7 +157,6 @@ const EmployeeListTable: React.FC = () => {
                     <Col>
                         <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setAddOpen(true)}>Thêm mới</Button>
                         <Button type="primary" style={{marginLeft:'12px'}} onClick={() => {}}>Tạo tài khoản</Button>
-                        <Button type="primary" style={{marginLeft:'12px'}}>Xóa</Button>
                     </Col>
                 </Row>
                 <Table 
@@ -333,202 +169,11 @@ const EmployeeListTable: React.FC = () => {
             </div>
         </Skeleton>
         <CreateEmployeeList show={addOpen} close={() => setAddOpen(false)} />
-        <Drawer 
-            size='large' 
-            title="Thông tin chi tiết" 
-            placement="right" 
-            onClose={closeUpdateDrawer} 
-            open={updateOpen} 
-            footer= {
-                <Row justify={'end'}>
-                    <Space>
-                        <Button>Hủy</Button>
-                        <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-                    </Space>
-                </Row>
-            }
-        >
-            <Form form={form} name="updateDepartment" onFinish={onFinish}>
-                <Row gutter={24}>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'departmentName'}
-                        label={'Tên phòng ban'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng nhập tên phòng ban!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Tên phòng ban" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'timekeepingTimes'}
-                        label={'Số lần chấm công'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng nhập số lần chấm công!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Số lần chấm công" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'boss'}
-                        label={'Người quản lý'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'secretary'}
-                        label={'Thư ký'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'supervisorDepartment'}
-                        label={'Phòng ban cấp trên'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                </Row>
-            </Form>
-        </Drawer>
-        <Drawer 
-            size='large' 
-            title="Thông tin chi tiết" 
-            placement="right" 
-            onClose={() => setViewOpen(false)} 
-            open={viewOpen} 
-            footer= {
-                <Row justify={'end'}>
-                    <Space>
-                        <Button>Hủy</Button>
-                        <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-                    </Space>
-                </Row>
-            }
-        >
-            <Form form={form} name="viewDepartment" onFinish={onFinish}>
-                <Row gutter={24}>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'departmentName'}
-                        label={'Tên phòng ban'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng nhập tên phòng ban!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Tên phòng ban" disabled={true} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'timekeepingTimes'}
-                        label={'Số lần chấm công'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Số lần chấm công" disabled={true} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'boss'}
-                        label={'Người quản lý'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn" disabled={true}>
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'secretary'}
-                        label={'Thư ký'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn" disabled={true}>
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'supervisorDepartment'}
-                        label={'Phòng ban cấp trên'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn" disabled={true}>
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                </Row>
-            </Form>
-        </Drawer>
+        <UpdateEmployeeList show={updateOpen} close={() => setUpdateOpen(false)} />
+        <ViewEmployeeList show={viewOpen} close={() => setViewOpen(false)} />
+        <ChangePassword show={changePasswordOpen} close={() => setChangePasswordOpen(false)} />
     </>
-  );
+    );
 };
 
 export default EmployeeListTable;
