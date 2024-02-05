@@ -1,24 +1,21 @@
 import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, Skeleton, DatePicker } from 'antd';
 const {Option} = Select
 import { HRMSystemApi } from '@/app/constant/constant';
+import { FormatDate } from '@/app/utils/formatDate';
 
 const CreateEmployeeList = (props:any) => {
     const {show,close} = props
     const [form] = Form.useForm()
 
     const onFinish = async (values: any) => {
-        console.log('Received values of form: ', values);
-
-        
-
         const requestData = {
             maNhanVien: values.maNhanVien,
             hoTen: values.hoTen,
             chucVu: values.chucVu,
             mail: values.mail,
-            ngaySinh: values.ngaySinh,
+            ngaySinh: FormatDate(values.ngaySinh),
             soCCCD: values.soCCCD,
-            ngayCap: values.ngayCap,
+            ngayCap: FormatDate(values.ngayCap),
             queQuan: values.queQuan,
             noiOHienTai: values.noiOHienTai,
             nguoiThanLienHe: values.nguoiThanLienHe,
@@ -32,18 +29,17 @@ const CreateEmployeeList = (props:any) => {
 
         try {
             const response = await fetch(HRMSystemApi+'/NhanVien/create', {
-              method: "POST", // or 'PUT'
-              headers: {
+                method: "POST",
+                headers: {
                 "Content-Type": "application/json",
-              },
-              body: JSON.stringify(requestData),
+                },
+                body: JSON.stringify(requestData),
             });
-        
             const result = await response.json();
             console.log("Success:", result);
-          } catch (error) {
+        } catch (error) {
             console.error("Error:", error);
-          }
+        }
     };
 
 
@@ -59,7 +55,7 @@ const CreateEmployeeList = (props:any) => {
                 <Row justify={'end'}>
                     <Space>
                         <Button onClick={close}>Hủy</Button>
-                        <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
+                        <Button onClick={() => form.submit()} type='primary'>Lưu</Button>
                     </Space>
                 </Row>
             }
@@ -119,8 +115,6 @@ const CreateEmployeeList = (props:any) => {
                                 <Option value="1">Bùi Thị Yên</Option>
                                 <Option value="2">Bùi Thị Yên</Option>
                                 <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
                             </Select>
                         </Form.Item>
                     </Col>
@@ -176,7 +170,7 @@ const CreateEmployeeList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'dateOfIssuance'}
+                        name={'ngayCap'}
                         label={'Ngày cấp'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -216,7 +210,7 @@ const CreateEmployeeList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'soDienThoaiNguoiThanLienHe'}
+                        name={'soDienThoaiNguoiLienHe'}
                         label={'Số điện thoại người thân liên hệ'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}

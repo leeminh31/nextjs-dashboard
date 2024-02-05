@@ -1,14 +1,48 @@
 import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, Skeleton, DatePicker } from 'antd';
 const {Option} = Select
-
+import { FormatDate } from '@/app/utils/formatDate';
+import { HRMSystemApi } from '@/app/constant/constant';
 
 const UpdateEmployeeList = (props:any) => {
     const {show, close} = props
     const [form] = Form.useForm()
 
-    const onFinish = () => {
+    const onFinish = async (values: any) => {
+        const requestData = {
+            maNhanVien: values.maNhanVien,
+            hoTen: values.hoTen,
+            chucVu: values.chucVu,
+            mail: values.mail,
+            ngaySinh: FormatDate(values.ngaySinh),
+            soCCCD: values.soCCCD,
+            ngayCap: FormatDate(values.ngayCap),
+            queQuan: values.queQuan,
+            noiOHienTai: values.noiOHienTai,
+            nguoiThanLienHe: values.nguoiThanLienHe,
+            soDienThoaiNguoiLienHe: values.soDienThoaiNguoiLienHe,
+            stkNganHang: values.stkNganHang,
+            nganHang: values.nganHang,
+            maPhongBan: parseInt(values.maPhongBan),
+            soDienThoai: values.soDienThoai,
+            IDVanTay: parseInt(values.IDVanTay)
+        }
 
-    }
+        console.log(requestData)
+
+        try {
+            const response = await fetch(HRMSystemApi+'/NhanVien/update', {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestData),
+            });
+            const result = await response.json();
+            console.log("Success:", result);
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    };
 
     return (
         <Drawer 
@@ -30,7 +64,7 @@ const UpdateEmployeeList = (props:any) => {
                 <Row gutter={24}>
                     <Col span={12}>
                         <Form.Item
-                        name={'employeeId'}
+                        name={'maNhanVien'}
                         label={'Mã nhân viên'}
                         rules={[
                             {
@@ -46,7 +80,7 @@ const UpdateEmployeeList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'employeeName'}
+                        name={'hoTen'}
                         label={'Tên nhân viên'}
                         rules={[
                             {
@@ -62,7 +96,7 @@ const UpdateEmployeeList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'position'}
+                        name={'chucVu'}
                         label={'Chức vụ'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -72,7 +106,7 @@ const UpdateEmployeeList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'department'}
+                        name={'maPhongBan'}
                         label={'Phòng ban'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -81,14 +115,12 @@ const UpdateEmployeeList = (props:any) => {
                                 <Option value="1">Bùi Thị Yên</Option>
                                 <Option value="2">Bùi Thị Yên</Option>
                                 <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
                             </Select>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'fingerprintId'}
+                        name={'IDVanTay'}
                         label={'ID vân tay'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -108,7 +140,7 @@ const UpdateEmployeeList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'dateOfBirth'}
+                        name={'ngaySinh'}
                         label={'Ngày sinh'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -118,7 +150,7 @@ const UpdateEmployeeList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'phone'}
+                        name={'soDienThoai'}
                         label={'Số điện thoại'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -128,7 +160,7 @@ const UpdateEmployeeList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'identityCard'}
+                        name={'soCCCD'}
                         label={'Căn cước công dân'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -138,7 +170,7 @@ const UpdateEmployeeList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'dateOfIssuance'}
+                        name={'ngayCap'}
                         label={'Ngày cấp'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -148,7 +180,7 @@ const UpdateEmployeeList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'hometown'}
+                        name={'queQuan'}
                         label={'Quê quán'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -158,7 +190,7 @@ const UpdateEmployeeList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'currentAddress'}
+                        name={'noiOHienTai'}
                         label={'Nơi ở hiện tại'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -168,7 +200,7 @@ const UpdateEmployeeList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'relative'}
+                        name={'nguoiThanLienHe'}
                         label={'Người thân liên hệ'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -178,7 +210,7 @@ const UpdateEmployeeList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'relativePhone'}
+                        name={'soDienThoaiNguoiLienHe'}
                         label={'Số điện thoại người thân liên hệ'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -188,7 +220,7 @@ const UpdateEmployeeList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'bankAccount'}
+                        name={'stkNganHang'}
                         label={'Số tài khoản ngân hàng'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -198,7 +230,7 @@ const UpdateEmployeeList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'bank'}
+                        name={'nganHang'}
                         label={'Ngân hàng'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
