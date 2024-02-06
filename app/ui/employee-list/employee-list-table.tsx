@@ -19,6 +19,9 @@ import CreateEmployeeList from './create-employee-list';
 import UpdateEmployeeList from './update-employee-list';
 import ViewEmployeeList from './view-employee-list';
 import ChangePassword from './change-password';
+import { SearchNhanVienRequest } from '@/app/models/nhanvien/search-nhanvien-request';
+import { HRMSystemApi } from '@/app/constant/constant';
+import { UpdateNhanVienRequest } from '@/app/models/nhanvien/update-nhanvien-request';
 
 const { Option } = Select;
 
@@ -40,12 +43,41 @@ interface DataType {
 const EmployeeListTable: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [loading, setLoading] = useState(true);
-  const [importOpen, setImportOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
   const [updateOpen, setUpdateOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
   const [form] = Form.useForm();
+  const [departments, setDepartments] = useState();
+  const [updateData, setUpdateData] = useState<UpdateNhanVienRequest>();
+
+  const getEmployeeById = async (maNhanVien:string) => {
+    try {
+        const response = await fetch(HRMSystemApi+`/NhanVien/${maNhanVien}`, {
+          method: "GET", // or 'PUT'
+          // headers: {
+          //   "Content-Type": "application/json",
+          // },
+          // body: JSON.stringify(searchRequest),
+        });
+    
+        const result = await response.json();
+        setUpdateData(result.data);
+        console.log("Success:", result);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+  }
+
+  const onUpdate = (maNhanVien:any) => {
+    setUpdateOpen(true);
+    getEmployeeById(maNhanVien);
+  }
+
+  const onView = (maNhanVien:any) => {
+    setViewOpen(true);
+    getEmployeeById(maNhanVien);
+  }
 
   const columns: ColumnsType<DataType> = [
     {
@@ -55,23 +87,23 @@ const EmployeeListTable: React.FC = () => {
     },
     {
       title: 'Mã nhân viên',
-      dataIndex: 'employeeId',
+      dataIndex: 'maNhanVien',
     },
     {
       title: 'Id vân tay',
-      dataIndex: 'fingerprintId',
+      dataIndex: 'idVanTay',
     },
     {
         title: 'Tên nhân viên',
-        dataIndex: 'employeeName',
+        dataIndex: 'hoTen',
     },
     {
         title: 'Chức vụ',
-        dataIndex: 'position',
+        dataIndex: 'chucVu',
       },
     {
         title: 'Phòng ban',
-        dataIndex: 'department',
+        dataIndex: 'phongBan',
     },
     {
         title: 'Mail công việc',
@@ -83,11 +115,11 @@ const EmployeeListTable: React.FC = () => {
       fixed:'right',
       align:'center',
       width:200,
-      render: () => {
+      render: (record) => {
           return (
               <Space style={{gap:'16px'}}>
-                  <Button icon={<EditTwoTone />} style={{backgroundColor:'transparent', border:'none', boxShadow:'none'}} onClick={() => setUpdateOpen(true)}></Button>
-                  <Button icon={<EyeTwoTone />} style={{backgroundColor:'transparent', border:'none', boxShadow:'none'}} onClick={() => setViewOpen(true)}></Button>
+                  <Button icon={<EditTwoTone />} style={{backgroundColor:'transparent', border:'none', boxShadow:'none'}} onClick={() => onUpdate(record.maNhanVien)}></Button>
+                  <Button icon={<EyeTwoTone />} style={{backgroundColor:'transparent', border:'none', boxShadow:'none'}} onClick={() => onView(record.maNhanVien)}></Button>
                   <Button icon={<LockTwoTone />} style={{backgroundColor:'transparent', border:'none', boxShadow:'none'}} onClick={() => setChangePasswordOpen(true)}></Button>
               </Space>
           )
@@ -108,14 +140,6 @@ const EmployeeListTable: React.FC = () => {
       boss:'kim',
       secretary:'kim',
       superiorDepartment:'sad'
-    //   position:'kk'
-    //   fullname:''
-    //   company: 'CÔNG TY CỔ PHẦN QUẢN LÝ KHÁCH SẠN & DỊCH VỤ MANDALA - CHI NHÁNH HÒA BÌNH',
-    //   employeeNumber: 31,
-    //   timekeepingTimes: 3,
-    //   boss:'Bùi Thị Yên',
-    //   secretary:'Bùi Thị Yên',
-    //   superiorDepartment:'Bếp',
     });
   }
 
@@ -143,37 +167,78 @@ const EmployeeListTable: React.FC = () => {
     console.log('Received values of form: ', values);
   };
 
+  const getEmployeeByParams = async (searchRequest :SearchNhanVienRequest) => {
+    try {
+        const response = await fetch(HRMSystemApi+'/NhanVien', {
+          method: "GET", // or 'PUT'
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(searchRequest),
+        });
+    
+        const result = await response.json();
+        console.log("Success:", result);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+  }
+
+  const getAllDepartments = async () => {
+    try {
+      const response = await fetch(HRMSystemApi+'/PhongBan', {
+        method: "GET", // or 'PUT'
+      });
+  
+      const result = await response.json();
+      console.log("Success:", result);
+      setDepartments(result.data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
   useEffect(() => {
     setLoading(false)
-    console.log(process.env.API_URL)
+    getEmployeeByParams({
+      hoTen: null,
+      maNhanVien: null,
+      idVanTay: null,
+      maPhongBan: null,
+      chucVu: null
+    });
+
+    getAllDepartments();
   },[])
 
   return (
     <>
-        <Skeleton loading={loading} active>
-            <div style={{backgroundColor:'#fff', padding:'24px'}}>
-                <Row justify={'space-between'} style={{marginBottom:'24px'}}>
-                    <span style={{textAlign:'center'}}><b>Danh sách nhân viên</b></span>
-                    <Col>
-                        <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setAddOpen(true)}>Thêm mới</Button>
-                        <Button type="primary" style={{marginLeft:'12px'}} onClick={() => {}}>Tạo tài khoản</Button>
-                    </Col>
-                </Row>
-                <Table 
-                scroll={{x:1200, y:500}} 
-                rowSelection={rowSelection} 
-                columns={columns} 
-                dataSource={data} 
-                pagination={{ showQuickJumper:true, total:50 ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}} 
-                />
-            </div>
-        </Skeleton>
-        <CreateEmployeeList show={addOpen} close={() => setAddOpen(false)} />
-        <UpdateEmployeeList show={updateOpen} close={() => setUpdateOpen(false)} />
-        <ViewEmployeeList show={viewOpen} close={() => setViewOpen(false)} />
-        <ChangePassword show={changePasswordOpen} close={() => setChangePasswordOpen(false)} />
+      <Skeleton loading={loading} active>
+          <div style={{backgroundColor:'#fff', padding:'24px'}}>
+              <Row justify={'space-between'} style={{marginBottom:'24px'}}>
+                  <span style={{textAlign:'center'}}><b>Danh sách nhân viên</b></span>
+                  <Col>
+                      <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setAddOpen(true)}>Thêm mới</Button>
+                      <Button type="primary" style={{marginLeft:'12px'}} onClick={() => {}}>Tạo tài khoản</Button>
+                  </Col>
+              </Row>
+              <Table 
+              scroll={{x:1200, y:500}} 
+              rowSelection={rowSelection} 
+              columns={columns} 
+              dataSource={data} 
+              pagination={{ showQuickJumper:true, total:50 ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}} 
+              />
+          </div>
+      </Skeleton>
+      <CreateEmployeeList show={addOpen} close={() => setAddOpen(false)} />
+      <UpdateEmployeeList data={updateData} show={updateOpen} close={() => setUpdateOpen(false)} />
+      <ViewEmployeeList data={updateData} show={viewOpen} close={() => setViewOpen(false)} />
+      <ChangePassword show={changePasswordOpen} close={() => setChangePasswordOpen(false)} />
     </>
     );
 };
 
 export default EmployeeListTable;
+
+

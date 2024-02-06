@@ -1,18 +1,17 @@
 'use client'
 
-import React, { use, useEffect, useState } from 'react';
-import { DownOutlined } from '@ant-design/icons';
-import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
+import React, { useEffect, useState } from 'react';
 import { Button, Col, Form, Input, Row, Select, Space, theme, DatePicker, Skeleton } from 'antd';
+import { HRMSystemApi } from '@/app/constant/constant';
+import { SearchNhanVienRequest } from '@/app/models/nhanvien/search-nhanvien-request'; 
 
 const { Option } = Select;
 
 const EmployeeListForm = () => {
     const { token } = theme.useToken();
     const [form] = Form.useForm();
-    const [expand, setExpand] = useState(false);
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true);
+    const [departments, setDepartments] = useState([]);
   
     const formStyle: React.CSSProperties = {
       maxWidth: 'none',
@@ -21,14 +20,63 @@ const EmployeeListForm = () => {
       padding:'24px'
     };
   
-    const onFinish = (values: any) => {
+    const onFinish = async (values: any) => {
       console.log('Received values of form: ', values);
+      const searchData :SearchNhanVienRequest = {
+        hoTen: values.hoTen,
+        maNhanVien: values.maNhanVien,
+        idVanTay: parseInt(values.IDVanTay),
+        maPhongBan: parseInt(values.phongBan),
+        chucVu: values.chucVu
+      }
+
+      getEmployeeByParams(searchData)
     };
+
+    const getEmployeeByParams = async (searchRequest :SearchNhanVienRequest) => {
+        try {
+            const response = await fetch(HRMSystemApi+'/NhanVien', {
+              method: "GET", // or 'PUT'
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(searchRequest),
+            });
+        
+            const result = await response.json();
+            console.log("Success:", result);
+          } catch (error) {
+            console.error("Error:", error);
+          }
+    }
+
+    const getAllDepartments = async () => {
+      try {
+        const response = await fetch(HRMSystemApi+'/PhongBan', {
+          method: "GET", // or 'PUT'
+        });
+    
+        const result = await response.json();
+        console.log("Success:", result);
+        setDepartments(result.data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
 
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
 
     useEffect(() => {
-        setLoading(false)
+        setLoading(false);
+        getEmployeeByParams({
+          hoTen: null,
+          maNhanVien: null,
+          idVanTay: null,
+          maPhongBan: null,
+          chucVu: null
+        });
+
+        getAllDepartments();
     },[])
   
     return (
@@ -37,7 +85,7 @@ const EmployeeListForm = () => {
                 <Row gutter={24}>
                     <Col span={7}>
                         <Form.Item
-                            name={'employeeName'}
+                            name={'hoTen'}
                             label={'Tên nhân viên'}
                             labelCol={{style: {width: 100, textAlign:"left"}}}
                         >
@@ -46,7 +94,7 @@ const EmployeeListForm = () => {
                     </Col>
                     <Col span={7}>
                         <Form.Item
-                            name={'employeeId'}
+                            name={'maNhanVien'}
                             label={'Mã nhân viên'}
                             labelCol={{style: {width: 100, textAlign:"left"}}}
                         >
@@ -55,33 +103,32 @@ const EmployeeListForm = () => {
                     </Col>
                     <Col span={7}>
                         <Form.Item
-                            name={'fingerprintId'}
+                            name={'IDVanTay'}
                             label={'ID vân tay'}
                             labelCol={{style: {width: 100, textAlign:"left"}}}
                         >
-                            <Input placeholder="Vui lòng nhập Id vân tay" />
+                            <Input placeholder="Vui lòng nhập Id vân tay" type='number'/>
                         </Form.Item>
                     </Col>
                 </Row>
                 <Row gutter={24}>
                     <Col span={7}>
                         <Form.Item
-                            name={'department'}
+                            name={'phongBan'}
                             label={'Phòng ban'}
                             labelCol={{style: {width: 100, textAlign:"left"}}}
                         >
                             <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
+                              {departments?.map((item :any, index) => (
+                                <Option key={index} value={item.maPhongBan}>{item.tenPhongBan}</Option>
+                              ))}
+                                
                             </Select>
                         </Form.Item>
                     </Col>
                     <Col span={7}>
                         <Form.Item
-                            name={'position'}
+                            name={'chucVu'}
                             label={'Chức vụ'}
                             labelCol={{style: {width: 100, textAlign:"left"}}}
                         >
@@ -91,7 +138,7 @@ const EmployeeListForm = () => {
                 </Row>
                 <div style={{ textAlign: 'right' }}>
                 <Space size="small">
-                    <Button type="primary" htmlType="submit">
+                    <Button type="primary" onClick={() => form.submit()}>
                     Tìm kiếm
                     </Button>
                     <Button

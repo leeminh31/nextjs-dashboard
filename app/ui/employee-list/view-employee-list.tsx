@@ -2,7 +2,7 @@ import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, Ske
 const {Option} = Select
 
 const ViewEmployeeList = (props:any) => {
-    const {show, close} = props
+    const {show, close, data} = props
     const [form] = Form.useForm()
 
     const onFinish = () => {
@@ -28,7 +28,7 @@ const ViewEmployeeList = (props:any) => {
                 <Row gutter={24}>
                     <Col span={12}>
                         <Form.Item
-                        name={'employeeId'}
+                        name={'maNhanVien'}
                         label={'Mã nhân viên'}
                         rules={[
                             {
@@ -39,12 +39,12 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Mã nhân viên" disabled/>
+                            <Input placeholder="Mã nhân viên" value={data.maNhanVien} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'employeeName'}
+                        name={'tenNhanVien'}
                         label={'Tên nhân viên'}
                         rules={[
                             {
@@ -55,27 +55,27 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Tên nhân viên" disabled/>
+                            <Input placeholder="Tên nhân viên" value={data.hoTen} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'position'}
+                        name={'chucVu'}
                         label={'Chức vụ'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Chức vụ" disabled/>
+                            <Input placeholder="Chức vụ" value={data.chucVu} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'department'}
+                        name={'phongBan'}
                         label={'Phòng ban'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Select placeholder = "Vui lòng chọn" disabled>
+                            <Select placeholder = "Vui lòng chọn" value={data.maPhongBan} disabled>
                                 <Option value="1">Bùi Thị Yên</Option>
                                 <Option value="2">Bùi Thị Yên</Option>
                                 <Option value="3">Bùi Thị Yên</Option>
@@ -86,12 +86,12 @@ const ViewEmployeeList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'fingerprintId'}
+                        name={'idVanTay'}
                         label={'ID vân tay'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' placeholder='ID vân tay' disabled/>
+                            <Input type='number' placeholder='ID vân tay' value={data.idVanTay} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -101,107 +101,107 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder='Mail công việc' disabled/>
+                            <Input placeholder='Mail công việc' value={data.mail} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'dateOfBirth'}
+                        name={'ngaySinh'}
                         label={'Ngày sinh'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <DatePicker placeholder='Ngày sinh' disabled/>
+                            <DatePicker placeholder='Ngày sinh' value={data.ngaySinh} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'phone'}
+                        name={'soDienThoai'}
                         label={'Số điện thoại'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' maxLength={20} placeholder='Số điện thoại' disabled/>
+                            <Input type='number' maxLength={20} placeholder='Số điện thoại' value={data.soDienThoai} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'identityCard'}
+                        name={'soCCCD'}
                         label={'Căn cước công dân'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' maxLength={20} placeholder='Căn cước công dân' disabled/>
+                            <Input type='number' maxLength={20} placeholder='Căn cước công dân' value={data.soCCCD} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'dateOfIssuance'}
+                        name={'ngayCap'}
                         label={'Ngày cấp'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <DatePicker placeholder='Ngày cấp' disabled/>
+                            <DatePicker placeholder='Ngày cấp' value={data.ngayCap} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'hometown'}
+                        name={'queQuan'}
                         label={'Quê quán'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder='Quê quán' disabled/>
+                            <Input placeholder='Quê quán' value={data.queQuan} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'currentAddress'}
+                        name={'noiOHienTai'}
                         label={'Nơi ở hiện tại'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder='Nơi ở hiện tại' disabled/>
+                            <Input placeholder='Nơi ở hiện tại' value={data.noiOHienTai} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'relative'}
+                        name={'nguoiThanLienHe'}
                         label={'Người thân liên hệ'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder='Người thân liên hệ' disabled/>
+                            <Input placeholder='Người thân liên hệ' value={data.nguoiThanLienHe} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'relativePhone'}
+                        name={'soDienThoaiNguoiLienHe'}
                         label={'Số điện thoại người thân liên hệ'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' placeholder='Số điện thoại người thân liên hệ' disabled/>
+                            <Input type='number' placeholder='Số điện thoại người thân liên hệ' value={data.soDienThoaiNguoiLienHe} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'bankAccount'}
+                        name={'stkNganHang'}
                         label={'Số tài khoản ngân hàng'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' placeholder='Số tài khoản ngân hàng' disabled/>
+                            <Input type='number' placeholder='Số tài khoản ngân hàng' value={data.stkNganHang} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'bank'}
+                        name={'nganHang'}
                         label={'Ngân hàng'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='text' placeholder='Ngân hàng' disabled/>
+                            <Input type='text' placeholder='Ngân hàng' value={data.nganHang} disabled/>
                         </Form.Item>
                     </Col>
                 </Row>

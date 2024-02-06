@@ -4,7 +4,7 @@ import { FormatDate } from '@/app/utils/formatDate';
 import { HRMSystemApi } from '@/app/constant/constant';
 
 const UpdateEmployeeList = (props:any) => {
-    const {show, close} = props
+    const {show, close, data} = props
     const [form] = Form.useForm()
 
     const onFinish = async (values: any) => {
@@ -75,7 +75,7 @@ const UpdateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Mã nhân viên" />
+                            <Input placeholder="Mã nhân viên" value={data.maNhanVien} />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -91,7 +91,7 @@ const UpdateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Tên nhân viên" />
+                            <Input placeholder="Tên nhân viên" value={data.hoTen}/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -101,7 +101,7 @@ const UpdateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Chức vụ" />
+                            <Input placeholder="Chức vụ" value={data.chucVu}/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -111,7 +111,7 @@ const UpdateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Select placeholder = "Vui lòng chọn">
+                            <Select placeholder = "Vui lòng chọn" value={data.maPhongBan}>
                                 <Option value="1">Bùi Thị Yên</Option>
                                 <Option value="2">Bùi Thị Yên</Option>
                                 <Option value="3">Bùi Thị Yên</Option>
@@ -125,7 +125,7 @@ const UpdateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' placeholder='ID vân tay' />
+                            <Input type='number' placeholder='ID vân tay' value={data.idVanTay}/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -135,7 +135,7 @@ const UpdateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder='Mail công việc' />
+                            <Input placeholder='Mail công việc' value={data.mail}/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -145,7 +145,7 @@ const UpdateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <DatePicker placeholder='Ngày sinh' />
+                            <DatePicker placeholder='Ngày sinh' value={data.ngaySinh}/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -155,7 +155,7 @@ const UpdateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' maxLength={20} placeholder='Số điện thoại'/>
+                            <Input type='number' maxLength={20} placeholder='Số điện thoại' value={data.soDienThoai}/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -165,7 +165,7 @@ const UpdateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' maxLength={20} placeholder='Căn cước công dân' />
+                            <Input type='number' maxLength={20} placeholder='Căn cước công dân' value={data.soCCCD}/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -175,7 +175,7 @@ const UpdateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <DatePicker placeholder='Ngày cấp' />
+                            <DatePicker placeholder='Ngày cấp' value={data.ngayCap}/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -185,7 +185,7 @@ const UpdateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder='Quê quán' />
+                            <Input placeholder='Quê quán' value={data.queQuan}/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -195,7 +195,7 @@ const UpdateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder='Nơi ở hiện tại' />
+                            <Input placeholder='Nơi ở hiện tại' value={data.noiOHienTai}/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -205,7 +205,7 @@ const UpdateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder='Người thân liên hệ' />
+                            <Input placeholder='Người thân liên hệ' value={data.nguoiThanLienHe}/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -215,7 +215,7 @@ const UpdateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' placeholder='Số điện thoại người thân liên hệ' />
+                            <Input type='number' placeholder='Số điện thoại người thân liên hệ' value={data.soDienThoaiNguoiLienHe}/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -225,7 +225,7 @@ const UpdateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' placeholder='Số tài khoản ngân hàng' />
+                            <Input type='number' placeholder='Số tài khoản ngân hàng' value={data.stkNganHang}/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -235,7 +235,7 @@ const UpdateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='text' placeholder='Ngân hàng' />
+                            <Input type='text' placeholder='Ngân hàng' value={data.nganHang}/>
                         </Form.Item>
                     </Col>
                 </Row>

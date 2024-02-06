@@ -2,13 +2,14 @@ import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, Ske
 const {Option} = Select
 import { HRMSystemApi } from '@/app/constant/constant';
 import { FormatDate } from '@/app/utils/formatDate';
+import { CreateNhanVienRequest } from '@/app/models/nhanvien/create-nhanvien-request';
 
 const CreateEmployeeList = (props:any) => {
     const {show,close} = props
     const [form] = Form.useForm()
 
     const onFinish = async (values: any) => {
-        const requestData = {
+        const requestData : CreateNhanVienRequest = {
             maNhanVien: values.maNhanVien,
             hoTen: values.hoTen,
             chucVu: values.chucVu,
@@ -20,11 +21,11 @@ const CreateEmployeeList = (props:any) => {
             noiOHienTai: values.noiOHienTai,
             nguoiThanLienHe: values.nguoiThanLienHe,
             soDienThoaiNguoiLienHe: values.soDienThoaiNguoiLienHe,
-            stkNganHang: values.stkNganHang,
+            STKNganHang: values.stkNganHang,
             nganHang: values.nganHang,
             maPhongBan: parseInt(values.maPhongBan),
             soDienThoai: values.soDienThoai,
-            IDVanTay: parseInt(values.IDVanTay)
+            idVanTay: parseInt(values.IDVanTay)
         }
 
         try {
