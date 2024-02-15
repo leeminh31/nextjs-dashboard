@@ -9,7 +9,6 @@ const { Option } = Select;
 const DepartmentsListForm = () => {
     const { token } = theme.useToken();
     const [form] = Form.useForm();
-    const [expand, setExpand] = useState(false);
     const [loading, setLoading] =useState(true);
   
     const formStyle: React.CSSProperties = {
@@ -33,7 +32,7 @@ const DepartmentsListForm = () => {
         <Row gutter={24}>
             <Col span={7}>
                 <Form.Item
-                    name={'departmentName'}
+                    name={'tenPhongBan'}
                     label={'Tên phòng ban'}
                     labelCol={{style: {width: 120, textAlign:"left"}}}
                 >
@@ -42,32 +41,20 @@ const DepartmentsListForm = () => {
             </Col>
             <Col span={7}>
                 <Form.Item
-                    name={'departmentHead'}
-                    label={'Người quản lý'}
+                    name={'truongPhongBan'}
+                    label={'Trưởng phòng ban'}
                     labelCol={{style: {width: 120, textAlign:"left"}}}
                 >
-                    <Select placeholder = "Vui lòng chọn">
-                        <Option value="1">Bùi Thị Yên</Option>
-                        <Option value="2">Bùi Thị Yên</Option>
-                        <Option value="3">Bùi Thị Yên</Option>
-                        <Option value="4">Bùi Thị Yên</Option>
-                        <Option value="5">Bùi Thị Yên</Option>
-                    </Select>
+                    <Input placeholder="Trưởng phòng ban" />
                 </Form.Item>
             </Col>
             <Col span={7}>
                 <Form.Item
-                    name={'superiorDepartments'}
-                    label={'Phòng ban cấp trên'}
+                    name={'thuKyPhongBan'}
+                    label={'Thư ký phòng ban'}
                     labelCol={{style: {width: 140, textAlign:"left"}}}
                 >
-                    <Select placeholder = "Vui lòng chọn">
-                        <Option value="1">Bùi Thị Yên</Option>
-                        <Option value="2">Bùi Thị Yên</Option>
-                        <Option value="3">Bùi Thị Yên</Option>
-                        <Option value="4">Bùi Thị Yên</Option>
-                        <Option value="5">Bùi Thị Yên</Option>
-                    </Select>
+                    <Input placeholder="Thư ký phòng ban" />
                 </Form.Item>
             </Col>
         </Row>

@@ -1,7 +1,5 @@
 export interface SearchHopDongsRequest{
-    page: number,
-    pageSize: number,
-    code: string,
-    name: string,
-    orderby: string
+    tenHopDong:string ,
+    maNhanVien: string ,
+    loaiHopDong:string ,
 }

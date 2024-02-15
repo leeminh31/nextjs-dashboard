@@ -29,7 +29,7 @@ const UpdateDepartmentsList = (props:any) => {
                 <Row gutter={24}>
                     <Col span={12}>
                         <Form.Item
-                        name={'departmentName'}
+                        name={'tenPhongBan'}
                         label={'Tên phòng ban'}
                         rules={[
                             {
@@ -45,7 +45,7 @@ const UpdateDepartmentsList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'timekeepingTimes'}
+                        name={'soLanChamCong'}
                         label={'Số lần chấm công'}
                         rules={[
                             {
@@ -61,50 +61,22 @@ const UpdateDepartmentsList = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'boss'}
-                        label={'Người quản lý'}
+                        name={'truongPhongBan'}
+                        label={'Trưởng phòng ban'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
+                            <Input placeholder="Trưởng phòng ban" />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'secretary'}
+                        name={'thuKy'}
                         label={'Thư ký'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'supervisorDepartment'}
-                        label={'Phòng ban cấp trên'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
+                            <Input placeholder="Thư ký" />
                         </Form.Item>
                     </Col>
                 </Row>

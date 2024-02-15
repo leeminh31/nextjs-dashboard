@@ -22,7 +22,7 @@ const CreateContract = (props:any) => {
     return (
         <Drawer 
             size='large' 
-            title="Thêm mới" 
+            title="Thêm mới hợp đồng nhân viên" 
             placement="right" 
             onClose={close} 
             open={show} 
@@ -39,7 +39,7 @@ const CreateContract = (props:any) => {
                 <Row gutter={24}>
                     <Col span={12}>
                         <Form.Item
-                        name={'contractName'}
+                        name={'tenHopDong'}
                         label={'Tên hợp đồng'}
                         rules={[
                             {
@@ -55,7 +55,7 @@ const CreateContract = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'employeeId'}
+                        name={'maNhanVien'}
                         label={'Mã nhân viên'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -65,12 +65,12 @@ const CreateContract = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'employee'}
-                        label={'Nhân viên'}
+                        name={'tenNhanVien'}
+                        label={'Tên Nhân viên'}
                         rules={[
                           {
                           required: true,
-                          message: 'Vui lòng nhập Nhân viên!',
+                          message: 'Vui lòng chọn',
                           },
                         ]}
                         labelCol={{ span:24 }}
@@ -87,43 +87,7 @@ const CreateContract = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'department'}
-                        label={'Phòng ban'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'position'}
-                        label={'Chức vụ'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <Input/>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'signDate'}
-                        label={'Ngày ký'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <DatePicker placeholder='Vui lòng nhập Ngày ký' format={dateFormatList} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'startDate'}
+                        name={'ngayBatDau'}
                         label={'Ngày bắt đầu'}
                         rules={[
                           {
@@ -138,33 +102,24 @@ const CreateContract = (props:any) => {
                         </Form.Item>
                     </Col>
                     <Col span={12}>
-                        {
-                        value ? 
-                          <Form.Item
-                          name={'endDate'}
-                          label={'Ngày kết thúc không xác định'}
-                          labelCol={{ span:24 }}
-                          >
-                          </Form.Item> : 
-                          <Form.Item
-                            name={'endDate'}
-                            label={'Ngày kết thúc'}
-                            rules={[
-                              {
-                              required: true,
-                              message: 'Vui lòng nhập Ngày kết thúc!',
-                              },
-                            ]}
-                            labelCol={{ span:24 }}
-                            wrapperCol={{ span:24 }}
-                            >
-                            <DatePicker placeholder='Vui lòng nhập Ngày kết thúc' format={dateFormatList} />
-                          </Form.Item>
-                        }
+                      <Form.Item
+                        name={'ngayKetThuc'}
+                        label={'Ngày kết thúc'}
+                        rules={[
+                          {
+                          required: true,
+                          message: 'Vui lòng nhập Ngày kết thúc!',
+                          },
+                        ]}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                        <DatePicker placeholder='Vui lòng nhập Ngày kết thúc' format={dateFormatList} />
+                      </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'contractType'}
+                        name={'loaiHopDong'}
                         label={'Loại hợp đồng'}
                         rules={[
                           {
@@ -176,17 +131,14 @@ const CreateContract = (props:any) => {
                         wrapperCol={{ span:24 }}
                         >
                           <Select placeholder = "Vui lòng chọn">
-                            <Option value="1">Bùi Thị Yên</Option>
-                            <Option value="2">Bùi Thị Yên</Option>
-                            <Option value="3">Bùi Thị Yên</Option>
-                            <Option value="4">Bùi Thị Yên</Option>
-                            <Option value="5">Bùi Thị Yên</Option>
+                            <Option value="1">Thử việc</Option>
+                            <Option value="2">Chính thức</Option>
                           </Select>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'salaryRate'}
+                        name={'tyLeHuongLuong'}
                         label={'Tỷ lệ hưởng lương'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -196,7 +148,7 @@ const CreateContract = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'workingHours'}
+                        name={'gioLamViec'}
                         label={'Giờ làm việc'}
                         rules={[
                           {
@@ -207,36 +159,17 @@ const CreateContract = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                          <Select placeholder = "Vui lòng chọn">
-                            <Option value="1">Bùi Thị Yên</Option>
-                            <Option value="2">Bùi Thị Yên</Option>
-                            <Option value="3">Bùi Thị Yên</Option>
-                            <Option value="4">Bùi Thị Yên</Option>
-                            <Option value="5">Bùi Thị Yên</Option>
-                          </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'salary'}
-                        label={'Tiền công, lương tháng'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
                           <Input type={'number'} />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'salary'}
-                        label={'Hợp đồng không xác định thời hạn'}
+                        name={'congChuan'}
+                        label={'Công chuẩn'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                          <Radio.Group defaultValue={false} onChange={onChange} value={value}>
-                            <Radio value={true}>True</Radio>
-                            <Radio value={false}>False</Radio>
-                          </Radio.Group>
+                          <Input type={'number'} />
                         </Form.Item>
                     </Col>
                 </Row>

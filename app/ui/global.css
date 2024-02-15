@@ -25,6 +25,10 @@ input[type='number']::-webkit-outer-spin-button {
   margin: 0;
 }
 
+.ant-upload-wrapper .ant-upload-select {
+  display: block;
+}
+
 .ant-layout-header {
   box-shadow: 0 4px 10px #ddd;
   z-index: 9;

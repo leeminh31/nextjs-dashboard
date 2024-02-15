@@ -27,8 +27,8 @@ const ShiftListForm = () => {
         <Row gutter={24}>
             <Col span={7}>
                 <Form.Item
-                    name={'shiftName'}
-                    label={'Tên: '}
+                    name={'tenCa'}
+                    label={'Tên ca'}
                 >
                     <Input placeholder="Vui lòng nhập Tên ca" />
                 </Form.Item>

@@ -230,77 +230,52 @@ const StaffTransferTable: React.FC = () => {
 
     const columns: ColumnsType<DataType> = [
         {
-            title: '#',
+            title: 'STT',
             dataIndex: 'key',
             key: 'key',
             width:50
         },
         {
+            title: 'Họ tên',
+            dataIndex: 'hoTen',
+            key: 'hoTen',
+        },
+        {
+            title: 'Mã nhân viên',
+            dataIndex: 'maNhanVien',
+            key: 'maNhanVien',
+        },
+        {
             title: 'Ngày tạo',
-            dataIndex: 'createDate',
-            key: 'createDate',
+            dataIndex: 'ngayTao',
+            key: 'ngayTao',
         },
         {
-            title: 'Tên phiếu',
-            dataIndex: 'ticketName',
-            key: 'ticketName',
+            title: 'Ca hiện tại',
+            key: 'caHienTai',
+            dataIndex: 'caHienTai',
         },
         {
-            title: 'Loại phiếu',
-            dataIndex: 'ticketType',
-            key: 'ticketType',
+            title: 'Ca mới',
+            key: 'caMoi',
+            dataIndex: 'caMoi',
         },
         {
-            title: 'Công ty hiện tại',
-            key: 'currentCompany',
-            dataIndex: 'currentCompany',
-        },
-        {
-            title: 'Công ty chuyển đến',
-            key: 'deliverCompany',
-            dataIndex: 'deliverCompany',
-        },
-        {
-            title: 'Nhân viên',
-            key: 'employee',
-            dataIndex: 'employee',
-        },
-        {
-            title: 'Phòng ban hiện tại',
-            key: 'currentDepartment',
-            dataIndex: 'currentDepartment',
-        },
-        {
-            title: 'Phòng ban chuyển đến',
-            key: 'deliverDepartment',
-            dataIndex: 'deliverDepartment',
-        },
-        {
-            title: 'Ngày kết thúc làm việc công ty hiện tại',
-            key: 'endDateOfCurrentCompany',
-            dataIndex: 'endDateOfCurrentCompany',
-        },
-        {
-            title: 'Ngày kết thúc làm việc công ty mới',
-            key: 'endDateOfDeliverCompany',
-            dataIndex: 'endDateOfDeliverCompany',
-        },
-        {
-            title: 'Ngày duyệt',
-            key: 'approvalDate',
-            dataIndex: 'approvalDate',
+            title: 'Ngày bắt đầu ca mới',
+            key: 'ngayBatDauCaMoi',
+            dataIndex: 'ngayBatDauCaMoi',
         },
         {
             title: 'Người duyệt',
-            key: 'contractType',
-            dataIndex: 'contractType',
+            key: 'nguoiDuyet',
+            dataIndex: 'nguoiDuyet',
         },
         {
           title: 'Trạng thái',
           key: 'status',
           dataIndex: 'status',
           render: (status) => {
-            let color = status === 'Đã duyệt' ? 'green' : 'volcano'
+            let color = status === 'Đã duyệt' ? 'green' : status === 'Chờ duyệt' ? 'transparent' : 'red'
             return (
               <Tag color={color} >
                   {status.toUpperCase()}
@@ -316,12 +291,6 @@ const StaffTransferTable: React.FC = () => {
             align: 'center' as 'center',
             render: () => (
               <>
-                <Button 
-                style={{backgroundColor:'transparent', color:'#6c8cad', border:'none'}}
-                onClick={() => setUpdateOpen(true)}
-                >
-                  <FontAwesomeIcon icon={faPencil} />
-                </Button>
                 <Button 
                 style={{backgroundColor:'transparent', color:'#6c8cad', border:'none'}}
                 onClick={() => setViewOpen(true)}
@@ -356,12 +325,9 @@ const StaffTransferTable: React.FC = () => {
       <>  
         <div style={{paddingLeft:"24px",paddingRight:"24px", backgroundColor:colorBgContainer, marginTop:"20px"}}>
             <Flex justify='space-between' align='center' style={{height:"50px", borderBottom:"1px solid #bbbfc1", marginBottom:"10px"}}>
-                <span><b>Kiểm kê phiếu điều chuyển nhân viên</b></span>
+                <span><b>Phân ca làm việc nhân viên</b></span>
                 <Row>
-                  <Button type="primary" style={{marginLeft:'12px'}}><ExportOutlined /></Button>
-                  <Button type="primary" onClick={() => setAddOpen(true)}>Tạo</Button>
-                  <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setImportOpen(true)}>Duyệt</Button>
-                  <Button type="primary" style={{marginLeft:'12px'}} >Hủy</Button>
+                  <Button type="primary" onClick={() => setAddOpen(true)}>Tạo mới</Button>
                   <Button type="primary" style={{marginLeft:'12px'}}>Xóa</Button>
                 </Row>
             </Flex>
@@ -373,574 +339,6 @@ const StaffTransferTable: React.FC = () => {
                 pagination={{ showQuickJumper:true, total:50 ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}} 
             />
         </div>
-        <Drawer 
-            size='large' 
-            title="Thêm mới" 
-            placement="right" 
-            onClose={closeAddDrawer} 
-            open={addOpen} 
-            footer= {
-                <Row justify={'end'}>
-                    <Space>
-                        <Button onClick={() => setAddOpen(false)}>Hủy</Button>
-                        <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-                    </Space>
-                </Row>
-            }
-        >
-            <Form form={form} name="insertStaffTransfer" onFinish={onFinish}>
-                <Row gutter={24}>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'ticketType'}
-                        label={'Loại phiếu'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng chọn Loại phiếu!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Loại phiếu" onChange={(e) => setTicketType(e) } allowClear>
-                                <Option value={1}>Công ty</Option>
-                                <Option value={2}>Phòng ban</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'ticketName'}
-                        label={'Tên Phiếu'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Vui lòng nhập Tên phiếu " />
-                        </Form.Item>
-                    </Col>
-                    {ticketType === 1 ?
-                        <>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'currentCompany'}
-                                label={'Công ty hiện tại'}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                    <Select placeholder = "Vui lòng chọn">
-                                        <Option value={1}>Bùi Thị Yên</Option>
-                                        <Option value={2}>Bùi Thị Yên</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'employee'}
-                                label={'Nhân viên'}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                    <Select placeholder = "Vui lòng chọn nhân viên">
-                                        <Option value={1}>Bùi Thị Yên</Option>
-                                        <Option value={2}>Bùi Thị Yên</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'deliverDepartment'}
-                                label={'Phòng ban'}
-                                rules={[
-                                    {
-                                    required: true,
-                                    message: 'Vui lòng chọn Phòng ban!',
-                                    },
-                                ]}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                    <Select placeholder = "Vui lòng chọn công ty ">
-                                        <Option value={1}>Bùi Thị Yên</Option>
-                                        <Option value={2}>Bùi Thị Yên</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'department'}
-                                label={'Phòng ban'}
-                                rules={[
-                                    {
-                                    required: true,
-                                    message: 'Vui lòng chọn phòng ban!',
-                                    },
-                                ]}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                    <Select placeholder = "Vui lòng chọn phòng ban ">
-                                        <Option value={1}>Bùi Thị Yên</Option>
-                                        <Option value={2}>Bùi Thị Yên</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'endDateOfCurrentCompany'}
-                                label={'Ngày kết thúc công việc công ty cũ'}
-                                rules={[
-                                    {
-                                    required: true,
-                                    message: 'Vui lòng nhập Ngày kết thúc công việc công ty cũ!',
-                                    },
-                                ]}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                <DatePicker placeholder='Vui lòng nhập Ngày kết thúc công việc công ty cũ' format={dateFormatList} />
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'startDateOfNewCompany'}
-                                label={'Ngày vào làm công ty mới'}
-                                rules={[
-                                    {
-                                    required: true,
-                                    message: 'Vui lòng chọn phòng ban chuyển đến!',
-                                    },
-                                ]}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                <DatePicker placeholder='Vui lòng nhập Ngày vào làm công ty mới' format={dateFormatList} />
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'contractName'}
-                                label={'Tên hợp đồng'}
-                                rules={[
-                                    {
-                                    required: true,
-                                    message: 'Vui lòng nhập Tên hợp đồng!',
-                                    },
-                                ]}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                    <Input placeholder="Vui lòng nhập Tên hợp đồng " />
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'contracType'}
-                                label={'Loại hợp đồng'}
-                                rules={[
-                                    {
-                                    required: true,
-                                    message: 'Vui lòng chọn Loại hợp đồng!',
-                                    },
-                                ]}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                    <Select placeholder = "Vui lòng chọn">
-                                        <Option value={1}>Bùi Thị Yên</Option>
-                                        <Option value={2}>Bùi Thị Yên</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'signDate'}
-                                label={'Ngày ký hợp đồng'}
-                                rules={[
-                                    {
-                                    required: true,
-                                    message: 'Vui lòng chọn phòng ban chuyển đến!',
-                                    },
-                                ]}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                <DatePicker placeholder='Vui lòng nhập Ngày ký hợp đồng' format={dateFormatList} />
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'endContractDate'}
-                                label={'Ngày kết thúc hợp đồng mới'}
-                                rules={[
-                                    {
-                                    required: true,
-                                    message: 'Vui lòng chọn phòng ban chuyển đến!',
-                                    },
-                                ]}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                <DatePicker placeholder='Vui lòng nhập Ngày kết thúc hợp đồng mới' format={dateFormatList} />
-                                </Form.Item>
-                            </Col>
-                        </> : ticketType === 2 ?
-                        <>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'currentDepartment'}
-                                label={'Phòng ban hiện tại'}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                    <Select placeholder = "Vui lòng chọn">
-                                        <Option value={1}>Bùi Thị Yên</Option>
-                                        <Option value={2}>Bùi Thị Yên</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'employee'}
-                                label={'Nhân viên'}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                    <Select placeholder = "Vui lòng chọn nhân viên">
-                                        <Option value={1}>Bùi Thị Yên</Option>
-                                        <Option value={2}>Bùi Thị Yên</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'deliverDepartment'}
-                                label={'Phòng ban'}
-                                rules={[
-                                    {
-                                    required: true,
-                                    message: 'Vui lòng chọn phòng ban chuyển đến!',
-                                    },
-                                ]}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                    <Select placeholder = "Vui lòng chọn">
-                                        <Option value={1}>Bùi Thị Yên</Option>
-                                        <Option value={2}>Bùi Thị Yên</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'startDateDeliverDepartment'}
-                                label={'Ngày vào làm phòng ban mới'}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                <DatePicker placeholder='Vui lòng nhập Ngày vào làm phòng mới' format={dateFormatList} />
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'endDateCurrentDepartment'}
-                                label={'Ngày kết thúc công việc phòng ban cũ'}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                <DatePicker placeholder='Vui lòng nhập Ngày kết thúc công việc phòng ban cũ' format={dateFormatList} />
-                                </Form.Item>
-                            </Col>
-                        </> :
-                        <></>
-                    }
-                </Row>
-            </Form>
-        </Drawer>
-        <Drawer 
-            size='large' 
-            title="Thông tin chi tiết" 
-            placement="right" 
-            onClose={closeUpdateDrawer} 
-            open={updateOpen} 
-            footer= {
-                <Row justify={'end'}>
-                    <Space>
-                        <Button onClick={() => setUpdateOpen(false)}>Hủy</Button>
-                        <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-                    </Space>
-                </Row>
-            }
-        >
-            <Form form={form} name="updateStaffTransfer" onFinish={onFinish}>
-                <Row gutter={24}>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'ticketType'}
-                        label={'Loại phiếu'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng chọn Loại phiếu!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Loại phiếu" onChange={(e) => setTicketType(e) } allowClear>
-                                <Option value={1}>Công ty</Option>
-                                <Option value={2}>Phòng ban</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'ticketName'}
-                        label={'Tên Phiếu'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Vui lòng nhập Tên phiếu " />
-                        </Form.Item>
-                    </Col>
-                    {ticketType === 1 ?
-                        <>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'currentCompany'}
-                                label={'Công ty hiện tại'}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                    <Select placeholder = "Vui lòng chọn">
-                                        <Option value={1}>Bùi Thị Yên</Option>
-                                        <Option value={2}>Bùi Thị Yên</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'employee'}
-                                label={'Nhân viên'}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                    <Select placeholder = "Vui lòng chọn nhân viên">
-                                        <Option value={1}>Bùi Thị Yên</Option>
-                                        <Option value={2}>Bùi Thị Yên</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'deliverDepartment'}
-                                label={'Phòng ban'}
-                                rules={[
-                                    {
-                                    required: true,
-                                    message: 'Vui lòng chọn Phòng ban!',
-                                    },
-                                ]}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                    <Select placeholder = "Vui lòng chọn công ty ">
-                                        <Option value={1}>Bùi Thị Yên</Option>
-                                        <Option value={2}>Bùi Thị Yên</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'department'}
-                                label={'Phòng ban'}
-                                rules={[
-                                    {
-                                    required: true,
-                                    message: 'Vui lòng chọn phòng ban!',
-                                    },
-                                ]}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                    <Select placeholder = "Vui lòng chọn phòng ban ">
-                                        <Option value={1}>Bùi Thị Yên</Option>
-                                        <Option value={2}>Bùi Thị Yên</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'endDateOfCurrentCompany'}
-                                label={'Ngày kết thúc công việc công ty cũ'}
-                                rules={[
-                                    {
-                                    required: true,
-                                    message: 'Vui lòng nhập Ngày kết thúc công việc công ty cũ!',
-                                    },
-                                ]}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                <DatePicker placeholder='Vui lòng nhập Ngày kết thúc công việc công ty cũ' format={dateFormatList} />
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'startDateOfNewCompany'}
-                                label={'Ngày vào làm công ty mới'}
-                                rules={[
-                                    {
-                                    required: true,
-                                    message: 'Vui lòng chọn phòng ban chuyển đến!',
-                                    },
-                                ]}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                <DatePicker placeholder='Vui lòng nhập Ngày vào làm công ty mới' format={dateFormatList} />
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'contractName'}
-                                label={'Tên hợp đồng'}
-                                rules={[
-                                    {
-                                    required: true,
-                                    message: 'Vui lòng nhập Tên hợp đồng!',
-                                    },
-                                ]}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                    <Input placeholder="Vui lòng nhập Tên hợp đồng " />
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'contracType'}
-                                label={'Loại hợp đồng'}
-                                rules={[
-                                    {
-                                    required: true,
-                                    message: 'Vui lòng chọn Loại hợp đồng!',
-                                    },
-                                ]}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                    <Select placeholder = "Vui lòng chọn">
-                                        <Option value={1}>Bùi Thị Yên</Option>
-                                        <Option value={2}>Bùi Thị Yên</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'signDate'}
-                                label={'Ngày ký hợp đồng'}
-                                rules={[
-                                    {
-                                    required: true,
-                                    message: 'Vui lòng chọn phòng ban chuyển đến!',
-                                    },
-                                ]}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                <DatePicker placeholder='Vui lòng nhập Ngày ký hợp đồng' format={dateFormatList} />
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'endContractDate'}
-                                label={'Ngày kết thúc hợp đồng mới'}
-                                rules={[
-                                    {
-                                    required: true,
-                                    message: 'Vui lòng chọn phòng ban chuyển đến!',
-                                    },
-                                ]}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                <DatePicker placeholder='Vui lòng nhập Ngày kết thúc hợp đồng mới' format={dateFormatList} />
-                                </Form.Item>
-                            </Col>
-                        </> : ticketType === 2 ?
-                        <>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'currentDepartment'}
-                                label={'Phòng ban hiện tại'}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                    <Select placeholder = "Vui lòng chọn">
-                                        <Option value={1}>Bùi Thị Yên</Option>
-                                        <Option value={2}>Bùi Thị Yên</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'employee'}
-                                label={'Nhân viên'}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                    <Select placeholder = "Vui lòng chọn nhân viên">
-                                        <Option value={1}>Bùi Thị Yên</Option>
-                                        <Option value={2}>Bùi Thị Yên</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'deliverDepartment'}
-                                label={'Phòng ban'}
-                                rules={[
-                                    {
-                                    required: true,
-                                    message: 'Vui lòng chọn phòng ban chuyển đến!',
-                                    },
-                                ]}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                    <Select placeholder = "Vui lòng chọn">
-                                        <Option value={1}>Bùi Thị Yên</Option>
-                                        <Option value={2}>Bùi Thị Yên</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'startDateDeliverDepartment'}
-                                label={'Ngày vào làm phòng ban mới'}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                <DatePicker placeholder='Vui lòng nhập Ngày vào làm phòng mới' format={dateFormatList} />
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                name={'endDateCurrentDepartment'}
-                                label={'Ngày kết thúc công việc phòng ban cũ'}
-                                labelCol={{ span:24 }}
-                                wrapperCol={{ span:24 }}
-                                >
-                                <DatePicker placeholder='Vui lòng nhập Ngày kết thúc công việc phòng ban cũ' format={dateFormatList} />
-                                </Form.Item>
-                            </Col>
-                        </> :
-                        <></>
-                    }
-                </Row>
-            </Form>
-        </Drawer>
         <Drawer 
             size='large' 
             title="Thông tin chi tiết" 

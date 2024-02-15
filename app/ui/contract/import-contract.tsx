@@ -24,14 +24,14 @@ const ImportContract = (props:any) => {
             </Row>
             }
             >
-                <Upload>
-                    <p>File upload</p>
-                    <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                </Upload>
                 <Space direction='vertical'>
-                    <p>Template file</p>
-                    <Button type='primary' icon={<DownloadOutlined />}>Tải xuống template</Button>
+                    <p>Tải file template mẫu</p>
+                    <Button type='primary' icon={<DownloadOutlined />}>File mẫu</Button>
                 </Space>
+                <Upload>
+                    <p>Chọn file cần nhập</p>
+                    <Button icon={<UploadOutlined />}>Chọn file</Button>
+                </Upload>
         </Drawer>
     )
 }

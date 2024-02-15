@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, Skeleton } from 'antd';
+import { Button, Table, Row,Col, Space, Form, Select, Skeleton } from 'antd';
 import {
     EditTwoTone,
     EyeTwoTone,
@@ -7,10 +7,8 @@ import {
     DownloadOutlined,
   } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import ImportDepartmentsList from './import-departments-list';
 import CreateDepartmentsList from './create-departments-list';
 import UpdateDepartmentsList from './update-departments-list';
-import ViewDepartmentsList from './view-departments-list';
 const { Option } = Select;
 
 interface DataType {
@@ -37,42 +35,25 @@ const DepartmentsListTable: React.FC = () => {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: '#',
+      title: 'STT',
       dataIndex: 'key',
       width:50
     },
     {
-      title: 'ID',
-      dataIndex: 'id',
-      width:70
-    },
-    {
       title: 'Tên phòng ban',
-      dataIndex: 'department',
-    },
-    {
-      title: 'Công ty',
-      dataIndex: 'company',
-    },
-    {
-      title: 'Số nhân viên',
-      dataIndex: 'employeeNumber',
+      dataIndex: 'tenPhongBan',
     },
     {
       title: 'Số lần chấm công',
       dataIndex: 'timekeepingTimes',
     },
     {
-      title: 'Người quản lý',
+      title: 'Trưởng phòng ban',
       dataIndex: 'boss',
     },
     {
       title: 'Thư ký',
       dataIndex: 'secretary',
-    },
-    {
-      title: 'Phòng ban cấp trên',
-      dataIndex: 'superiorDepartment',
     },
     {
       title: 'Hoạt động',
@@ -84,7 +65,6 @@ const DepartmentsListTable: React.FC = () => {
           return (
               <Space style={{gap:'16px'}}>
                   <Button icon={<EditTwoTone />} style={{backgroundColor:'transparent', border:'none', boxShadow:'none'}} onClick={() => setUpdateOpen(true)}></Button>
-                  <Button icon={<EyeTwoTone />} style={{backgroundColor:'transparent', border:'none', boxShadow:'none'}} onClick={() => setViewOpen(true)}></Button>
               </Space>
           )
       }
@@ -145,8 +125,7 @@ const DepartmentsListTable: React.FC = () => {
                 <Row justify={'space-between'} style={{marginBottom:'24px'}}>
                     <span style={{textAlign:'center'}}><b>Quản lý phòng ban</b></span>
                     <Col>
-                        <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setImportOpen(true)}>Import</Button>
-                        <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setAddOpen(true)}>Thêm mới</Button>
+                        <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setAddOpen(true)}>Tạo mới</Button>
                         <Button type="primary" style={{marginLeft:'12px'}}>Xóa</Button>
                     </Col>
                 </Row>
@@ -159,10 +138,8 @@ const DepartmentsListTable: React.FC = () => {
                 />
             </div>
         </Skeleton>
-        <ImportDepartmentsList show={importOpen} close={() => setImportOpen(false)} />
         <CreateDepartmentsList show={addOpen} close={() => setAddOpen(false)} />
         <UpdateDepartmentsList show={updateOpen} close={() => setUpdateOpen(false)} />
-        <ViewDepartmentsList show={viewOpen} close={() => setViewOpen(false)} />
     </>
   );
 };

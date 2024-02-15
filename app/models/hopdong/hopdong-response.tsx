@@ -1,8 +1,10 @@
 export interface HopDongResponse{
-    id:number,
-    code: string,
-    name: string,
-    url: string,
-    status: number,
-    description: string
+    tenHopDong:string ,
+    maNhanVien: string ,
+    ngayBatDauHopDong: Date ,
+    ngayKetThucHopDong:Date ,
+    loaiHopDong:string ,
+    tiLeHuongLuong:number ,
+    gioLamViec:number ,
+    congChuan:number ,
 }

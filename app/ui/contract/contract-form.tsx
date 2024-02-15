@@ -15,16 +15,21 @@ const ContractForm = () => {
         padding:'24px'
     };
 
+    const onFinish = () => {
+        console.log('submit')
+    }
+
     useEffect(() => {
         setLoading(false);
     }, [])
 
     return (
         <Skeleton loading={loading} active>
-            <Form form={form} style={formStyle} name="advanced_search">
+            <Form form={form} onFinish={onFinish} style={formStyle} name="advanced_search">
                 <Row gutter={24}>
                     <Col span={7}>
                         <Form.Item
+                            name='tenHopDong'
                             label="Tên hợp đồng"
                             labelCol={{style: {width: 120, textAlign:"left"}}}
                         >
@@ -33,88 +38,31 @@ const ContractForm = () => {
                     </Col>
                     <Col span={7}>
                         <Form.Item
-                            label="Mã nhân viên"
+                            name='tenNhanVien'
+                            label="Tên nhân viên"
                             labelCol={{style: {width: 120, textAlign:"left"}}}
                         >
-                            <Input placeholder="Mã nhân viên" style={{borderRadius:"0px"}} />
+                            <Input placeholder="Tên nhân viên" style={{borderRadius:"0px"}} />
                         </Form.Item>
                     </Col>
                     <Col span={7}>
                         <Form.Item
-                            label="Nhân viên"
-                            labelCol={{style: {width: 120, textAlign:"left"}}}
-                        >
-                            <Select
-                                placeholder="Vui lòng chọn"
-                            >
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row gutter={24}>
-                    <Col span={7}>
-                        <Form.Item
-                            label="Phòng ban"
-                            labelCol={{style: {width: 120, textAlign:"left"}}}
-                        >
-                            <Select
-                                placeholder="Vui lòng chọn"
-                            >
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={7}>
-                        <Form.Item
-                            label="Chức vụ"
-                            labelCol={{style: {width: 120, textAlign:"left"}}}
-                        >
-                            <Input placeholder="Chức vụ" style={{borderRadius:"0px"}} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={7}>
-                        <Form.Item
+                            name='loaiHopDong'
                             label="Loại hợp đồng"
                             labelCol={{style: {width: 120, textAlign:"left"}}}
                         >
                             <Select
                                 placeholder="Vui lòng chọn"
                             >
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row gutter={24}>
-                    <Col span={7}>
-                        <Form.Item
-                            label="Trạng thái"
-                            labelCol={{style: {width: 120, textAlign:"left"}}}
-                        >
-                            <Select
-                                placeholder="Trạng thái"
-                            >
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
+                                <Option value="1">Thử việc</Option>
+                                <Option value="2">Chính thức</Option>
                             </Select>
                         </Form.Item>
                     </Col>
                 </Row>
                 <Row justify="end">
-                    <Button type='primary' >Tìm kiếm</Button>
-                    <Button >Tạo lại</Button>
+                    <Button type='primary' onClick={() => form.submit()} >Tìm kiếm</Button>
+                    <Button onClick={() => form.resetFields()} >Tạo lại</Button>
                 </Row>
             </Form>
         </Skeleton>      
