@@ -22,6 +22,7 @@ import ChangePassword from './change-password';
 import { SearchNhanVienRequest } from '@/app/models/nhanvien/search-nhanvien-request';
 import { HRMSystemApi } from '@/app/constant/constant';
 import { UpdateNhanVienRequest } from '@/app/models/nhanvien/update-nhanvien-request';
+import NhanVienApi from '@/app/api/nhanvien';
 
 const { Option } = Select;
 
@@ -37,8 +38,6 @@ interface DataType {
   secretary:string;
   superiorDepartment:string;
 }
-
-
 
 const EmployeeListTable: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -168,20 +167,15 @@ const EmployeeListTable: React.FC = () => {
   };
 
   const getEmployeeByParams = async (searchRequest :SearchNhanVienRequest) => {
-    try {
-        const response = await fetch(HRMSystemApi+'/NhanVien', {
-          method: "GET", // or 'PUT'
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(searchRequest),
-        });
-    
-        const result = await response.json();
-        console.log("Success:", result);
-      } catch (error) {
-        console.error("Error:", error);
-      }
+    let response = await NhanVienApi.getNhanVien({
+      hoTen: null,
+      maNhanVien: null,
+      idVanTay: null,
+      maPhongBan: null,
+      chucVu: null
+    });
+
+    console.log(response.data)
   }
 
   const getAllDepartments = async () => {
@@ -200,15 +194,8 @@ const EmployeeListTable: React.FC = () => {
 
   useEffect(() => {
     setLoading(false)
-    getEmployeeByParams({
-      hoTen: null,
-      maNhanVien: null,
-      idVanTay: null,
-      maPhongBan: null,
-      chucVu: null
-    });
-
-    getAllDepartments();
+    getEmployeeByParams()
+    // getAllDepartments();
   },[])
 
   return (

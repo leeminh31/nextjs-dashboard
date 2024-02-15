@@ -39,7 +39,7 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Mã nhân viên" value={data.maNhanVien} disabled/>
+                            <Input placeholder="Mã nhân viên" value={data?.maNhanVien} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -55,7 +55,7 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Tên nhân viên" value={data.hoTen} disabled/>
+                            <Input placeholder="Tên nhân viên" value={data?.hoTen} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -65,7 +65,7 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Chức vụ" value={data.chucVu} disabled/>
+                            <Input placeholder="Chức vụ" value={data?.chucVu} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -75,7 +75,7 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Select placeholder = "Vui lòng chọn" value={data.maPhongBan} disabled>
+                            <Select placeholder = "Vui lòng chọn" value={data?.maPhongBan} disabled>
                                 <Option value="1">Bùi Thị Yên</Option>
                                 <Option value="2">Bùi Thị Yên</Option>
                                 <Option value="3">Bùi Thị Yên</Option>
@@ -91,7 +91,7 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' placeholder='ID vân tay' value={data.idVanTay} disabled/>
+                            <Input type='number' placeholder='ID vân tay' value={data?.idVanTay} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -101,7 +101,7 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder='Mail công việc' value={data.mail} disabled/>
+                            <Input placeholder='Mail công việc' value={data?.mail} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -111,7 +111,7 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <DatePicker placeholder='Ngày sinh' value={data.ngaySinh} disabled/>
+                            <DatePicker placeholder='Ngày sinh' value={data?.ngaySinh} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -121,7 +121,7 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' maxLength={20} placeholder='Số điện thoại' value={data.soDienThoai} disabled/>
+                            <Input type='number' maxLength={20} placeholder='Số điện thoại' value={data?.soDienThoai} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -131,7 +131,7 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' maxLength={20} placeholder='Căn cước công dân' value={data.soCCCD} disabled/>
+                            <Input type='number' maxLength={20} placeholder='Căn cước công dân' value={data?.soCCCD} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -141,7 +141,7 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <DatePicker placeholder='Ngày cấp' value={data.ngayCap} disabled/>
+                            <DatePicker placeholder='Ngày cấp' value={data?.ngayCap} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -151,7 +151,7 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder='Quê quán' value={data.queQuan} disabled/>
+                            <Input placeholder='Quê quán' value={data?.queQuan} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -161,7 +161,7 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder='Nơi ở hiện tại' value={data.noiOHienTai} disabled/>
+                            <Input placeholder='Nơi ở hiện tại' value={data?.noiOHienTai} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -171,7 +171,7 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder='Người thân liên hệ' value={data.nguoiThanLienHe} disabled/>
+                            <Input placeholder='Người thân liên hệ' value={data?.nguoiThanLienHe} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -181,7 +181,7 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' placeholder='Số điện thoại người thân liên hệ' value={data.soDienThoaiNguoiLienHe} disabled/>
+                            <Input type='number' placeholder='Số điện thoại người thân liên hệ' value={data?.soDienThoaiNguoiLienHe} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -191,7 +191,7 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='number' placeholder='Số tài khoản ngân hàng' value={data.stkNganHang} disabled/>
+                            <Input type='number' placeholder='Số tài khoản ngân hàng' value={data?.stkNganHang} disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -201,7 +201,7 @@ const ViewEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input type='text' placeholder='Ngân hàng' value={data.nganHang} disabled/>
+                            <Input type='text' placeholder='Ngân hàng' value={data?.nganHang} disabled/>
                         </Form.Item>
                     </Col>
                 </Row>
