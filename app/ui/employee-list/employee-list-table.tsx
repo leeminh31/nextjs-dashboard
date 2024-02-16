@@ -3,15 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, Skeleton } from 'antd';
 import 'dotenv/config'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faClockRotateLeft, faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
 import {
     EditTwoTone,
     EyeTwoTone,
-    HistoryOutlined,
-    ExportOutlined,
-    UploadOutlined,
-    DownloadOutlined,
     LockTwoTone,
   } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
@@ -23,6 +17,8 @@ import { SearchNhanVienRequest } from '@/app/models/nhanvien/search-nhanvien-req
 import { HRMSystemApi } from '@/app/constant/constant';
 import { UpdateNhanVienRequest } from '@/app/models/nhanvien/update-nhanvien-request';
 import NhanVienApi from '@/app/api/nhanvien';
+import { NhanVienResponse } from '@/app/models/nhanvien/nhanvien-response';
+import { record } from 'zod';
 
 const { Option } = Select;
 
@@ -49,6 +45,7 @@ const EmployeeListTable: React.FC = () => {
   const [form] = Form.useForm();
   const [departments, setDepartments] = useState();
   const [updateData, setUpdateData] = useState<UpdateNhanVienRequest>();
+  const [getData, setGetData] = useState<NhanVienResponse>();
 
   const getEmployeeById = async (maNhanVien:string) => {
     try {
@@ -78,7 +75,7 @@ const EmployeeListTable: React.FC = () => {
     getEmployeeById(maNhanVien);
   }
 
-  const columns: ColumnsType<DataType> = [
+  const columns: ColumnsType<NhanVienResponse> = [
     {
       title: 'STT',
       dataIndex: 'key',
@@ -103,6 +100,11 @@ const EmployeeListTable: React.FC = () => {
     {
         title: 'Phòng ban',
         dataIndex: 'phongBan',
+        render: (record) => {
+          return (
+            <></>
+          )
+        }
     },
     {
         title: 'Mail công việc',
@@ -167,15 +169,9 @@ const EmployeeListTable: React.FC = () => {
   };
 
   const getEmployeeByParams = async (searchRequest :SearchNhanVienRequest) => {
-    let response = await NhanVienApi.getNhanVien({
-      hoTen: null,
-      maNhanVien: null,
-      idVanTay: null,
-      maPhongBan: null,
-      chucVu: null
-    });
+    let response = await NhanVienApi.getNhanVien(searchRequest);
 
-    console.log(response.data)
+    console.log(response)
   }
 
   const getAllDepartments = async () => {
@@ -194,7 +190,13 @@ const EmployeeListTable: React.FC = () => {
 
   useEffect(() => {
     setLoading(false)
-    getEmployeeByParams()
+    getEmployeeByParams({
+      hoTen: null,
+      maNhanVien: null,
+      idVanTay: null,
+      maPhongBan: null,
+      chucVu: null
+    })
     // getAllDepartments();
   },[])
 

@@ -1,4 +1,4 @@
-import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, Skeleton } from 'antd';
+import { Button, Row, Col, Space, Drawer, Form, Input, Select } from 'antd';
 const {Option} = Select
 
 const UpdateDepartmentsList = (props:any) => {

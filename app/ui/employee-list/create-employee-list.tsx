@@ -3,6 +3,7 @@ const {Option} = Select
 import { HRMSystemApi } from '@/app/constant/constant';
 import { FormatDate } from '@/app/utils/formatDate';
 import { CreateNhanVienRequest } from '@/app/models/nhanvien/create-nhanvien-request';
+import NhanVienApi from '@/app/api/nhanvien';
 
 const CreateEmployeeList = (props:any) => {
     const {show,close} = props
@@ -28,19 +29,9 @@ const CreateEmployeeList = (props:any) => {
             idVanTay: parseInt(values.IDVanTay)
         }
 
-        try {
-            const response = await fetch(HRMSystemApi+'/NhanVien/create', {
-                method: "POST",
-                headers: {
-                "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestData),
-            });
-            const result = await response.json();
-            console.log("Success:", result);
-        } catch (error) {
-            console.error("Error:", error);
-        }
+        let response = await NhanVienApi.addNhanVien(requestData);
+
+        console.log(response)
     };
 
 

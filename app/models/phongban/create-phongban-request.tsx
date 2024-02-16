@@ -1,7 +1,7 @@
 export interface CreatePhongBanRequest{
-    code: string,
-    name: string,
-    url: string,
-    status: number,
-    description: string
+    maPhongBan:number ,
+    tenPhongBan:string ,
+    soLanChamCong:number ,
+    truongPhongBan:string ,
+    thuKyPhongBan:string ,
 }
