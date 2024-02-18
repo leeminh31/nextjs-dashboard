@@ -1,15 +1,34 @@
-import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, Skeleton, DatePicker } from 'antd';
+import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, Skeleton, DatePicker,message } from 'antd';
 const {Option} = Select
-import { HRMSystemApi } from '@/app/constant/constant';
 import { FormatDate } from '@/app/utils/formatDate';
 import { CreateNhanVienRequest } from '@/app/models/nhanvien/create-nhanvien-request';
 import NhanVienApi from '@/app/api/nhanvien';
+import { useEffect, useState } from 'react';
+import { PhongBanResponse } from '@/app/models/phongban/phongban-response';
+import PhongBanApi from '@/app/api/phongban';
+import { SearchPhongBanRequest } from '@/app/models/phongban/search-phongban-request';
+import { specialCharactersRegex } from '@/app/utils/validateInput';
 
 const CreateEmployeeList = (props:any) => {
-    const {show,close} = props
+    const [messageApi, contextHolder] = message.useMessage();
+    const {show,close, refresh} = props
+    const [departments, setDepartments] = useState<PhongBanResponse[]>([]);
     const [form] = Form.useForm()
 
+    const getDepartmentsByParams = async (searchRequest :SearchPhongBanRequest) => {
+        let response = await PhongBanApi.getPhongBan(searchRequest);
+        if(response.statusCode === '200'){
+            console.log(response.data)
+            setDepartments(response.data)
+        }
+        else {
+            console.log(response.message)
+        }
+    }
+
     const onFinish = async (values: any) => {
+
+
         const requestData : CreateNhanVienRequest = {
             maNhanVien: values.maNhanVien,
             hoTen: values.hoTen,
@@ -29,11 +48,38 @@ const CreateEmployeeList = (props:any) => {
             idVanTay: parseInt(values.IDVanTay)
         }
 
+        console.log(requestData)
+
         let response = await NhanVienApi.addNhanVien(requestData);
+        if(response.statusCode === '200'){
+            refresh()
+            close()
+            messageApi.open({
+                type: 'success',
+                content: 'Thêm mới nhân viên thành công',
+                className: 'custom-class',
+                style: {
+                    marginTop: '40vh',
+                    fontSize:'16px'
+                },
+                duration: 1.5,
+            });
+        }
+        else {
+            console.log(response.message)
+        }
 
         console.log(response)
     };
 
+    useEffect(() => {
+        getDepartmentsByParams({
+            tenPhongBan: null ,
+            truongPhongBan: null ,
+            thuKyPhongBan: null ,
+        })
+        
+    },[])
 
 
     return (
@@ -52,6 +98,7 @@ const CreateEmployeeList = (props:any) => {
                 </Row>
             }
         >
+            {contextHolder}
             <Form form={form} name="insertEmployee" onFinish={onFinish}>
                 <Row gutter={24}>
                     <Col span={12}>
@@ -63,6 +110,11 @@ const CreateEmployeeList = (props:any) => {
                             required: true,
                             message: 'Vui lòng nhập mã nhân viên!',
                             },
+                            {
+                                validator(_, value) {
+                                    return specialCharactersRegex(value)
+                                },
+                            }
                         ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -79,6 +131,11 @@ const CreateEmployeeList = (props:any) => {
                             required: true,
                             message: 'Vui lòng nhập tên nhân viên!',
                             },
+                            {
+                                validator(_, value) {
+                                    return specialCharactersRegex(value)
+                                },
+                            }
                         ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -92,6 +149,17 @@ const CreateEmployeeList = (props:any) => {
                         label={'Chức vụ'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng nhập chức vụ!',
+                            },
+                            {
+                                validator(_, value) {
+                                    return specialCharactersRegex(value)
+                                },
+                            }
+                        ]}
                         >
                             <Input placeholder="Chức vụ" />
                         </Form.Item>
@@ -102,11 +170,15 @@ const CreateEmployeeList = (props:any) => {
                         label={'Phòng ban'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng chọn phòng ban!',
+                            },
+                        ]}
                         >
                             <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
+                                {departments?.map((item) => <Option value={item.maPhongBan}>{item.tenPhongBan}</Option>)}
                             </Select>
                         </Form.Item>
                     </Col>
@@ -116,6 +188,12 @@ const CreateEmployeeList = (props:any) => {
                         label={'ID vân tay'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Vui lòng nhập id vân tay!',
+                            }
+                        ]}
                         >
                             <Input type='number' placeholder='ID vân tay' />
                         </Form.Item>
@@ -126,6 +204,16 @@ const CreateEmployeeList = (props:any) => {
                         label={'Mail công việc'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
+                        rules={[
+                            {
+                                type: 'email',
+                                message: 'Vui lòng nhập đúng định dạng dữ liệu!',
+                            },
+                            {
+                            required: true,
+                            message: 'Vui lòng nhập mail!',
+                            },
+                        ]}
                         >
                             <Input placeholder='Mail công việc' />
                         </Form.Item>
@@ -137,7 +225,7 @@ const CreateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <DatePicker placeholder='Ngày sinh' />
+                            <DatePicker placeholder='Ngày sinh' format={'DD/MM/YYYY'}/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -167,7 +255,7 @@ const CreateEmployeeList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <DatePicker placeholder='Ngày cấp' />
+                            <DatePicker placeholder='Ngày cấp' format={'DD/MM/YYYY'}/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -176,6 +264,13 @@ const CreateEmployeeList = (props:any) => {
                         label={'Quê quán'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
+                        rules= {[
+                            {
+                                validator(_, value) {
+                                    return specialCharactersRegex(value)
+                                },
+                            }
+                        ]}
                         >
                             <Input placeholder='Quê quán' />
                         </Form.Item>
@@ -186,6 +281,13 @@ const CreateEmployeeList = (props:any) => {
                         label={'Nơi ở hiện tại'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
+                        rules= {[
+                            {
+                                validator(_, value) {
+                                    return specialCharactersRegex(value)
+                                },
+                            }
+                        ]}
                         >
                             <Input placeholder='Nơi ở hiện tại' />
                         </Form.Item>
@@ -196,6 +298,13 @@ const CreateEmployeeList = (props:any) => {
                         label={'Người thân liên hệ'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
+                        rules= {[
+                            {
+                                validator(_, value) {
+                                    return specialCharactersRegex(value)
+                                },
+                            }
+                        ]}
                         >
                             <Input placeholder='Người thân liên hệ' />
                         </Form.Item>
@@ -226,6 +335,13 @@ const CreateEmployeeList = (props:any) => {
                         label={'Ngân hàng'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
+                        rules= {[
+                            {
+                                validator(_, value) {
+                                    return specialCharactersRegex(value)
+                                },
+                            }
+                        ]}
                         >
                             <Input type='text' placeholder='Ngân hàng' />
                         </Form.Item>

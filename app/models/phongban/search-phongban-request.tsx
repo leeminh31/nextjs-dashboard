@@ -1,5 +1,5 @@
 export interface SearchPhongBanRequest{
-    tenPhongBan:string ,
-    truongPhongBan:string ,
-    thuKyPhongBan:string ,
+    tenPhongBan:string | null,
+    truongPhongBan:string | null,
+    thuKyPhongBan:string | null,
 }

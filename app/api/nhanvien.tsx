@@ -19,8 +19,13 @@ const NhanVienApi = {
   
     getNhanVien: async (data: SearchNhanVienRequest) => {
       let rest = new RestConnection()
-      return rest.getAsync(`NhanVien`+qs.stringify(data, { skipNulls: true }))
+      return rest.getAsync(`NhanVien?`+qs.stringify(data, { skipNulls: true }))
     },
+
+    getByIdNhanVien: async (maNhanVien: string) => {
+      let rest = new RestConnection()
+      return rest.getAsync(`NhanVien/${maNhanVien}`)
+    }
   };
   
   export default NhanVienApi;

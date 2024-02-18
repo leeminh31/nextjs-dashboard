@@ -85,7 +85,7 @@ export default function LayoutDashboard({ children }: { children: React.ReactNod
         <Header style={{ padding: 0, background: colorBgContainer }}>
           <Flex justify= {'space-between'}>
             <Flex>
-              <span style={{paddingLeft:"30px", width:"215px", display:"inline-block"}}><b>HRM Admin</b></span>
+              <span style={{paddingLeft:"30px", width:"215px", display:"inline-block", fontSize:"24px"}}><b>HRM Admin</b></span>
               <Button
                 type="text"
                 icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -102,10 +102,10 @@ export default function LayoutDashboard({ children }: { children: React.ReactNod
             <Flex style={{marginRight: "2rem"}} align={'center'}>
               <Avatar
                 size={{ xs: 10, sm: 14, md: 18, lg: 30, xl: 36, xxl: 40 }}
-                icon={<AntDesignOutlined />}
+                icon={<UserOutlined />}
                 style={{marginRight: "10px"}}
               />
-              <h3 style={{margin:0}}>HNCS Yen Bui</h3>
+              <h3 style={{margin:0, color:'#A35F32'}}>HNCS Yen Bui</h3>
               <FontAwesomeIcon style={{marginLeft: "10px"}} icon={faChevronDown} />
             </Flex>
           </Flex>

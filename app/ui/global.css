@@ -39,9 +39,9 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 .ant-menu-item-selected {
-  background-color: #faf3eb !important;
-  color: #aa9485 !important;
-  border-right: 3px solid ;
+  background-color: rgba(185, 136, 104, 0.32) !important;
+  color: #000 !important;
+  /* border-right: 3px solid ; */
 }
 
 .ant-btn-default:hover {
@@ -49,15 +49,15 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 .ant-menu-submenu-open >.ant-menu-submenu-title {
-  color: #aa9485 !important;
+  color: #B98868 !important;
 }
 
 .ant-menu-submenu-open >.ant-menu-submenu-title {
-  color: #aa9485 !important;
+  color: #B98868 !important;
 }
 
 .ant-menu-submenu-selected >.ant-menu-submenu-title {
-  color: #aa9485 !important;
+  color: #B98868 !important;
 }
 
 .ant-select-focused .ant-select-selector {
@@ -189,6 +189,10 @@ input[type='number']::-webkit-outer-spin-button {
   background: #f8eee3 !important;
 }
 
+.ant-table-body tr > td:last-child {
+  padding: 0 ;
+}
+
 .ant-table-thead .ant-table-cell {
   background-color: #efe4dc !important;
 }
@@ -236,7 +240,7 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 .ant-table-body::-webkit-scrollbar-thumb {
-  background-color: #8b5f41 !important;
+  background-color: #b98868 !important;
   /* color of the scroll thumb */
   border-radius: 10px;
   /* creates padding around scroll thumb */
@@ -313,7 +317,7 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #8b5f41 !important;
+  background-color: #b98868 !important;
   /* color of the scroll thumb */
   border-radius: 10px;
 }

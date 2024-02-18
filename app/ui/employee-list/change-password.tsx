@@ -1,12 +1,29 @@
+import { LoginApi } from '@/app/api/taikhoan';
 import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, Skeleton, DatePicker } from 'antd';
+import { useEffect, useState } from 'react';
 
 const ChangePassword = (props:any) => {
-    const {show, close} = props
+    const {show, close, id} = props
     const [form] = Form.useForm()
 
-    const onFinish = () => {
-
+    const onFinish = async (values:any) => {
+        let response = await LoginApi.changePassword({
+            maNhanVien: values.maNhanVien,
+            matKhau: values.matKhau,
+        });
+        if(response.statusCode === '200'){
+            console.log(response.data)
+            close();
+        }
+        else {
+            console.log(response.message)
+        }
     }
+
+    useEffect(() => {
+        if(id !== null)
+            form.setFieldValue('maNhanVien', id)
+    }, [id])
 
     return (
         <Drawer  
@@ -27,7 +44,7 @@ const ChangePassword = (props:any) => {
                 <Row gutter={24}>
                     <Col span={16}>
                         <Form.Item
-                        name={'employeeId'}
+                        name={'maNhanVien'}
                         label={'Mã nhân viên'}
                         rules={[
                             {
@@ -43,7 +60,7 @@ const ChangePassword = (props:any) => {
                     </Col>
                     <Col span={16}>
                         <Form.Item
-                        name={'password'}
+                        name={'matKhau'}
                         label={'Mật khẩu'}
                         rules={[
                             {
