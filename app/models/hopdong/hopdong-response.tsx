@@ -1,8 +1,8 @@
 export interface HopDongResponse{
     tenHopDong:string ,
     maNhanVien: string ,
-    ngayBatDauHopDong: Date ,
-    ngayKetThucHopDong:Date ,
+    ngayBatDauHopDong: string ,
+    ngayKetThucHopDong:string ,
     loaiHopDong:string ,
     tiLeHuongLuong:number ,
     gioLamViec:number ,

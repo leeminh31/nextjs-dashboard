@@ -26,6 +26,8 @@ const { Option } = Select;
 
 const EmployeeListTable: React.FC = () => {
     const { token } = theme.useToken();
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [loading, setLoading] = useState(true);
     const [addOpen, setAddOpen] = useState(false);
@@ -61,7 +63,7 @@ const EmployeeListTable: React.FC = () => {
     const getEmployeeByParams = async (searchRequest :SearchNhanVienRequest) => {
         let response = await NhanVienApi.getNhanVien(searchRequest);
         if(response.statusCode === '200') {
-            setData(response.data)
+            setData(response.data.reverse())
             setTotalRecords(response.data?.length)
         } else if (response.statusCode === '545') {
             setData(response.data)
@@ -103,7 +105,7 @@ const columns: ColumnsType<NhanVienResponse> = [
     width:50,
     render: (value, record, index) => {
         return (
-        <>{index+1}</>
+        <>{(page - 1) * pageSize + index + 1}</>
         )
     }
     },
@@ -296,7 +298,18 @@ const columns: ColumnsType<NhanVienResponse> = [
                 rowSelection={rowSelection} 
                 columns={columns} 
                 dataSource={data} 
-                pagination={{ showQuickJumper:true, total:totalRecords ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}} 
+                pagination={{ showQuickJumper:true, 
+                    total:totalRecords ,
+                    defaultPageSize: 10, 
+                    showSizeChanger: true, 
+                    pageSizeOptions: ['10', '20', '30'], 
+                    locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, 
+                    onChange: (page, pageSize) => {
+                        setPage(page);
+                        setPageSize(pageSize);
+                    },
+                    showTotal:(total) => `Tổng ${total} bản ghi`}
+                }
                 />
             </div>
         </Skeleton>

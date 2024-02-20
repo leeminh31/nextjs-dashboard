@@ -25,7 +25,12 @@ const NhanVienApi = {
     getByIdNhanVien: async (maNhanVien: string) => {
       let rest = new RestConnection()
       return rest.getAsync(`NhanVien/${maNhanVien}`)
-    }
+    },
+
+    getAllEmployeeIdByName: async (hoTen:string) => {
+      let rest = new RestConnection()
+      return rest.getAsync(`NhanVien/HoTen/${hoTen}`)
+    },
   };
   
   export default NhanVienApi;

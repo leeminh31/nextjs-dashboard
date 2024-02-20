@@ -1,13 +1,33 @@
-import { Button, Row,Col, Space, Drawer,  Form, Input, Select, DatePicker, Radio } from 'antd';
+import { Button, Row,Col, Space, Drawer,  Form, Input, Select, DatePicker, Radio, message } from 'antd';
 import { useState } from 'react';
 import type { RadioChangeEvent } from 'antd';
+import NhanVienApi from '@/app/api/nhanvien';
+import { SearchNhanVienRequest } from '@/app/models/nhanvien/search-nhanvien-request';
+import { NhanVienResponse } from '@/app/models/nhanvien/nhanvien-response';
+import HopDongApi from '@/app/api/hopdong';
+import { FormatDate } from '@/app/utils/formatDate';
+import { CreateHopDongRequest } from '@/app/models/hopdong/create-hopdong-request';
 const {Option} = Select
 
 const UpdateContract = (props:any) => {
+  const [messageApi, contextHolder] = message.useMessage();
     const {show, close} = props
     const [form] = Form.useForm();
     const [value, setValue] = useState(false);
+    const [data, setData] = useState<NhanVienResponse[]>([]);
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
+
+    const getEmployeeByParams = async (searchRequest :SearchNhanVienRequest) => {
+      let response = await NhanVienApi.getNhanVien(searchRequest);
+      if(response.statusCode === '200') {
+          setData(response.data.reverse())
+      } else if (response.statusCode === '545') {
+          setData(response.data)
+      }
+      else {
+      console.log(response.message)
+      }
+  }
 
     const closeUpdateDrawer = () => {
         form.resetFields()
@@ -18,8 +38,46 @@ const UpdateContract = (props:any) => {
         setValue(e.target.value);
       };
 
-    const onFinish = (values: any) => {
-        console.log('Received values of form: ', values);
+    const onFinish = async (values: any) => {
+      const requestData : CreateHopDongRequest = {
+        tenHopDong: values.tenHopDong ,
+        maNhanVien: values.maNhanVien ,
+        ngayBatDauHopDong: FormatDate(values.ngayBatDau) ,
+        ngayKetThucHopDong: FormatDate(values.ngayKetThuc) ,
+        loaiHopDong: values.loaiHopDong ,
+        tiLeHuongLuong: values.tyLeHuongLuong ,
+        gioLamViec: values.gioLamViec,
+        congChuan: values.congChuan ,
+      }
+
+      let response = await HopDongApi.updateHopDong(requestData);
+        if(response.statusCode === '200'){
+            // refresh()
+            close()
+            messageApi.open({
+                type: 'success',
+                content: 'Cập nhật hợp đồng thành công',
+                className: 'custom-class',
+                style: {
+                    marginTop: '40vh',
+                    fontSize:'16px'
+                },
+                duration: 1.5,
+            });
+        }
+        else {
+          messageApi.open({
+            type: 'error',
+            content: 'Cập nhật hợp đồng thất bại',
+            className: 'custom-class',
+            style: {
+                marginTop: '40vh',
+                fontSize:'16px'
+            },
+            duration: 1.5,
+        });
+            console.log(response.message)
+        }
     };
 
     return (

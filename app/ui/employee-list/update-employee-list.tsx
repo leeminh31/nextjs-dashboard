@@ -52,6 +52,16 @@ const UpdateEmployeeList = (props:any) => {
         if(response.statusCode === '200'){
             refresh()
             close()
+            messageApi.open({
+                type: 'success',
+                content: 'Cập nhật nhân viên thành công',
+                className: 'custom-class',
+                style: {
+                    marginTop: '40vh',
+                    fontSize:'16px'
+                },
+                duration: 1.5,
+            });
         }
         else {
             console.log(response.message)

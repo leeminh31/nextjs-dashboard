@@ -1,6 +1,13 @@
-import { Drawer, Row, Space, Button, Form, Col, Input, Select, DatePicker, Radio } from "antd"
+import { Drawer, Row, Space, Button, Form, Col, Input, Select, DatePicker, Radio, message } from "antd"
 import type { RadioChangeEvent } from 'antd';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { specialCharactersRegex } from "@/app/utils/validateInput";
+import { SearchNhanVienRequest } from "@/app/models/nhanvien/search-nhanvien-request";
+import NhanVienApi from "@/app/api/nhanvien";
+import { NhanVienResponse } from "@/app/models/nhanvien/nhanvien-response";
+import { CreateHopDongRequest } from "@/app/models/hopdong/create-hopdong-request";
+import { FormatDate } from "@/app/utils/formatDate";
+import HopDongApi from "@/app/api/hopdong";
 
 const { Option } = Select
 
@@ -8,16 +15,68 @@ const CreateContract = (props:any) => {
     const {show, close} = props
     const [form] = Form.useForm();
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
+    const [messageApi, contextHolder] = message.useMessage();
     const [value, setValue] = useState(false);
+    const [data, setData] = useState<NhanVienResponse[]>([]);
 
-    const onChange = (e: RadioChangeEvent) => {
-        console.log('radio checked', e.target.value);
-        setValue(e.target.value);
-      };
+    const changeSelect = (e:any) => {
+      form.setFieldValue('maNhanVien',e)
+    }
 
-    const onFinish = (values: any) => {
-        console.log('Received values of form: ', values);
-      };
+    const onFinish = async (values: any) => {
+      const requestData : CreateHopDongRequest = {
+        tenHopDong: values.tenHopDong ,
+        maNhanVien: values.maNhanVien ,
+        ngayBatDauHopDong: FormatDate(values.ngayBatDau) ,
+        ngayKetThucHopDong: FormatDate(values.ngayKetThuc) ,
+        loaiHopDong: values.loaiHopDong ,
+        tiLeHuongLuong: values.tyLeHuongLuong ,
+        gioLamViec: values.gioLamViec,
+        congChuan: values.congChuan ,
+      }
+
+      let response = await HopDongApi.addHopDong(requestData);
+        if(response.statusCode === '200'){
+            // refresh()
+            close()
+            messageApi.open({
+                type: 'success',
+                content: 'Thêm mới hợp đồng thành công',
+                className: 'custom-class',
+                style: {
+                    marginTop: '40vh',
+                    fontSize:'16px'
+                },
+                duration: 1.5,
+            });
+        }
+        else {
+            console.log(response.message)
+        }
+
+    };
+
+    const getEmployeeByParams = async (searchRequest :SearchNhanVienRequest) => {
+      let response = await NhanVienApi.getNhanVien(searchRequest);
+      if(response.statusCode === '200') {
+          setData(response.data.reverse())
+      } else if (response.statusCode === '545') {
+          setData(response.data)
+      }
+      else {
+      console.log(response.message)
+      }
+    }
+
+    useEffect(() => {
+      getEmployeeByParams({
+        hoTen: null,
+        maNhanVien: null,
+        idVanTay: null,
+        maPhongBan: null,
+        chucVu: null
+        })
+    },[])
 
     return (
         <Drawer 
@@ -35,6 +94,7 @@ const CreateContract = (props:any) => {
                 </Row>
             }
         >
+          {contextHolder}
             <Form form={form} name="insertContract" onFinish={onFinish}>
                 <Row gutter={24}>
                     <Col span={12}>
@@ -46,6 +106,11 @@ const CreateContract = (props:any) => {
                             required: true,
                             message: 'Vui lòng nhập Tên hợp đồng!',
                             },
+                            {
+                              validator(_, value) {
+                                  return specialCharactersRegex(value)
+                              },
+                            }
                         ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -60,7 +125,7 @@ const CreateContract = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Input placeholder="Số lần chấm công" />
+                            <Input placeholder="Mã nhân viên" disabled/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -76,12 +141,8 @@ const CreateContract = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
+                            <Select placeholder = "Vui lòng chọn" onChange={(e) => changeSelect(e)}>
+                                {data?.map((item) => <Option value= {item.maNhanVien}>{item.hoTen}</Option>)}
                             </Select>
                         </Form.Item>
                     </Col>
@@ -131,8 +192,8 @@ const CreateContract = (props:any) => {
                         wrapperCol={{ span:24 }}
                         >
                           <Select placeholder = "Vui lòng chọn">
-                            <Option value="1">Thử việc</Option>
-                            <Option value="2">Chính thức</Option>
+                            <Option value="Thử việc">Thử việc</Option>
+                            <Option value="Chính thức">Chính thức</Option>
                           </Select>
                         </Form.Item>
                     </Col>
@@ -150,12 +211,6 @@ const CreateContract = (props:any) => {
                         <Form.Item
                         name={'gioLamViec'}
                         label={'Giờ làm việc'}
-                        rules={[
-                          {
-                          required: true,
-                          message: 'Vui lòng chọn!',
-                          },
-                        ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
