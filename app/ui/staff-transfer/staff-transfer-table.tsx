@@ -3,14 +3,6 @@
 import React, {useState} from 'react';
 import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, theme, Flex, Tag, DatePicker, Radio } from 'antd';
 import type { RadioChangeEvent } from 'antd';
-import {
-  EditTwoTone,
-  EyeTwoTone,
-  HistoryOutlined,
-  ExportOutlined,
-  UploadOutlined,
-  DownloadOutlined,
-} from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import type { TableRowSelection } from 'antd/es/table/interface';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -18,17 +10,17 @@ import { faClockRotateLeft,faArrowUpRightFromSquare, faPencil, faEye } from '@fo
 const { Option } = Select;
 
 interface DataType {
-  key: string;
-  employee: string;
-  employeeId: string;
-  contract:string;
-  department:string;
-  role:string;
-  signDate: Date;
-  startDate: Date;
-  endDate: Date;
-  contractType: string;
-  status: string;
+    key: string;
+    employee: string;
+    employeeId: string;
+    contract:string;
+    department:string;
+    role:string;
+    signDate: Date;
+    startDate: Date;
+    endDate: Date;
+    contractType: string;
+    status: string;
 }
 
 const data: DataType[] = [
@@ -205,13 +197,13 @@ const data: DataType[] = [
 
 const rowSelection: TableRowSelection<DataType> = {
     onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
     },
     onSelect: (record, selected, selectedRows) => {
-      console.log(record, selected, selectedRows);
+        console.log(record, selected, selectedRows);
     },
     onSelectAll: (selected, selectedRows, changeRows) => {
-      console.log(selected, selectedRows, changeRows);
+        console.log(selected, selectedRows, changeRows);
     },
   };
 
@@ -271,17 +263,17 @@ const StaffTransferTable: React.FC = () => {
             dataIndex: 'nguoiDuyet',
         },
         {
-          title: 'Trạng thái',
-          key: 'status',
-          dataIndex: 'status',
-          render: (status) => {
-            let color = status === 'Đã duyệt' ? 'green' : status === 'Chờ duyệt' ? 'transparent' : 'red'
-            return (
-              <Tag color={color} >
-                  {status.toUpperCase()}
-              </Tag>
-            )
-          }
+            title: 'Trạng thái',
+            key: 'status',
+            dataIndex: 'status',
+            render: (status) => {
+                let color = status === 'Đã duyệt' ? 'green' : status === 'Chờ duyệt' ? 'transparent' : 'red'
+                return (
+                <Tag color={color} >
+                    {status.toUpperCase()}
+                </Tag>
+                )
+            }
         },
         {
             title: 'Hoạt động',
@@ -290,14 +282,14 @@ const StaffTransferTable: React.FC = () => {
             width:150,
             align: 'center' as 'center',
             render: () => (
-              <>
-                <Button 
-                style={{backgroundColor:'transparent', color:'#6c8cad', border:'none'}}
-                onClick={() => setViewOpen(true)}
-                >
-                  <FontAwesomeIcon icon={faEye} />
-                </Button>
-              </>
+                <>
+                    <Button 
+                    style={{backgroundColor:'transparent', color:'#6c8cad', border:'none'}}
+                    onClick={() => setViewOpen(true)}
+                    >
+                    <FontAwesomeIcon icon={faEye} />
+                    </Button>
+                </>
             ) 
         },
     ];

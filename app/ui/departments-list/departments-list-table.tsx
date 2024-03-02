@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Table, Row,Col, Space, Form, Select, Skeleton } from 'antd';
+import { Button, Table, Row,Col, Space, Form, Select, Skeleton, Input, theme, message } from 'antd';
 import {
     EditTwoTone,
     EyeTwoTone,
@@ -9,51 +9,204 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import CreateDepartmentsList from './create-departments-list';
 import UpdateDepartmentsList from './update-departments-list';
+import { SearchPhongBanRequest } from '@/app/models/phongban/search-phongban-request';
+import PhongBanApi from '@/app/api/phongban';
+import { PhongBanResponse } from '@/app/models/phongban/phongban-response';
+import { TableRowSelection } from 'antd/es/table/interface';
+import { NhanVienResponse } from '@/app/models/nhanvien/nhanvien-response';
+import { SearchNhanVienRequest } from '@/app/models/nhanvien/search-nhanvien-request';
+import NhanVienApi from '@/app/api/nhanvien';
 const { Option } = Select;
 
-interface DataType {
-  key: React.Key;
-  department:string;
-  company: string;
-  employeeNumber: number;
-  timekeepingTimes: number;
-  boss:string;
-  secretary:string;
-  superiorDepartment:string;
-}
-
-
-
 const DepartmentsListTable: React.FC = () => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+    const [messageApi, contextHolder ] = message.useMessage();
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [loading, setLoading] = useState(true);
-  const [importOpen, setImportOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [updateOpen, setUpdateOpen] = useState(false);
-  const [viewOpen, setViewOpen] = useState(false);
+  const [updateData, setUpdateData] = useState({});
+  const [data, setData] = useState<PhongBanResponse[]>([]);
   const [form] = Form.useForm();
+  const { token } = theme.useToken();
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [employeeData, setEmployeeData] = useState<NhanVienResponse[]>([]);
+
+  interface DataType {
+    key: React.Key;
+    tenPhongBan: string;
+    thuKyPhongBan: string;
+    truongPhongBan: string;
+    soLanChamCong: number;
+    maPhongBan: number;
+  }
+
+  const tableData: DataType[] = [];
+  for (let i = 0; i < data.length; i++) {
+    tableData.push({
+      key: data[i].maPhongBan,
+      tenPhongBan: data[i].tenPhongBan,
+      thuKyPhongBan: data[i].thuKyPhongBan,
+      truongPhongBan: data[i].truongPhongBan,
+      soLanChamCong: data[i].soLanChamCong,
+      maPhongBan: data[i].maPhongBan,
+    });
+  }
+
+  const getEmployeeByParams = async (searchRequest :SearchNhanVienRequest) => {
+    let response = await NhanVienApi.getNhanVien(searchRequest);
+    if(response.statusCode === '200' || response.statusCode === '545') {
+        setEmployeeData(response.data)
+    }
+    else {
+        console.log(response.message)
+    }
+}
+
+  const getDepartmentsByParams = async (searchRequest :SearchPhongBanRequest) => {
+    let response = await PhongBanApi.getPhongBan(searchRequest);
+    if(response.statusCode === '200' ){
+      setData(response.data?.reverse())
+      setTotalRecords(response.data?.length)
+    } else if (response.statusCode === '545') {
+      setData([]);
+      setTotalRecords(0);
+    }
+    else {
+      console.log(response.message)
+    }
+  }
+
+  const refresh = () => {
+    getDepartmentsByParams({
+      tenPhongBan:null,
+      thuKyPhongBan: null,
+      truongPhongBan: null
+    })
+  }
+
+  const deleteDepartments = async (selectedRowKeys: any) => {
+    
+    let response = await PhongBanApi.deletePhongBan(selectedRowKeys);
+    if(response.statusCode === '200'){
+      refresh()
+      messageApi.open({
+        type: 'success',
+        content: 'Xóa phòng ban thành công',
+        className: 'custom-class',
+        style: {
+            fontSize:'16px'
+        },
+        duration: 1.5,
+      });
+    }
+    else {
+      console.log(response.message)
+    }
+  }
+
+  
+
+  const onUpdate = (record:any) => {
+    setUpdateData(record)
+    setUpdateOpen(true)
+  }
+
+  const rowSelection: TableRowSelection<DataType> = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      setSelectedRowKeys(selectedRowKeys)
+    },
+    onSelect: (record, selected, selectedRows) => {
+      console.log(record, selected, selectedRows);
+    },
+    onSelectAll: (selected, selectedRows, changeRows) => {
+      console.log(selected, selectedRows, changeRows);
+    },
+  };
+
+  const onDelete = () => {
+    getEmployeeByParams({
+      hoTen: null,
+      maNhanVien: null,
+      idVanTay: null,
+      maPhongBan: null,
+      chucVu: null
+    })
+
+    if(selectedRowKeys.length ==0) {
+      messageApi.open({
+        type: 'error',
+        content: 'Vui lòng chọn ít nhất một phòng ban!',
+        className: 'custom-class',
+        style: {
+            fontSize:'16px'
+        },
+        duration: 1.5,
+      });
+      return
+    }
+
+    let flag = false;
+    selectedRowKeys.forEach((value) => {
+      if(employeeData.some((item) => item.maPhongBan == value))
+      {
+        flag = true;
+      }
+    })
+
+    if(flag)
+    {
+      messageApi.open({
+        type: 'error',
+        content: 'Phòng ban này đang có nhân viên, bạn không được phép xóa!',
+        className: 'custom-class',
+        style: {
+            fontSize:'16px'
+        },
+        duration: 1.5,
+      });
+      return
+    }
+      
+
+    const departmentsId = selectedRowKeys.join(',');
+    deleteDepartments(departmentsId);
+  }
 
   const columns: ColumnsType<DataType> = [
     {
       title: 'STT',
       dataIndex: 'key',
-      width:50
+      key: 'key',
+      width:50,
+      render: (value, record, index) => {
+        return (
+        <>{(page - 1) * pageSize + index + 1}</>
+        )
+      }
     },
     {
       title: 'Tên phòng ban',
       dataIndex: 'tenPhongBan',
+      width:200,
+      key:'tenPhongBan'
     },
     {
       title: 'Số lần chấm công',
-      dataIndex: 'timekeepingTimes',
+      dataIndex: 'soLanChamCong',
+      width:150,
     },
     {
       title: 'Trưởng phòng ban',
-      dataIndex: 'boss',
+      dataIndex: 'truongPhongBan',
+      width:200
     },
     {
       title: 'Thư ký',
-      dataIndex: 'secretary',
+      dataIndex: 'thuKyPhongBan',
+      width:200
     },
     {
       title: 'Hoạt động',
@@ -61,85 +214,127 @@ const DepartmentsListTable: React.FC = () => {
       fixed:'right',
       align:'center',
       width:150,
-      render: () => {
+      render: (value, record) => {
           return (
               <Space style={{gap:'16px'}}>
-                  <Button icon={<EditTwoTone />} style={{backgroundColor:'transparent', border:'none', boxShadow:'none'}} onClick={() => setUpdateOpen(true)}></Button>
+                  <Button icon={<EditTwoTone />} style={{backgroundColor:'transparent', border:'none', boxShadow:'none'}} onClick={() => onUpdate(record)}></Button>
               </Space>
           )
       }
     },
   ];
   
-  const data: DataType[] = [];
-  for (let i = 0; i < 46; i++) {
-    data.push({
-      key: i+1,
-      department:'Buồng phòng',
-      company: 'CÔNG TY CỔ PHẦN QUẢN LÝ KHÁCH SẠN & DỊCH VỤ MANDALA - CHI NHÁNH HÒA BÌNH',
-      employeeNumber: 31,
-      timekeepingTimes: 3,
-      boss:'Bùi Thị Yên',
-      secretary:'Bùi Thị Yên',
-      superiorDepartment:'Bếp',
-    });
-  }
+  const formStyle: React.CSSProperties = {
+    maxWidth: 'none',
+    background: token.colorBgContainer,
+    marginBottom:'24px',
+    padding:'24px'
+  };
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log('selectedRowKeys changed: ', newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-  };
-
-  const closeAddDrawer = () => {
-    setAddOpen(false)
-    form.resetFields()
-  }
-
-  const closeUpdateDrawer = () => {
-    setUpdateOpen(false)
-    form.resetFields()
-  }
-
-  const closeViewDrawer = () => {
-    setViewOpen(false)
-    form.resetFields()
-  }
-
   const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
+    const requestData:SearchPhongBanRequest= {
+      tenPhongBan:values.tenPhongBan?.trimStart().trimEnd(),
+      truongPhongBan: values.truongPhongBan?.trimStart().trimEnd(), 
+      thuKyPhongBan: values.thuKyPhongBan?.trimStart().trimEnd(),
+    }
+    getDepartmentsByParams(requestData);
   };
 
   useEffect(() => {
+    console.log('Tabledata:',data)
+  }, [data])
+
+  useEffect(() => {
     setLoading(false)
+    refresh()
   },[])
 
   return (
     <>
+    {contextHolder}
+    <Skeleton loading = {loading} active>
+        <Form form={form} name="advanced_search" style={formStyle} onFinish={onFinish}>
+        <Row gutter={24}>
+            <Col span={7}>
+                <Form.Item
+                    name={'tenPhongBan'}
+                    label={'Tên phòng ban'}
+                    labelCol={{style: {width: 120, textAlign:"left"}}}
+                >
+                    <Input placeholder="Tên phòng ban" />
+                </Form.Item>
+            </Col>
+            <Col span={7}>
+                <Form.Item
+                    name={'truongPhongBan'}
+                    label={'Trưởng phòng ban'}
+                    labelCol={{style: {width: 130, textAlign:"left"}}}
+                >
+                    <Input placeholder="Trưởng phòng ban" />
+                </Form.Item>
+            </Col>
+            <Col span={7}>
+                <Form.Item
+                    name={'thuKyPhongBan'}
+                    label={'Thư ký phòng ban'}
+                    labelCol={{style: {width: 140, textAlign:"left"}}}
+                >
+                    <Input placeholder="Thư ký phòng ban" />
+                </Form.Item>
+            </Col>
+        </Row>
+        <div style={{ textAlign: 'right' }}>
+          <Space size="small">
+            <Button type="primary" htmlType="submit">
+              Tìm kiếm
+            </Button>
+            <Button
+              onClick={() => {
+                form.resetFields();
+              }}
+            >
+              Tạo lại
+            </Button>
+          </Space>
+        </div>
+      </Form>
+      </Skeleton>
         <Skeleton loading={loading} active>
             <div style={{backgroundColor:'#fff', padding:'24px'}}>
                 <Row justify={'space-between'} style={{marginBottom:'24px'}}>
                     <span style={{textAlign:'center'}}><b>Quản lý phòng ban</b></span>
                     <Col>
                         <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setAddOpen(true)}>Tạo mới</Button>
-                        <Button type="primary" style={{marginLeft:'12px'}}>Xóa</Button>
+                        <Button type="primary" style={{marginLeft:'12px'}} onClick={() => onDelete()}>Xóa</Button>
                     </Col>
                 </Row>
                 <Table 
-                scroll={{x:1500, y:500}} 
+                scroll={{x:1000, y:500}} 
                 rowSelection={rowSelection} 
                 columns={columns} 
-                dataSource={data} 
-                pagination={{ showQuickJumper:true, total:50 ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}} 
+                dataSource={tableData}
+                pagination={{ 
+                  showQuickJumper:true, 
+                  total:totalRecords ,
+                  defaultPageSize: 10, 
+                  showSizeChanger: true, 
+                  pageSizeOptions: ['10', '20', '30'], 
+                  locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' },
+                  onChange: (page, pageSize) => {
+                    setPage(page);
+                    setPageSize(pageSize);
+                  },  
+                  showTotal:(total) => `Tổng ${total} bản ghi`}} 
                 />
             </div>
         </Skeleton>
-        <CreateDepartmentsList show={addOpen} close={() => setAddOpen(false)} />
-        <UpdateDepartmentsList show={updateOpen} close={() => setUpdateOpen(false)} />
+        <CreateDepartmentsList refresh={refresh} show={addOpen} close={() => setAddOpen(false)} />
+        <UpdateDepartmentsList refresh={refresh} data={updateData} show={updateOpen} close={() => setUpdateOpen(false)} />
     </>
   );
 };

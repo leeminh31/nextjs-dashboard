@@ -6,11 +6,10 @@ import type { RadioChangeEvent } from 'antd';
 import {
   UploadOutlined,
   DownloadOutlined,
+  EditTwoTone,
 } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import type { TableRowSelection } from 'antd/es/table/interface';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPencil, faEye } from '@fortawesome/free-solid-svg-icons'
 import ImportContract from './import-contract';
 import CreateContract from './create-contract';
 import UpdateContract from './update-contract';
@@ -20,6 +19,7 @@ import HopDongApi from '@/app/api/hopdong';
 import NhanVienApi from '@/app/api/nhanvien';
 import { SearchNhanVienRequest } from '@/app/models/nhanvien/search-nhanvien-request';
 import { NhanVienResponse } from '@/app/models/nhanvien/nhanvien-response';
+import { UpdateHopDongRequest } from '@/app/models/hopdong/update-hopdong-request';
 const { Option } = Select;
 
 const rowSelection: TableRowSelection<HopDongResponse> = {
@@ -44,15 +44,19 @@ const ContractTable: React.FC = () => {
     const [importOpen, setImportOpen] = useState(false);
     const [addOpen, setAddOpen] = useState(false);
     const [updateOpen, setUpdateOpen] = useState(false);
-    const [viewOpen, setViewOpen] = useState(false);
     const [form] = Form.useForm();
-    const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
-    const [value, setValue] = useState(false);
     const [loading, setLoading] = useState(true);
     const [contractData, setContractData] = useState<HopDongResponse[]>([]);
     const [employeeData, setEmployeeData] = useState<NhanVienResponse[]>([]);
     const [idList, setIdList] = useState<string[]>([]);
     const [totalRecords, setTotalRecords] = useState(0);
+    const [updateData, setUpdateData] = useState({})
+
+    const onUpdate = (record:any) => {
+      console.log("Record", record)
+      setUpdateData(record);
+      setUpdateOpen(true);
+  }
 
     const columns: ColumnsType<HopDongResponse> = [
       {
@@ -69,51 +73,68 @@ const ContractTable: React.FC = () => {
           title: 'Tên hợp đồng',
           dataIndex: 'tenHopDong',
           key: 'tenHopDong',
+          width:250,
       },
       {
           title: 'Mã nhân viên',
           dataIndex: 'maNhanVien',
           key: 'maNhanVien',
+          width:150,
       },
       {
         title: 'Tên nhân viên',
         dataIndex: 'hoTen',
         key: 'hoTen',
+        width:200,
         render: (value, record) => {
           return (
               <>{employeeData.find((element) => element.maNhanVien === record.maNhanVien)?.hoTen}</>
           )
-          }
+        }
       },
       {
           title: 'Ngày bắt đầu',
           key: 'ngayBatDauHopDong',
           dataIndex: 'ngayBatDauHopDong',
+          width:150,
       },
       {
           title: 'Ngày kết thúc',
           key: 'ngayKetThucHopDong',
           dataIndex: 'ngayKetThucHopDong',
+          width:150,
       },
       {
           title: 'Loại hợp đồng',
           key: 'loaiHopDong',
           dataIndex: 'loaiHopDong',
+          width:150,
       },
+      {
+        title: 'Trạng thái hợp đồng',
+        key: 'trangThaiHopDong',
+        dataIndex: 'trangThaiHopDong',
+        width:150,
+        render: (value, record,index) => {
+          let dateEnd = new Date(record.ngayKetThucHopDong)
+          let color = dateEnd.getTime() < Date.now() ? 'volcano' : 'green'
+
+          return (
+            <Tag color={color} key={index}>
+              {color === 'volcano' ? "Đã kết thúc" : "Còn hạn"}
+            </Tag>
+          )
+        }
+    },
       {
           title: 'Hoạt động',
           key: 'action',
           fixed:'right',
           width:100,
           align: 'center' as 'center',
-          render: () => (
+          render: (value, record) => (
             <>
-              <Button 
-              style={{backgroundColor:'transparent', color:'#6c8cad', border:'none'}}
-              onClick={() => setUpdateOpen(true)}
-              >
-                <FontAwesomeIcon icon={faPencil} />
-              </Button>
+              <Button icon={<EditTwoTone />} style={{backgroundColor:'transparent', border:'none', boxShadow:'none'}} onClick={() => onUpdate(record)}></Button>
             </>
           ) 
       },
@@ -144,9 +165,10 @@ const ContractTable: React.FC = () => {
     let response = await HopDongApi.getHopDong(tenHopDongParam, loaiHopDong);
     if(response.statusCode === '200') {
       setContractData(response.data.reverse())
+      setTotalRecords(response.data.length)
     } else if (response.statusCode === '545') {
       setContractData(response.data)
-      // setTotalRecords(0)
+      setTotalRecords(0)
     }
     else {
       console.log(response.message)
@@ -160,15 +182,18 @@ const ContractTable: React.FC = () => {
       setIdList(response.data.reverse())
     } else if (response.statusCode === '545') {
       setIdList(response.data)
-      // setTotalRecords(0)
     }
     else {
       console.log(response.message)
     }
   }
 
+  const refresh = () => {
+    getContractByParams(null,null)
+  } 
+
   const onFinish = async (values: any) => {
-    await getContractByParams(values.tenHopDong, values.loaiHopDong)
+    await getContractByParams(values.tenHopDong?.trimStart().trimEnd(), values.loaiHopDong?.trimStart().trimEnd())
     if(values.hoTen !== '' && values.hoTen !== undefined ) {
       getEmployeeIdByName(values.hoTen)
       // console.log(idList)
@@ -189,7 +214,7 @@ const ContractTable: React.FC = () => {
 
     useEffect(() => {
       setLoading(false);
-      getContractByParams(null,null)
+      refresh()
       getEmployeeByParams({
         hoTen: null,
         maNhanVien: null,
@@ -229,6 +254,7 @@ const ContractTable: React.FC = () => {
                             labelCol={{style: {width: 120, textAlign:"left"}}}
                         >
                             <Select
+                                showSearch optionFilterProp="value"
                                 placeholder="Vui lòng chọn"
                             >
                                 <Option value="Thử việc">Thử việc</Option>
@@ -238,14 +264,14 @@ const ContractTable: React.FC = () => {
                     </Col>
                 </Row>
                 <Row justify="end">
-                    <Button type='primary' onClick={() => form.submit()} >Tìm kiếm</Button>
+                    <Button type='primary' htmlType="submit" onClick={() => form.submit()} >Tìm kiếm</Button>
                     <Button onClick={() => form.resetFields()} >Tạo lại</Button>
                 </Row>
             </Form>
         </Skeleton>     
         <Skeleton loading = {loading} active>
           <div style={{paddingLeft:"24px",paddingRight:"24px", backgroundColor:colorBgContainer, marginTop:"20px"}}>
-              <Flex justify='space-between' align='center' style={{height:"50px", borderBottom:"1px solid #bbbfc1", marginBottom:"10px"}}>
+              <Flex justify='space-between' align='center' style={{height:"50px", marginBottom:"10px"}}>
                   <span><b>Danh sách hợp đồng</b></span>
                   <Row>
                     <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setImportOpen(true)}>Import</Button>
@@ -259,7 +285,7 @@ const ContractTable: React.FC = () => {
                   dataSource={contractData}
                   pagination={{ 
                     showQuickJumper:true, 
-                    total:50 ,
+                    total:totalRecords ,
                     defaultPageSize: 10, 
                     showSizeChanger: true, 
                     pageSizeOptions: ['10', '20', '30'], 
@@ -272,10 +298,9 @@ const ContractTable: React.FC = () => {
               />
           </div>
         </Skeleton>
-        <ImportContract show={importOpen} close={() => setImportOpen(false)}/>
-        <CreateContract show={addOpen} close={() => setAddOpen(false)}/>
-        <UpdateContract show={updateOpen} close={() => setUpdateOpen(false)}  />
-        <ViewContract show={viewOpen} close={() => setViewOpen(false)} />
+        <ImportContract refresh={refresh} show={importOpen} close={() => setImportOpen(false)}/>
+        <CreateContract refresh={refresh} show={addOpen} close={() => setAddOpen(false)}/>
+        <UpdateContract refresh={refresh} data={updateData} show={updateOpen} close={() => setUpdateOpen(false)}  />
       </>
     )
 }

@@ -10,7 +10,7 @@ export interface UpdateNhanVienRequest{
     noiOHienTai: string,
     nguoiThanLienHe: string,
     soDienThoaiNguoiLienHe: string,
-    STKNganHang: string,
+    stkNganHang: string,
     nganHang: string,
     maPhongBan: number,
     soDienThoai: string,

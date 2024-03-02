@@ -40,7 +40,7 @@ const items: MenuItem[] = [
     getItem('Danh sách phòng ban', '/dashboard/departments-list'),
     getItem('Danh sách nhân viên', '/dashboard/employee-list'),
     getItem('Quản lý hợp đồng', '/dashboard/contract'),
-    getItem('Điều chuyển nhân viên', '/dashboard/staff-transfer'),
+    // getItem('Điều chuyển nhân viên', '/dashboard/staff-transfer'),
   ]),
   getItem('Báo cáo chấm công', 'sub2', <FontAwesomeIcon icon={faCreditCard} />,[
     getItem('Danh sách ca', '/dashboard/shift-list'),

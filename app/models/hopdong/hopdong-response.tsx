@@ -6,5 +6,4 @@ export interface HopDongResponse{
     loaiHopDong:string ,
     tiLeHuongLuong:number ,
     gioLamViec:number ,
-    congChuan:number ,
 }

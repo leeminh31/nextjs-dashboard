@@ -10,9 +10,10 @@ export interface NhanVienResponse{
     noiOHienTai: string,
     nguoiThanLienHe: string,
     soDienThoaiNguoiLienHe: string,
-    STKNganHang: string,
+    stkNganHang: string,
     nganHang: string,
     maPhongBan: number,
     soDienThoai: string,
-    idVanTay: number
+    idVanTay: number,
+    maCa: number,
 }

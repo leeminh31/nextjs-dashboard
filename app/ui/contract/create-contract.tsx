@@ -1,7 +1,7 @@
 import { Drawer, Row, Space, Button, Form, Col, Input, Select, DatePicker, Radio, message } from "antd"
 import type { RadioChangeEvent } from 'antd';
 import { useEffect, useState } from "react";
-import { specialCharactersRegex } from "@/app/utils/validateInput";
+import { monthDiff, specialCharactersRegex } from "@/app/utils/validateInput";
 import { SearchNhanVienRequest } from "@/app/models/nhanvien/search-nhanvien-request";
 import NhanVienApi from "@/app/api/nhanvien";
 import { NhanVienResponse } from "@/app/models/nhanvien/nhanvien-response";
@@ -12,7 +12,7 @@ import HopDongApi from "@/app/api/hopdong";
 const { Option } = Select
 
 const CreateContract = (props:any) => {
-    const {show, close} = props
+    const {show, close, refresh} = props
     const [form] = Form.useForm();
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
     const [messageApi, contextHolder] = message.useMessage();
@@ -24,11 +24,55 @@ const CreateContract = (props:any) => {
     }
 
     const onFinish = async (values: any) => {
+      console.log(values)
+
+      let dateStart = new Date(values.ngayBatDauHopDong);
+      let dateEnd = new Date(values.ngayKetThucHopDong);
+      
+      if(dateStart.getTime() >= dateEnd.getTime()) {
+        messageApi.open({
+            type: 'error',
+            content: 'Ngày kết thúc bắt buộc lớn hơn ngày bắt đầu',
+            className: 'custom-class',
+            style: {
+                fontSize:'16px'
+            },
+            duration: 1.5,
+        });
+        return
+      }
+
+      if(values.loaiHopDong === "Thử việc" && Math.floor((dateEnd.getTime()-dateStart.getTime())/(24*3600*1000)) >90) {
+        messageApi.open({
+          type: 'error',
+          content: 'Không được phép nhập khoảng thời gian lớn hơn 3 tháng',
+          className: 'custom-class',
+          style: {
+              fontSize:'16px'
+          },
+          duration: 1.5,
+        });
+        return
+      }
+
+      if(values.loaiHopDong === "Chính thức" && Math.floor((dateEnd.getTime()-dateStart.getTime())/(24*3600*1000)) >365) {
+        messageApi.open({
+          type: 'error',
+          content: 'Không được phép nhập khoảng thời gian lớn hơn 12 tháng.',
+          className: 'custom-class',
+          style: {
+              fontSize:'16px'
+          },
+          duration: 1.5,
+        });
+        return
+      }
+
       const requestData : CreateHopDongRequest = {
         tenHopDong: values.tenHopDong ,
         maNhanVien: values.maNhanVien ,
-        ngayBatDauHopDong: FormatDate(values.ngayBatDau) ,
-        ngayKetThucHopDong: FormatDate(values.ngayKetThuc) ,
+        ngayBatDauHopDong: FormatDate(values.ngayBatDauHopDong) ,
+        ngayKetThucHopDong: FormatDate(values.ngayKetThucHopDong) ,
         loaiHopDong: values.loaiHopDong ,
         tiLeHuongLuong: values.tyLeHuongLuong ,
         gioLamViec: values.gioLamViec,
@@ -37,22 +81,32 @@ const CreateContract = (props:any) => {
 
       let response = await HopDongApi.addHopDong(requestData);
         if(response.statusCode === '200'){
-            // refresh()
+            refresh()
             close()
+            form.resetFields()
             messageApi.open({
                 type: 'success',
-                content: 'Thêm mới hợp đồng thành công',
+                content: 'Thêm hợp đồng mới thành công',
                 className: 'custom-class',
                 style: {
-                    marginTop: '40vh',
                     fontSize:'16px'
                 },
                 duration: 1.5,
             });
+        } else if ( response.statusCode === "552") {
+          messageApi.open({
+            type: 'error',
+            content: response.message,
+            className: 'custom-class',
+            style: {
+                fontSize:'16px'
+            },
+            duration: 1.5,
+        });
         }
         else {
             console.log(response.message)
-        }
+      }
 
     };
 
@@ -67,6 +121,11 @@ const CreateContract = (props:any) => {
       console.log(response.message)
       }
     }
+
+    useEffect(() => {
+      if(show) 
+        form.resetFields()
+    },[show])
 
     useEffect(() => {
       getEmployeeByParams({
@@ -104,13 +163,8 @@ const CreateContract = (props:any) => {
                         rules={[
                             {
                             required: true,
-                            message: 'Vui lòng nhập Tên hợp đồng!',
+                            message: 'Vui lòng nhập đầy đủ thông tin',
                             },
-                            {
-                              validator(_, value) {
-                                  return specialCharactersRegex(value)
-                              },
-                            }
                         ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -141,42 +195,15 @@ const CreateContract = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <Select placeholder = "Vui lòng chọn" onChange={(e) => changeSelect(e)}>
-                                {data?.map((item) => <Option value= {item.maNhanVien}>{item.hoTen}</Option>)}
+                            <Select  
+                              showSearch 
+                              optionFilterProp="label" 
+                              placeholder = "Vui lòng chọn" 
+                              onChange={(e) => changeSelect(e)}
+                              
+                              options={data?.map((item, index) => ({value:item.maNhanVien, label:item.hoTen}))}>
                             </Select>
                         </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'ngayBatDau'}
-                        label={'Ngày bắt đầu'}
-                        rules={[
-                          {
-                          required: true,
-                          message: 'Vui lòng nhập Ngày bắt đầu!',
-                          },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                          <DatePicker placeholder='Vui lòng nhập Ngày bắt đầu' format={dateFormatList} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item
-                        name={'ngayKetThuc'}
-                        label={'Ngày kết thúc'}
-                        rules={[
-                          {
-                          required: true,
-                          message: 'Vui lòng nhập Ngày kết thúc!',
-                          },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                        <DatePicker placeholder='Vui lòng nhập Ngày kết thúc' format={dateFormatList} />
-                      </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
@@ -191,7 +218,7 @@ const CreateContract = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                          <Select placeholder = "Vui lòng chọn">
+                          <Select showSearch optionFilterProp="value" placeholder = "Vui lòng chọn">
                             <Option value="Thử việc">Thử việc</Option>
                             <Option value="Chính thức">Chính thức</Option>
                           </Select>
@@ -199,10 +226,56 @@ const CreateContract = (props:any) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item
+                        name={'ngayBatDauHopDong'}
+                        label={'Ngày bắt đầu'}
+                        rules={[
+                          {
+                          required: true,
+                          message: 'Vui lòng nhập đầy đủ thông tin',
+                          },
+                        ]}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                          <DatePicker placeholder='Vui lòng nhập Ngày bắt đầu' format={dateFormatList} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        name={'ngayKetThucHopDong'}
+                        label={'Ngày kết thúc'}
+                        rules={[
+                          {
+                          required: true,
+                          message: 'Vui lòng nhập đầy đủ thông tin',
+                          },
+                        ]}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        >
+                        <DatePicker placeholder='Vui lòng nhập Ngày kết thúc' format={dateFormatList} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
                         name={'tyLeHuongLuong'}
                         label={'Tỷ lệ hưởng lương'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Vui lòng nhập đầy đủ thông tin',
+                          },
+                          {
+                            validator(_, value) {
+                                if(value !== null && value !== undefined && value !== "")
+                                  if(value > 100) 
+                                    return Promise.reject("Tỷ lệ hưởng lương không được phép lớn hơn 100")
+                                return Promise.resolve()
+                            },
+                          }
+                        ]}
                         >
                           <Input type={'number'}/>
                         </Form.Item>
@@ -213,16 +286,12 @@ const CreateContract = (props:any) => {
                         label={'Giờ làm việc'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
-                        >
-                          <Input type={'number'} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'congChuan'}
-                        label={'Công chuẩn'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Vui lòng nhập đầy đủ thông tin',
+                          },
+                        ]}
                         >
                           <Input type={'number'} />
                         </Form.Item>

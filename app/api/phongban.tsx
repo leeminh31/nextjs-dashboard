@@ -19,7 +19,13 @@ const PhongBanApi = {
   
     getPhongBan: async (data: SearchPhongBanRequest) => {
       let rest = new RestConnection()
-      return rest.getAsync(`PhongBan`+qs.stringify(data, { skipNulls: true }))
+      return rest.getAsync(`PhongBan?`+qs.stringify(data, { skipNulls: true }))
+    },
+
+    deletePhongBan: async (data: string) => {
+      console.log(data)
+      let rest = new RestConnection()
+      return rest.deleteAsync(`PhongBan?id=`+data)
     },
   };
   

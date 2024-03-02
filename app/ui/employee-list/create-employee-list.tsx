@@ -26,8 +26,12 @@ const CreateEmployeeList = (props:any) => {
         }
     }
 
-    const onFinish = async (values: any) => {
+    const changeSelect = (e:any) => {
+        form.setFieldValue('maPhongBan',e)
+    }
 
+    const onFinish = async (values: any) => {
+        console.log(values)
 
         const requestData : CreateNhanVienRequest = {
             maNhanVien: values.maNhanVien,
@@ -59,7 +63,16 @@ const CreateEmployeeList = (props:any) => {
                 content: 'Thêm mới nhân viên thành công',
                 className: 'custom-class',
                 style: {
-                    marginTop: '40vh',
+                    fontSize:'16px'
+                },
+                duration: 1.5,
+            });
+        } else if( response.statusCode === '553' || response.statusCode === '554'){
+            messageApi.open({
+                type: 'error',
+                content: response.message,
+                className: 'custom-class',
+                style: {
                     fontSize:'16px'
                 },
                 duration: 1.5,
@@ -73,12 +86,16 @@ const CreateEmployeeList = (props:any) => {
     };
 
     useEffect(() => {
+        if(show) 
+            form.resetFields()
+    },[show])
+
+    useEffect(() => {
         getDepartmentsByParams({
             tenPhongBan: null ,
             truongPhongBan: null ,
             thuKyPhongBan: null ,
         })
-        
     },[])
 
 
@@ -108,7 +125,7 @@ const CreateEmployeeList = (props:any) => {
                         rules={[
                             {
                             required: true,
-                            message: 'Vui lòng nhập mã nhân viên!',
+                            message: 'Vui lòng nhập đầy đủ thông tin',
                             },
                             {
                                 validator(_, value) {
@@ -129,7 +146,7 @@ const CreateEmployeeList = (props:any) => {
                         rules={[
                             {
                             required: true,
-                            message: 'Vui lòng nhập tên nhân viên!',
+                            message: 'Vui lòng nhập đầy đủ thông tin',
                             },
                             {
                                 validator(_, value) {
@@ -152,7 +169,7 @@ const CreateEmployeeList = (props:any) => {
                         rules={[
                             {
                             required: true,
-                            message: 'Vui lòng nhập chức vụ!',
+                            message: 'Vui lòng nhập đầy đủ thông tin',
                             },
                             {
                                 validator(_, value) {
@@ -173,12 +190,17 @@ const CreateEmployeeList = (props:any) => {
                         rules={[
                             {
                             required: true,
-                            message: 'Vui lòng chọn phòng ban!',
+                            message: 'Vui lòng nhập đầy đủ thông tin',
                             },
                         ]}
                         >
-                            <Select placeholder = "Vui lòng chọn">
-                                {departments?.map((item) => <Option value={item.maPhongBan}>{item.tenPhongBan}</Option>)}
+                            <Select  
+                                showSearch 
+                                optionFilterProp="label" 
+                                placeholder = "Vui lòng chọn" 
+                                onChange={(e) => changeSelect(e)}
+                                
+                                options={departments?.map((item, index) => ({value:item.maPhongBan, label:item.tenPhongBan}))}>
                             </Select>
                         </Form.Item>
                     </Col>
@@ -191,7 +213,7 @@ const CreateEmployeeList = (props:any) => {
                         rules={[
                             {
                             required: true,
-                            message: 'Vui lòng nhập id vân tay!',
+                            message: 'Vui lòng nhập đầy đủ thông tin',
                             }
                         ]}
                         >
@@ -211,7 +233,7 @@ const CreateEmployeeList = (props:any) => {
                             },
                             {
                             required: true,
-                            message: 'Vui lòng nhập mail!',
+                            message: 'Vui lòng nhập đầy đủ thông tin',
                             },
                         ]}
                         >
@@ -234,6 +256,20 @@ const CreateEmployeeList = (props:any) => {
                         label={'Số điện thoại'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
+                        rules= {[
+                            {
+                                validator(_, value) {
+                                    if(value !== undefined && value != '')
+                                    {
+                                        if (value.length !=10)
+                                            return Promise.reject('Vui lòng nhập đúng định dạng dữ liệu.');
+                                        return Promise.resolve();
+                                    }
+                                    else
+                                        return Promise.resolve();
+                                },
+                            }
+                        ]}
                         >
                             <Input type='number' maxLength={20} placeholder='Số điện thoại'/>
                         </Form.Item>
@@ -244,6 +280,20 @@ const CreateEmployeeList = (props:any) => {
                         label={'Căn cước công dân'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
+                        rules= {[
+                            {
+                                validator(_, value) {
+                                    if(value !== undefined && value != '')
+                                    {
+                                        if (value.length !=12)
+                                            return Promise.reject('Vui lòng nhập đúng định dạng dữ liệu.');
+                                        return Promise.resolve();
+                                    }
+                                    else
+                                        return Promise.resolve();
+                                },
+                            }
+                        ]}
                         >
                             <Input type='number' maxLength={20} placeholder='Căn cước công dân' />
                         </Form.Item>
@@ -264,13 +314,6 @@ const CreateEmployeeList = (props:any) => {
                         label={'Quê quán'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
-                        rules= {[
-                            {
-                                validator(_, value) {
-                                    return specialCharactersRegex(value)
-                                },
-                            }
-                        ]}
                         >
                             <Input placeholder='Quê quán' />
                         </Form.Item>
@@ -281,13 +324,6 @@ const CreateEmployeeList = (props:any) => {
                         label={'Nơi ở hiện tại'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
-                        rules= {[
-                            {
-                                validator(_, value) {
-                                    return specialCharactersRegex(value)
-                                },
-                            }
-                        ]}
                         >
                             <Input placeholder='Nơi ở hiện tại' />
                         </Form.Item>
@@ -315,6 +351,20 @@ const CreateEmployeeList = (props:any) => {
                         label={'Số điện thoại người thân liên hệ'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
+                        rules= {[
+                            {
+                                validator(_, value) {
+                                    if(value !== undefined && value != '')
+                                    {
+                                        if (value.length !=10)
+                                            return Promise.reject('Vui lòng nhập đúng định dạng dữ liệu.');
+                                        return Promise.resolve();
+                                    }
+                                    else
+                                        return Promise.resolve();
+                                },
+                            }
+                        ]}
                         >
                             <Input type='number' placeholder='Số điện thoại người thân liên hệ' />
                         </Form.Item>

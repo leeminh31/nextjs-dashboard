@@ -1,8 +1,8 @@
+
 export interface DuLieuChamCongResponse{
-    id:number,
-    code: string,
-    name: string,
-    url: string,
-    status: number,
-    description: string
+    maChamCong: number,
+    maNhanVien:string,
+    ngayChamCong: Date,
+    lanChamCong: number,
+    gioChamCong:string,
 }

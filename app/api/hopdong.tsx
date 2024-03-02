@@ -19,6 +19,11 @@ const HopDongApi = {
     getHopDong: async (tenHopDong:string | null, loaiHopDong:string | null) => {
       let rest = new RestConnection()
       return rest.getAsync("HopDong?"+ qs.stringify({tenHopDong,loaiHopDong}, {skipNulls:true}))
+    },
+
+    getHopDongByID: async (tenHopDong :string) => {
+      let rest = new RestConnection()
+      return rest.getAsync("HopDong/"+qs.stringify(tenHopDong))
     }
   };
   

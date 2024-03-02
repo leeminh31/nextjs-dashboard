@@ -1,13 +1,112 @@
-import { Button, Row, Col, Space, Drawer, Form, Input, Select } from 'antd';
+import NhanVienApi from '@/app/api/nhanvien';
+import PhongBanApi from '@/app/api/phongban';
+import { NhanVienResponse } from '@/app/models/nhanvien/nhanvien-response';
+import { SearchNhanVienRequest } from '@/app/models/nhanvien/search-nhanvien-request';
+import { UpdatePhongBanRequest } from '@/app/models/phongban/update-phongban-request';
+import { Button, Row, Col, Space, Drawer, Form, Input, Select, message } from 'antd';
+import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
+import { specialCharactersRegex } from '@/app/utils/validateInput';
 const {Option} = Select
 
 const UpdateDepartmentsList = (props:any) => {
-    const {show, close} = props
-    const [form] = Form.useForm()
+    const {show, close, refresh, data} = props;
+    const [form] = Form.useForm();
+    const [messageApi, contextHolder ] = message.useMessage();
+    const [employeeData, setEmployeeData] = useState<NhanVienResponse[]>([]);
 
-    const onFinish = (values: any) => {
-        console.log('Received values of form: ', values);
-      };
+    const getEmployeeByParams = async (searchRequest :SearchNhanVienRequest) => {
+        let response = await NhanVienApi.getNhanVien(searchRequest);
+        if(response.statusCode === '200') {
+            setEmployeeData(response.data)
+        } else if (response.statusCode === '545') {
+            setEmployeeData(response.data)
+        }
+        else {
+            console.log(response.message)
+        }
+    }
+
+    const onFinish = async (values: any) => {
+        const requestData : UpdatePhongBanRequest = {
+            maPhongBan:values.maPhongBan,
+            tenPhongBan: values.tenPhongBan ,
+            truongPhongBan: values.truongPhongBan ,
+            thuKyPhongBan: values.thuKyPhongBan ,
+            soLanChamCong: values.soLanChamCong ,
+        }
+    
+        let response = await PhongBanApi.updatePhongBan(requestData);
+            if(response.statusCode === '200'){
+                refresh()
+                close()
+                messageApi.open({
+                    type: 'success',
+                    content: 'Cập nhật phòng ban thành công',
+                    className: 'custom-class',
+                    style: {
+                        fontSize:'16px'
+                    },
+                    duration: 1.5,
+                });
+            }
+            else if (response.statusCode === '551') {
+                messageApi.open({
+                    type: 'error',
+                    content: response.message,
+                    className: 'custom-class',
+                    style: {
+                        fontSize:'16px'
+                    },
+                    duration: 1.5,
+                });
+                }
+            else {
+                messageApi.open({
+                    type: 'error',
+                    content: 'Cập nhật phòng ban thất bại',
+                    className: 'custom-class',
+                    style: {
+                        fontSize:'16px'
+                    },
+                    duration: 1.5,
+                });
+            }
+    };
+
+    useEffect(() => {
+        if(show)
+            form.setFieldsValue({
+                maPhongBan: data.maPhongBan ,
+                tenPhongBan: data.tenPhongBan ,
+                soLanChamCong: data.soLanChamCong ,
+                truongPhongBan: data.truongPhongBan ,
+                thuKyPhongBan: data.thuKyPhongBan,
+            })
+    },[show])
+
+    useEffect(() => {
+        if(data != null) {
+            console.log(data)
+            form.setFieldsValue({
+                maPhongBan: data.maPhongBan ,
+                tenPhongBan: data.tenPhongBan ,
+                soLanChamCong: data.soLanChamCong ,
+                truongPhongBan: data.truongPhongBan ,
+                thuKyPhongBan: data.thuKyPhongBan,
+            })
+        }
+    },[data])
+
+    useEffect(() => {
+        getEmployeeByParams({
+            hoTen: null,
+            maNhanVien: null,
+            idVanTay: null,
+            maPhongBan: null,
+            chucVu: null
+        })
+    },[])
 
     return (
         <Drawer 
@@ -25,8 +124,18 @@ const UpdateDepartmentsList = (props:any) => {
                 </Row>
             }
         >
+            {contextHolder}
             <Form form={form} name="updateDepartment" onFinish={onFinish}>
                 <Row gutter={24}>
+                    <Form.Item
+                        name={'maPhongBan'}
+                        label={'maPhongBan'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        style={{display:'none'}}
+                        >
+                            <Input />
+                    </Form.Item>
                     <Col span={12}>
                         <Form.Item
                         name={'tenPhongBan'}
@@ -34,8 +143,13 @@ const UpdateDepartmentsList = (props:any) => {
                         rules={[
                             {
                             required: true,
-                            message: 'Vui lòng nhập tên phòng ban!',
+                            message: 'Vui lòng nhập đầy đủ thông tin',
                             },
+                            {
+                                validator(_, value) {
+                                    return specialCharactersRegex(value)
+                                },
+                            }
                         ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -50,8 +164,16 @@ const UpdateDepartmentsList = (props:any) => {
                         rules={[
                             {
                             required: true,
-                            message: 'Vui lòng nhập số lần chấm công!',
+                            message: 'Vui lòng nhập đầy đủ thông tin',
                             },
+                            {
+                                validator(_, value) {
+                                    if(value > 3) {
+                                        return Promise.reject('Vui lòng nhập số nhỏ hơn 3.');
+                                    }
+                                    return Promise.resolve();
+                                },
+                            }
                         ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -65,18 +187,44 @@ const UpdateDepartmentsList = (props:any) => {
                         label={'Trưởng phòng ban'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
+                        rules = {[
+                            {
+                                required: true,
+                                message: 'Vui lòng nhập đầy đủ thông tin',
+                            },
+                        ]
+                        }
                         >
-                            <Input placeholder="Trưởng phòng ban" />
+                            <Select showSearch optionFilterProp='value'>
+                                {employeeData?.map((item, index) => {
+                                    return (
+                                        <Option value={item.hoTen}>{item.hoTen}</Option>
+                                    )
+                                })}
+                            </Select>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                        name={'thuKy'}
+                        name={'thuKyPhongBan'}
                         label={'Thư ký'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
+                        rules = {[
+                            {
+                                required: true,
+                                message: 'Vui lòng nhập đầy đủ thông tin',
+                            },
+                        ]
+                        }
                         >
-                            <Input placeholder="Thư ký" />
+                            <Select showSearch optionFilterProp='value'>
+                                {employeeData?.map((item, index) => {
+                                    return (
+                                        <Option value={item.hoTen}>{item.hoTen}</Option>
+                                    )
+                                })}
+                            </Select>
                         </Form.Item>
                     </Col>
                 </Row>

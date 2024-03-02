@@ -1,3 +1,4 @@
+import { url } from "inspector"
 import { HRMSystemApi } from "../constant/constant"
 
 class RestConnection {
@@ -8,8 +9,8 @@ class RestConnection {
       var strToken = localStorage.getItem("token")
       try {
           let token: any
-          console.log("strToken")
-          console.log(strToken)
+          // console.log("strToken")
+          // console.log(strToken)
           if (strToken)
             token = JSON.parse(strToken)
   
@@ -26,7 +27,7 @@ class RestConnection {
             }
           )
           .then(async (res) => {
-            console.log("res",res)
+            // console.log("res",res)
             if (res.status === 401)
             {
               const user = JSON.parse(localStorage.getItem("user") ?? "")
@@ -35,7 +36,7 @@ class RestConnection {
             return res.clone().json();
           })
           .then((resData) => {
-            console.log("response api",resData)
+            // console.log("response api",resData)
             return resData;
           })
           .catch((err) => {
@@ -55,6 +56,9 @@ class RestConnection {
       return this._fetchAsync("GET", url, null, true)
     }
     
+    deleteAsync = async (url:string) => {
+      return this._fetchAsync("DELETE", url, null, true)
+    }
   };
   
   export default RestConnection;

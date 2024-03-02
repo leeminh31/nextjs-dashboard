@@ -26,6 +26,10 @@ const UpdateEmployeeList = (props:any) => {
         }
     }
 
+    const changeSelect = (e:any) => {
+        form.setFieldValue('maPhongBan',e)
+    }
+
     const onFinish = async (values: any) => {
         const requestData:UpdateNhanVienRequest = {
             maNhanVien: values.maNhanVien,
@@ -54,10 +58,19 @@ const UpdateEmployeeList = (props:any) => {
             close()
             messageApi.open({
                 type: 'success',
-                content: 'Cập nhật nhân viên thành công',
+                content: 'Cập nhập thông tin nhân viên thành công',
                 className: 'custom-class',
                 style: {
-                    marginTop: '40vh',
+                    fontSize:'16px'
+                },
+                duration: 1.5,
+            });
+        } else if (response.statusCode === '554') {
+            messageApi.open({
+                type: 'error',
+                content: response.message,
+                className: 'custom-class',
+                style: {
                     fontSize:'16px'
                 },
                 duration: 1.5,
@@ -69,6 +82,28 @@ const UpdateEmployeeList = (props:any) => {
     };
 
     useEffect(() => {
+        if(show)
+        form.setFieldsValue({
+            maNhanVien: data.maNhanVien,
+            hoTen: data.hoTen,
+            chucVu: data.chucVu,
+            mail: data.mail,
+            ngaySinh: dayjs(data.ngaySinh, "DD/MM/YYYY"),
+            soCCCD: data.soCCCD,
+            ngayCap: dayjs(data.ngayCap, "DD/MM/YYYY"),
+            queQuan: data.queQuan,
+            noiOHienTai: data.noiOHienTai,
+            nguoiThanLienHe: data.nguoiThanLienHe,
+            soDienThoaiNguoiLienHe: data.soDienThoaiNguoiLienHe,
+            stkNganHang: data.stkNganHang,
+            nganHang: data.nganHang,
+            maPhongBan: data.maPhongBan,
+            soDienThoai: data.soDienThoai,
+            idVanTay: data.idVanTay
+        })
+    },[show])
+
+    useEffect(() => {
         getDepartmentsByParams({
             tenPhongBan: null ,
             truongPhongBan: null ,
@@ -78,14 +113,15 @@ const UpdateEmployeeList = (props:any) => {
 
     useEffect(() => {
         if(data != null) {
+            console.log(data)
             form.setFieldsValue({
                 maNhanVien: data.maNhanVien,
                 hoTen: data.hoTen,
                 chucVu: data.chucVu,
                 mail: data.mail,
-                ngaySinh: dayjs(data.ngaySinh, "DD/MM/YYYY"),
+                ngaySinh: data.ngaySinh === undefined ? undefined:  dayjs(data.ngaySinh, "DD/MM/YYYY"),
                 soCCCD: data.soCCCD,
-                ngayCap: dayjs(data.ngayCap, "DD/MM/YYYY"),
+                ngayCap: data.ngayCap === undefined ? undefined:  dayjs(data.ngayCap, "DD/MM/YYYY"),
                 queQuan: data.queQuan,
                 noiOHienTai: data.noiOHienTai,
                 nguoiThanLienHe: data.nguoiThanLienHe,
@@ -126,7 +162,7 @@ const UpdateEmployeeList = (props:any) => {
                         rules={[
                             {
                             required: true,
-                            message: 'Vui lòng nhập mã nhân viên!',
+                            message: 'Vui lòng nhập đầy đủ thông tin',
                             },
                             {
                                 validator(_, value) {
@@ -147,7 +183,7 @@ const UpdateEmployeeList = (props:any) => {
                         rules={[
                             {
                             required: true,
-                            message: 'Vui lòng nhập tên nhân viên!',
+                            message: 'Vui lòng nhập đầy đủ thông tin',
                             },
                             {
                                 validator(_, value) {
@@ -169,8 +205,8 @@ const UpdateEmployeeList = (props:any) => {
                         wrapperCol={{ span:24 }}
                         rules={[
                             {
-                            required: true,
-                            message: 'Vui lòng nhập chức vụ!',
+                                required: true,
+                                message: 'Vui lòng nhập đầy đủ thông tin',
                             },
                             {
                                 validator(_, value) {
@@ -195,8 +231,13 @@ const UpdateEmployeeList = (props:any) => {
                             },
                         ]}
                         >
-                            <Select placeholder = "Vui lòng chọn" >
-                                {departments?.map((item) => <Option value={item.maPhongBan}>{item.tenPhongBan}</Option>)}
+                            <Select  
+                                showSearch 
+                                optionFilterProp="label" 
+                                placeholder = "Vui lòng chọn" 
+                                onChange={(e) => changeSelect(e)}
+                                
+                                options={departments?.map((item, index) => ({value:item.maPhongBan, label:item.tenPhongBan}))}>
                             </Select>
                         </Form.Item>
                     </Col>
@@ -229,7 +270,7 @@ const UpdateEmployeeList = (props:any) => {
                             },
                             {
                             required: true,
-                            message: 'Vui lòng nhập mail!',
+                            message: 'Vui lòng nhập đầy đủ thông tin',
                             },
                         ]}
                         >
@@ -252,6 +293,20 @@ const UpdateEmployeeList = (props:any) => {
                         label={'Số điện thoại'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
+                        rules= {[
+                            {
+                                validator(_, value) {
+                                    if(value !== undefined && value != '' && value !== null)
+                                    {
+                                        if (value.length !=10)
+                                            return Promise.reject('Vui lòng nhập đúng định dạng dữ liệu.');
+                                        return Promise.resolve();
+                                    }
+                                    else
+                                        return Promise.resolve();
+                                },
+                            }
+                        ]}
                         >
                             <Input type='number' maxLength={20} placeholder='Số điện thoại'/>
                         </Form.Item>
@@ -262,6 +317,20 @@ const UpdateEmployeeList = (props:any) => {
                         label={'Căn cước công dân'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
+                        rules= {[
+                            {
+                                validator(_, value) {
+                                    if(value !== undefined && value != '' && value !== null)
+                                    {
+                                        if (value.length !=12)
+                                            return Promise.reject('Vui lòng nhập đúng định dạng dữ liệu.');
+                                        return Promise.resolve();
+                                    }
+                                    else
+                                        return Promise.resolve();
+                                },
+                            }
+                        ]}
                         >
                             <Input type='number' maxLength={20} placeholder='Căn cước công dân'/>
                         </Form.Item>
@@ -282,13 +351,6 @@ const UpdateEmployeeList = (props:any) => {
                         label={'Quê quán'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
-                        rules= {[
-                            {
-                                validator(_, value) {
-                                    return specialCharactersRegex(value)
-                                },
-                            }
-                        ]}
                         >
                             <Input placeholder='Quê quán'/>
                         </Form.Item>
@@ -299,13 +361,6 @@ const UpdateEmployeeList = (props:any) => {
                         label={'Nơi ở hiện tại'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
-                        rules= {[
-                            {
-                                validator(_, value) {
-                                    return specialCharactersRegex(value)
-                                },
-                            }
-                        ]}
                         >
                             <Input placeholder='Nơi ở hiện tại'/>
                         </Form.Item>
@@ -333,6 +388,20 @@ const UpdateEmployeeList = (props:any) => {
                         label={'Số điện thoại người thân liên hệ'}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
+                        rules= {[
+                            {
+                                validator(_, value) {
+                                    if(value !== undefined && value != '' && value !== null)
+                                    {
+                                        if (value.length !=10)
+                                            return Promise.reject('Vui lòng nhập đúng định dạng dữ liệu.');
+                                        return Promise.resolve();
+                                    }
+                                    else
+                                        return Promise.resolve();
+                                },
+                            }
+                        ]}
                         >
                             <Input type='number' placeholder='Số điện thoại người thân liên hệ'/>
                         </Form.Item>

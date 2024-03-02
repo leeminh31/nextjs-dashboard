@@ -1,8 +1,8 @@
 export interface CaLamViecResponse{
-    id:number,
-    code: string,
-    name: string,
-    url: string,
-    status: number,
-    description: string
-}
+    maCa:number,
+    tenCa:string, 
+    gioBatDauCa: string,
+    gioKetThucCa: string, 
+    gioBatDauNghi: string,
+    gioKetThucNghi: string
+} 

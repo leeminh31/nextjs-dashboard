@@ -6,7 +6,7 @@ const EmployeeList = () => {
 
     return (
         <>
-            <EmployeeListForm />
+            {/* <EmployeeListForm /> */}
             <EmployeeListTable />
         </>
     )

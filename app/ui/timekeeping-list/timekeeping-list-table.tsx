@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, theme, Flex, Tag, DatePicker, Radio } from 'antd';
 import type { RadioChangeEvent } from 'antd';
 import {
@@ -10,322 +10,214 @@ import {
   ExportOutlined,
   UploadOutlined,
   DownloadOutlined,
+  LockTwoTone,
 } from '@ant-design/icons';
+import dayjs from 'dayjs';
 import type { ColumnsType } from 'antd/es/table';
 import type { TableRowSelection } from 'antd/es/table/interface';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faClockRotateLeft,faArrowUpRightFromSquare, faPencil, faEye } from '@fortawesome/free-solid-svg-icons'
+import type { RangePickerProps } from 'antd/es/date-picker';
+import { SearchDuLieuChamCongRequest } from '@/app/models/dulieuchamcong/search-dulieuchamcong-request';
+import DuLieuChamCongApi from '@/app/api/dulieuchamcong';
+import CaLamViecApi from '@/app/api/calamviec';
+import { SearchNhanVienRequest } from '@/app/models/nhanvien/search-nhanvien-request';
+import NhanVienApi from '@/app/api/nhanvien';
+import { NhanVienResponse } from '@/app/models/nhanvien/nhanvien-response';
+import { CaLamViecResponse } from '@/app/models/calamviec/calamviec-response';
+import Item from 'antd/es/list/Item';
+import { DuLieuChamCongResponse } from '@/app/models/dulieuchamcong/dulieuchamcong-response';
+import { record } from 'zod';
+import { PhongBanResponse } from '@/app/models/phongban/phongban-response';
+import PhongBanApi from '@/app/api/phongban';
+import { SearchPhongBanRequest } from '@/app/models/phongban/search-phongban-request';
+
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 interface DataType {
-  key: string;
-  employee: string;
-  employeeId: string;
-  contract:string;
-  department:string;
-  role:string;
-  signDate: Date;
-  startDate: Date;
-  endDate: Date;
-  contractType: string;
-  status: string;
+    key: React.Key;
+    maChamCong: number;
+    idVanTay: number;
+    hoTen: string;
+    maNhanVien:string;
+    phongBan:string;
+    ngayChamCong:string;
+    caLam: string;
+    chamLan1: Date;
+    chamLan2: Date;
+    chamLan3: Date;
 }
 
-const columns: ColumnsType<DataType> = [
-    {
-        title: '#',
-        dataIndex: 'key',
-        key: 'key',
-        width:50
-    },
-    {
-        title: 'Mã vân tay',
-        dataIndex: 'fingerprintId',
-        key: 'fingerprintId',
-    },
-    {
-        title: 'Mã nhân viên',
-        dataIndex: 'employeeId',
-        key: 'employeeId',
-    },
-    {
-        title: 'Họ và tên',
-        dataIndex: 'employeeName',
-        key: 'employeeName',
-    },
-    {
-        title: 'Đơn vị/Phòng ban',
-        key: 'department',
-        dataIndex: 'department',
-    },
-    {
-        title: 'Ngày vào làm',
-        key: 'startWorkingDate',
-        dataIndex: 'startWorkingDate',
-    },
-    {
-        title: 'Ngày chấm công',
-        key: 'timekeepingDate',
-        dataIndex: 'timekeepingDate',
-    },
-    {
-        title: 'Thứ',
-        key: 'day',
-        dataIndex: 'day',
-    },
-    {
-        title: 'Công chuẩn',
-        key: 'timekeepingTimes',
-        dataIndex: 'timekeepingTimes',
-    },
-    {
-        title: 'Ca',
-        key: 'shift',
-        dataIndex: 'shift',
-    },
-    {
-      title: 'Chấm công lần 1',
-      key: 'firstTimekeeping',
-      dataIndex: 'firstTimekeeping',
-    },
-    {
-      title: 'Chấm công lần 2',
-      key: 'secondTimekeeping',
-      dataIndex: 'secondTimekeeping',
-    },
-    {
-      title: 'Chấm công lần 3',
-      key: 'thirdTimekeeping',
-      dataIndex: 'thirdTimekeeping',
-    },
-    {
-      title: 'Chấm công lần 4',
-      key: 'fourthTimekeeping',
-      dataIndex: 'fourthTimekeeping',
-    },
-    {
-      title: 'Chấm công lần 5',
-      key: 'fifthTimekeeping',
-      dataIndex: 'fifthTimekeeping',
-    },
-    {
-      title: 'Chấm công lần cuối',
-      key: 'lastTimekeeping',
-      dataIndex: 'lastTimekeeping',
-    },
-    {
-      title: 'Loại giải trình',
-      key: 'typeOfExplanation',
-      dataIndex: 'typeOfExplanation',
-    },
-    {
-      title: 'Loại đơn',
-      key: 'typeOfApplication',
-      dataIndex: 'typeOfApplication',
-    },
-    {
-      title: 'Thời gian đơn',
-      key: 'createdTime',
-      dataIndex: 'createdTime',
-    },
-    {
-      title: 'Đi trễ',
-      key: 'late',
-      dataIndex: 'late',
-    },
-    {
-      title: 'Về sớm',
-      key: 'early',
-      dataIndex: 'early',
-    },
-    {
-      title: 'Thời gian nghỉ lễ',
-      key: 'dayOff',
-      dataIndex: 'dayOff',
-    },
-    {
-      title: 'Tính thêm giờ',
-      key: 'addHours',
-      dataIndex: 'addHours',
-    },
-    {
-      title: 'Thời gian làm việc thực tế',
-      key: 'realWorkingHours',
-      dataIndex: 'realWorkingHours',
-    },
-];
 
-const data: DataType[] = [
-  {
-    key: '1',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '2',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '3',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Nghỉ việc'
-  },
-  {
-    key: '4',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Nghỉ việc'
-  },
-  {
-    key: '5',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '6',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '7',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '8',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '9',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '10',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '11',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '12',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '13',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-];
+//   {
+//     key: '1',
+//     employee: 'Bùi Thị Yên',
+//     employeeId: 'APG112233',
+//     contract: 'APG112233',
+//     department:'Develope',
+//     role:'BA',
+//     signDate: new Date(Date.now()),
+//     startDate: new Date(Date.now()),
+//     endDate: new Date(Date.now()),
+//     contractType: 'Thử việc',
+//     status: 'Đang chạy'
+//   },
+//   {
+//     key: '2',
+//     employee: 'Bùi Thị Yên',
+//     employeeId: 'APG112233',
+//     contract: 'APG112233',
+//     department:'Develope',
+//     role:'BA',
+//     signDate: new Date(Date.now()),
+//     startDate: new Date(Date.now()),
+//     endDate: new Date(Date.now()),
+//     contractType: 'Thử việc',
+//     status: 'Đang chạy'
+//   },
+//   {
+//     key: '3',
+//     employee: 'Bùi Thị Yên',
+//     employeeId: 'APG112233',
+//     contract: 'APG112233',
+//     department:'Develope',
+//     role:'BA',
+//     signDate: new Date(Date.now()),
+//     startDate: new Date(Date.now()),
+//     endDate: new Date(Date.now()),
+//     contractType: 'Thử việc',
+//     status: 'Nghỉ việc'
+//   },
+//   {
+//     key: '4',
+//     employee: 'Bùi Thị Yên',
+//     employeeId: 'APG112233',
+//     contract: 'APG112233',
+//     department:'Develope',
+//     role:'BA',
+//     signDate: new Date(Date.now()),
+//     startDate: new Date(Date.now()),
+//     endDate: new Date(Date.now()),
+//     contractType: 'Thử việc',
+//     status: 'Nghỉ việc'
+//   },
+//   {
+//     key: '5',
+//     employee: 'Bùi Thị Yên',
+//     employeeId: 'APG112233',
+//     contract: 'APG112233',
+//     department:'Develope',
+//     role:'BA',
+//     signDate: new Date(Date.now()),
+//     startDate: new Date(Date.now()),
+//     endDate: new Date(Date.now()),
+//     contractType: 'Thử việc',
+//     status: 'Đang chạy'
+//   },
+//   {
+//     key: '6',
+//     employee: 'Bùi Thị Yên',
+//     employeeId: 'APG112233',
+//     contract: 'APG112233',
+//     department:'Develope',
+//     role:'BA',
+//     signDate: new Date(Date.now()),
+//     startDate: new Date(Date.now()),
+//     endDate: new Date(Date.now()),
+//     contractType: 'Thử việc',
+//     status: 'Đang chạy'
+//   },
+//   {
+//     key: '7',
+//     employee: 'Bùi Thị Yên',
+//     employeeId: 'APG112233',
+//     contract: 'APG112233',
+//     department:'Develope',
+//     role:'BA',
+//     signDate: new Date(Date.now()),
+//     startDate: new Date(Date.now()),
+//     endDate: new Date(Date.now()),
+//     contractType: 'Thử việc',
+//     status: 'Đang chạy'
+//   },
+//   {
+//     key: '8',
+//     employee: 'Bùi Thị Yên',
+//     employeeId: 'APG112233',
+//     contract: 'APG112233',
+//     department:'Develope',
+//     role:'BA',
+//     signDate: new Date(Date.now()),
+//     startDate: new Date(Date.now()),
+//     endDate: new Date(Date.now()),
+//     contractType: 'Thử việc',
+//     status: 'Đang chạy'
+//   },
+//   {
+//     key: '9',
+//     employee: 'Bùi Thị Yên',
+//     employeeId: 'APG112233',
+//     contract: 'APG112233',
+//     department:'Develope',
+//     role:'BA',
+//     signDate: new Date(Date.now()),
+//     startDate: new Date(Date.now()),
+//     endDate: new Date(Date.now()),
+//     contractType: 'Thử việc',
+//     status: 'Đang chạy'
+//   },
+//   {
+//     key: '10',
+//     employee: 'Bùi Thị Yên',
+//     employeeId: 'APG112233',
+//     contract: 'APG112233',
+//     department:'Develope',
+//     role:'BA',
+//     signDate: new Date(Date.now()),
+//     startDate: new Date(Date.now()),
+//     endDate: new Date(Date.now()),
+//     contractType: 'Thử việc',
+//     status: 'Đang chạy'
+//   },
+//   {
+//     key: '11',
+//     employee: 'Bùi Thị Yên',
+//     employeeId: 'APG112233',
+//     contract: 'APG112233',
+//     department:'Develope',
+//     role:'BA',
+//     signDate: new Date(Date.now()),
+//     startDate: new Date(Date.now()),
+//     endDate: new Date(Date.now()),
+//     contractType: 'Thử việc',
+//     status: 'Đang chạy'
+//   },
+//   {
+//     key: '12',
+//     employee: 'Bùi Thị Yên',
+//     employeeId: 'APG112233',
+//     contract: 'APG112233',
+//     department:'Develope',
+//     role:'BA',
+//     signDate: new Date(Date.now()),
+//     startDate: new Date(Date.now()),
+//     endDate: new Date(Date.now()),
+//     contractType: 'Thử việc',
+//     status: 'Đang chạy'
+//   },
+//   {
+//     key: '13',
+//     employee: 'Bùi Thị Yên',
+//     employeeId: 'APG112233',
+//     contract: 'APG112233',
+//     department:'Develope',
+//     role:'BA',
+//     signDate: new Date(Date.now()),
+//     startDate: new Date(Date.now()),
+//     endDate: new Date(Date.now()),
+//     contractType: 'Thử việc',
+//     status: 'Đang chạy'
+//   },
+// ];
 
 const rowSelection: TableRowSelection<DataType> = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -343,45 +235,314 @@ const TimekeepingListTable: React.FC = () => {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
+    const { token } = theme.useToken();
     const [importOpen, setImportOpen] = useState(false);
     const [addOpen, setAddOpen] = useState(false);
     const [updateOpen, setUpdateOpen] = useState(false);
     const [viewOpen, setViewOpen] = useState(false);
     const [form] = Form.useForm();
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
-    const [value, setValue] = useState(false)
+    const [value, setValue] = useState(false);
+    const [timeKeeping, setTimeKeeping] = useState<DuLieuChamCongResponse[]>([]);
+    const [data, setData] = useState<DataType[]>([]);
+    const [totalRecords, setTotalRecords] = useState(0);
+    const [shiftList, setShiftList] = useState<CaLamViecResponse[]>();
+    const [employeeData, setEmployeeData] = useState<NhanVienResponse[]>();
+    const [departmentData, setDepartmentData] = useState<PhongBanResponse[]>();
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+
+    const formStyle: React.CSSProperties = {
+        maxWidth: 'none',
+        background: token.colorBgContainer,
+        padding:'24px'
+    };
+
+    const columns: ColumnsType<DataType> = [
+        {
+            title: 'STT',
+            dataIndex: 'key',
+            key: 'key',
+            width:50,
+            render: (value, record, index) => {
+                return (
+                <>{(page - 1) * pageSize + index + 1}</>
+                )
+            }
+        },
+        {
+            title: 'ID vân tay',
+            dataIndex: 'idVanTay',
+            key: 'idVanTay',
+            render: (value, record, index) => {
+
+                return (
+                    <>
+                        {employeeData?.find((item) => item.maNhanVien === record.maNhanVien)?.idVanTay}
+                    </>
+                )
+            }
+        },
+        {
+            title: 'Họ tên',
+            dataIndex: 'hoTen',
+            key: 'hoTen',
+            render: (value, record, index) => {
+
+                return (
+                    <>
+                        {employeeData?.find((item) => item.maNhanVien === record.maNhanVien)?.hoTen}
+                    </>
+                )
+            }
+        },
+        {
+            title: 'Mã nhân viên',
+            dataIndex: 'maNhanVien',
+            key: 'maNhanVien',
+        },
+        {
+            title: 'Phòng ban',
+            key: 'phongBan',
+            dataIndex: 'phongBan',
+            render: (value, record, index) => {
+
+                return (
+                    <>
+                        {departmentData?.find((item) => item.maPhongBan === employeeData?.find((item) => item.maNhanVien === record.maNhanVien)?.maPhongBan)?.tenPhongBan }
+                    </>
+                )
+            }
+        },
+        {
+            title: 'Ngày làm việc',
+            key: 'ngayChamCong',
+            dataIndex: 'ngayChamCong',
+            render: (value,record, index) => {
+                console.log(value)
+                const showValue = dayjs(value).format("DD/MM/YYYY")
+
+                return (
+                    <>
+                        {showValue}
+                    </>
+                )
+            }
+        },
+        {
+            title: 'Ca làm',
+            key: 'caLam',
+            dataIndex: 'caLam',
+            render: (value, record, index) => {
+                return (
+                    <>
+                        {shiftList?.find((item) => item.maCa === employeeData?.find((item) => item.maNhanVien === record.maNhanVien)?.maCa)?.tenCa }
+                    </>
+                )
+            }
+        },
+        {
+            title: 'Chấm lần 1',
+            key: 'chamLan1',
+            dataIndex: 'chamLan1',
+            render: (value, record, index) => {
+                return (
+                    <>
+                        {timeKeeping?.filter((item) => item.lanChamCong === 1 )?.find((item) => item.maChamCong === record.maChamCong)?.gioChamCong}
+                    </>
+                )
+            }
+        },
+        {
+            title: 'Chấm lần 2',
+            key: 'chamLan2',
+            dataIndex: 'chamLan2',
+            render: (value, record, index) => {
+                return (
+                    <>
+                        {timeKeeping?.filter((item) => item.lanChamCong === 2 )?.find((item) => item.maChamCong === record.maChamCong)?.gioChamCong}
+                    </>
+                )
+            }
+        },
+        {
+            title: 'Chấm lần 3',
+            key: 'chamLan3',
+            dataIndex: 'chamLan3',
+            render: (value, record, index) => {
+                return (
+                    <>
+                        {timeKeeping?.filter((item) => item.lanChamCong === 3 )?.find((item) => item.maChamCong === record.maChamCong)?.gioChamCong}
+                    </>
+                )
+            }
+        },
+    ];
+
+    const getDepartmentsByParams = async (searchRequest :SearchPhongBanRequest) => {
+        let response = await PhongBanApi.getPhongBan(searchRequest);
+        if(response.statusCode === '200' ){
+          setDepartmentData(response.data?.reverse())
+        //   setTotalRecords(response.data?.length)
+        } else if (response.statusCode === '545') {
+          setDepartmentData([]);
+        //   setTotalRecords(0);
+        }
+        else {
+          console.log(response.message)
+        }
+      }
+
+    const getShiftName = async () => {
+        let response = await CaLamViecApi.getCaLamViec(null);
+        if(response?.statusCode === '200') {
+            console.log(response.data)
+            setShiftList(response.data.reverse())
+        } else if (response.statusCode === '545') {
+            setShiftList(response.data)
+        }
+        else {
+            console.log(response.message)
+        }
+    }
+
+    const getTimeKeepingListByParams = async (searchRequest :SearchDuLieuChamCongRequest) => {
+        let response = await DuLieuChamCongApi.getHopDong(searchRequest);
+        if(response?.statusCode === '200') {
+            console.log(response.data)
+            setTimeKeeping(response.data.reverse())
+            setData(response.data.reverse())
+            setTotalRecords(response.data?.length)
+        } else if (response?.statusCode === '545') {
+            setTimeKeeping(response.data.reverse())
+            setData(response.data)
+            setTotalRecords(0)
+        }
+        else {
+            console.log(response.message)
+        }
+    }
+
+    const getEmployeeByParams = async (searchRequest : SearchNhanVienRequest) => {
+        let response = await NhanVienApi.getNhanVien(searchRequest);
+        if(response?.statusCode === '200') {
+            console.log("---------------------")
+            console.log(response.data)
+            setEmployeeData(response.data.reverse())
+        } else if (response?.statusCode === '545') {
+            setEmployeeData(response.data)
+        }
+        else {
+            console.log(response.message)
+        }
+    }
 
     const closeAddDrawer = () => {
-      setAddOpen(false)
-      form.resetFields()
+        setAddOpen(false)
+        form.resetFields()
     }
-  
+
     const closeUpdateDrawer = () => {
-      setUpdateOpen(false)
-      form.resetFields()
-    }
+        setUpdateOpen(false)
+        form.resetFields()
+        }
 
     const onChange = (e: RadioChangeEvent) => {
-      console.log('radio checked', e.target.value);
-      setValue(e.target.value);
-    };
+        console.log('radio checked', e.target.value);
+        setValue(e.target.value);
+        };
 
     const onFinish = (values: any) => {
-      console.log('Received values of form: ', values);
+        console.log('Received values of form: ', values);
     };
 
+    useEffect(() => {
+        getTimeKeepingListByParams({
+            maNhanVien:null,
+            ngayLamViec: null
+        })
+
+        getEmployeeByParams({
+            hoTen: null,
+            maNhanVien: null,
+            idVanTay: null,
+            maPhongBan: null,
+            chucVu: null
+        })
+
+        getDepartmentsByParams({
+            tenPhongBan:null,
+            thuKyPhongBan: null,
+            truongPhongBan: null
+        })
+
+        getShiftName()
+    },[])
+
     return (
-      <>  
+    <>  
+        <Form style={formStyle} name="advanced_search" onFinish={onFinish}>
+            <Row gutter={24}>
+                <Col span={8}>
+                    <Form.Item
+                        name="ngayChamCong"
+                        label="Ngày chấm công"
+                        labelCol={{style: {width: 120, textAlign:"left"}}}
+                    >
+                        <RangePicker/>
+                    </Form.Item>
+                </Col>
+                <Col span={8}>
+                    <Form.Item
+                        name="hoTen"
+                        label="Tên nhân viên"
+                        labelCol={{style: {width: 120, textAlign:"left"}}}
+                    >
+                        <Input placeholder="Tên nhân viên" style={{borderRadius:"0px"}} />
+                    </Form.Item>
+                </Col>
+                <Col span={8}>
+                    <Form.Item
+                        name="maNhanVien"
+                        label="Mã nhân viên"
+                        labelCol={{style: {width: 120, textAlign:"left"}}}
+                    >
+                        <Input placeholder="Mã nhân viên" style={{borderRadius:"0px"}} />
+                    </Form.Item>
+                </Col>
+            </Row>
+            <Row gutter={24}>
+                <Col span={8}>
+                    <Form.Item
+                        name="idVanTay"
+                        label="ID vân tay"
+                        labelCol={{style: {width: 120, textAlign:"left"}}}
+                    >
+                        <Input placeholder="Vui lòng nhập Mã vân tay" style={{borderRadius:"0px"}} />
+                    </Form.Item>
+                </Col>
+            </Row>
+            <Row justify="end">
+                <Button type='primary' htmlType='submit' >Tìm kiếm</Button>
+                <Button >Tạo lại</Button>
+            </Row>
+        </Form>
         <div style={{paddingLeft:"24px",paddingRight:"24px", backgroundColor:colorBgContainer, marginTop:"20px"}}>
             <Flex justify='space-between' align='center' style={{height:"50px", borderBottom:"1px solid #bbbfc1", marginBottom:"10px"}}>
                 <span><b>Danh sách chấm công</b></span>
             </Flex>
             <Table 
-                scroll={{ x: 3000, y:350}} 
+                scroll={{ x: 1200, y:350}} 
                 rowSelection={rowSelection} 
                 columns={columns} 
                 dataSource={data}
-                pagination={{ showQuickJumper:true, total:50 ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}}  
+                
+                pagination={{ showQuickJumper:true, total:totalRecords ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, 
+                onChange: (page, pageSize) => {
+                    setPage(page);
+                    setPageSize(pageSize);
+                  },
+                showTotal:(total) => `Tổng ${total} bản ghi`}}  
             />
         </div>
         <Drawer 

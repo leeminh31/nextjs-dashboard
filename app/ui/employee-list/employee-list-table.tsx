@@ -42,6 +42,49 @@ const EmployeeListTable: React.FC = () => {
     const [listId, setListId] = useState<string[]>([])
     const [id, setId] = useState();
 
+    interface DataType {
+        key: React.Key,
+        maNhanVien: string,
+        hoTen: string,
+        chucVu: string,
+        mail: string,
+        ngaySinh: string | undefined,
+        soCCCD: string,
+        ngayCap:string | undefined,
+        queQuan: string,
+        noiOHienTai: string,
+        nguoiThanLienHe: string,
+        soDienThoaiNguoiLienHe: string,
+        stkNganHang: string,
+        nganHang: string,
+        maPhongBan: number,
+        soDienThoai: string,
+        idVanTay: number
+    }
+
+    const tableData: DataType[] = [];
+    for (let i = 0; i < data?.length; i++) {
+        tableData.push({
+            key: data[i].maNhanVien,
+            maNhanVien: data[i].maNhanVien,
+            hoTen: data[i].hoTen,
+            chucVu: data[i].chucVu,
+            mail: data[i].mail,
+            ngaySinh: data[i].ngaySinh === "01/01/0001" ? undefined : data[i].ngaySinh,
+            soCCCD: data[i].soCCCD,
+            ngayCap:data[i].ngayCap === "01/01/0001" ? undefined : data[i].ngayCap,
+            queQuan: data[i].queQuan,
+            noiOHienTai: data[i].noiOHienTai,
+            nguoiThanLienHe: data[i].nguoiThanLienHe,
+            soDienThoaiNguoiLienHe: data[i].soDienThoaiNguoiLienHe,
+            stkNganHang: data[i].stkNganHang,
+            nganHang: data[i].nganHang,
+            maPhongBan: data[i].maPhongBan,
+            soDienThoai: data[i].soDienThoai,
+            idVanTay: data[i].idVanTay
+        });
+    }
+
     const formStyle: React.CSSProperties = {
         maxWidth: 'none',
         background: token.colorBgContainer,
@@ -63,6 +106,8 @@ const EmployeeListTable: React.FC = () => {
     const getEmployeeByParams = async (searchRequest :SearchNhanVienRequest) => {
         let response = await NhanVienApi.getNhanVien(searchRequest);
         if(response.statusCode === '200') {
+            console.log("-------------------------------------")
+            console.log(response.data)
             setData(response.data.reverse())
             setTotalRecords(response.data?.length)
         } else if (response.statusCode === '545') {
@@ -98,7 +143,7 @@ const EmployeeListTable: React.FC = () => {
         setId(record.maNhanVien)
     }
 
-const columns: ColumnsType<NhanVienResponse> = [
+const columns: ColumnsType<DataType> = [
     {
     title: 'STT',
     dataIndex: 'key',
@@ -112,9 +157,10 @@ const columns: ColumnsType<NhanVienResponse> = [
     {
     title: 'Mã nhân viên',
     dataIndex: 'maNhanVien',
+    width:120,
     },
     {
-    title: 'Id vân tay',
+    title: 'ID vân tay',
     dataIndex: 'idVanTay',
     width:100,
     },
@@ -145,7 +191,7 @@ const columns: ColumnsType<NhanVienResponse> = [
         dataIndex: 'action',
         fixed:'right',
         align:'center',
-        width:150,
+        width:100,
         render: (value, record) => {
             return (
                 <Space style={{}}>
@@ -161,10 +207,14 @@ const columns: ColumnsType<NhanVienResponse> = [
         },
     ];
 
+    const changeSelect = (e:any) => {
+        form.setFieldValue('phongBan',e)
+    }
+
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
         console.log('selectedRowKeys changed: ', newSelectedRowKeys);
         setSelectedRowKeys(newSelectedRowKeys);
-      };
+    };
     
     const rowSelection = {
     selectedRowKeys,
@@ -173,8 +223,8 @@ const columns: ColumnsType<NhanVienResponse> = [
 
     const onFinish = async (values: any) => {
         const searchData :SearchNhanVienRequest = {
-            hoTen: values.hoTen,
-            maNhanVien: values.maNhanVien,
+            hoTen: values.hoTen?.trimStart().trimEnd(),
+            maNhanVien: values.maNhanVien?.trimStart().trimEnd(),
             idVanTay:  parseInt(values.idVanTay) || null,
             maPhongBan: parseInt(values.phongBan) || null,
             chucVu: values.chucVu
@@ -191,11 +241,6 @@ const columns: ColumnsType<NhanVienResponse> = [
         chucVu: null
         })
     }
-
-    const handleViewInfoClick = (event: React.KeyboardEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>): void => {
-
-    }
-    
 
     useEffect(() => {
         setLoading(false)
@@ -251,10 +296,13 @@ const columns: ColumnsType<NhanVienResponse> = [
                             label={'Phòng ban'}
                             labelCol={{style: {width: 100, textAlign:"left"}}}
                         >
-                            <Select placeholder = "Vui lòng chọn">
-                                {departments?.map((item :any, index) => (
-                                    <Option key={index} value={item.maPhongBan}>{item.tenPhongBan}</Option>
-                                ))}
+                            <Select  
+                                showSearch 
+                                optionFilterProp="label" 
+                                placeholder = "Vui lòng chọn" 
+                                onChange={(e) => changeSelect(e)}
+                                
+                                options={departments?.map((item, index) => ({value:item.maPhongBan, label:item.tenPhongBan}))}>
                             </Select>
                         </Form.Item>
                     </Col>
@@ -287,7 +335,7 @@ const columns: ColumnsType<NhanVienResponse> = [
         <Skeleton loading={loading} active>
             <div style={{backgroundColor:'#fff', padding:'24px'}}>
                 <Row justify={'space-between'} style={{marginBottom:'24px'}}>
-                    <span style={{textAlign:'center'}}><b>Danh sách nhân viên</b></span>
+                    <span style={{textAlign:'center', fontSize:'16px'}}><b>Danh sách nhân viên</b></span>
                     <Col>
                         <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setAddOpen(true)}>Thêm mới</Button>
                         <Button type="primary" style={{marginLeft:'12px'}} onClick={() => {}}>Tạo tài khoản</Button>
@@ -297,7 +345,7 @@ const columns: ColumnsType<NhanVienResponse> = [
                 scroll={{x:1200, y:500}} 
                 rowSelection={rowSelection} 
                 columns={columns} 
-                dataSource={data} 
+                dataSource={tableData} 
                 pagination={{ showQuickJumper:true, 
                     total:totalRecords ,
                     defaultPageSize: 10, 

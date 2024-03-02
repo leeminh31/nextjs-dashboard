@@ -6,5 +6,4 @@ export interface UpdateHopDongRequest{
     loaiHopDong:string ,
     tiLeHuongLuong:number ,
     gioLamViec:number ,
-    congChuan:number ,
 }

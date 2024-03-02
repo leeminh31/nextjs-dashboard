@@ -6,3 +6,8 @@ export const specialCharactersRegex = (value:string) => {
         return Promise.resolve();
     }
 }
+
+export const monthDiff = (dateFrom:Date, dateTo:Date) => {
+    return dateTo.getMonth() - dateFrom.getMonth() + 
+      (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
+}
