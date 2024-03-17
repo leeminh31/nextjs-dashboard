@@ -7,15 +7,15 @@ import {
 import { Button, Drawer, Form, message, Row, Space } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 
-const ImportContract = (props: any) => {
-  const inputFileRefContract = useRef<HTMLInputElement>(null);
+const ImportTimeKeeping = (props: any) => {
+  const inputFileRef = useRef<HTMLInputElement>(null);
   const { show, close, refresh } = props;
   const [messageApi, contextHolder] = message.useMessage();
   const [fileName, setFileName] = useState("");
   const [form] = Form.useForm();
 
   const dowloadFile = async () => {
-    fetch(HRMSystemApi + "HopDong/dowload", {
+    fetch(HRMSystemApi + "DuLieuChamCong/dowload", {
       method: "GET",
       headers: {
         "content-type": "application/json",
@@ -27,7 +27,7 @@ const ImportContract = (props: any) => {
         var objectURL = URL.createObjectURL(response);
         const link = document.createElement("a");
         link.href = objectURL;
-        link.setAttribute("download", "MasterFile.xlsx");
+        link.setAttribute("download", "DuLieuChamCong.xlsx");
         document.body.appendChild(link);
         link.click();
         link.remove();
@@ -35,7 +35,8 @@ const ImportContract = (props: any) => {
   };
 
   const uploadFile = async (file: any) => {
-    fetch(HRMSystemApi + "HopDong/upload", {
+    console.log(file);
+    fetch(HRMSystemApi + "DuLieuChamCong/upload", {
       method: "POST",
       body: file,
     })
@@ -46,7 +47,7 @@ const ImportContract = (props: any) => {
           refresh();
           messageApi.open({
             type: "success",
-            content: "Nhập hợp đồng thành công",
+            content: "Nhập dữ liệu chấm công thành công",
             className: "custom-class",
             style: {
               fontSize: "16px",
@@ -69,12 +70,12 @@ const ImportContract = (props: any) => {
       .catch((err) => {
         console.log(err);
       });
-    inputFileRefContract.current.value = "";
+    inputFileRef.current.value = "";
   };
 
   const formSubmit = () => {
     let form = new FormData();
-    form.append("formFile", inputFileRefContract.current.files[0]);
+    form.append("formFile", inputFileRef.current.files[0]);
     uploadFile(form);
   };
 
@@ -82,7 +83,10 @@ const ImportContract = (props: any) => {
     if (e.target.files != null) {
       let form = new FormData();
       form.append("formFile", e.target.files[0]);
+      console.log(e.target.files[0].name);
+
       setFileName(e.target.files[0].name);
+      // uploadFile(form)
     }
   };
 
@@ -91,13 +95,14 @@ const ImportContract = (props: any) => {
 
     if (show) {
       setFileName("");
-      inputFileRefContract.current.value = "";
+      inputFileRef.current.value = "";
     }
   }, [show]);
 
   return (
     <Drawer
-      title="Nhập hợp đồng"
+      title="Nhập dữ liệu chấm công"
+      className="time-keeping"
       placement="right"
       onClose={close}
       open={show}
@@ -126,14 +131,14 @@ const ImportContract = (props: any) => {
       <input
         onChange={onFileChangeCapture}
         style={{ display: "none" }}
-        ref={inputFileRefContract}
+        ref={inputFileRef}
         type="file"
         accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
       />
       <p>Chọn file cần nhập</p>
       <Button
         icon={<UploadOutlined />}
-        onClick={() => inputFileRefContract?.current?.click()}
+        onClick={() => inputFileRef?.current?.click()}
       >
         Chọn file
       </Button>
@@ -143,7 +148,7 @@ const ImportContract = (props: any) => {
           <Button
             onClick={() => {
               setFileName("");
-              inputFileRefContract.current.value = "";
+              inputFileRef.current.value = "";
             }}
           >
             <DeleteOutlined size={8} />
@@ -156,4 +161,4 @@ const ImportContract = (props: any) => {
   );
 };
 
-export default ImportContract;
+export default ImportTimeKeeping;

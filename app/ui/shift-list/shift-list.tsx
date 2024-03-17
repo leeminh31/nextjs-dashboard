@@ -4,7 +4,7 @@ import ShiftListTable from "./shift-list-table"
 const ShiftList = () => {
     return (
         <>
-            <ShiftListForm/>
+            {/* <ShiftListForm/> */}
             <ShiftListTable/>
         </>
     )

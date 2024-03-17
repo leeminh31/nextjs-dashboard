@@ -1,12 +1,107 @@
-import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, TimePicker, Radio } from 'antd';
+import CaLamViecApi from '@/app/api/calamviec';
+import { CreateCaLamViecRequest } from '@/app/models/calamviec/create-calamviec-request';
+import dayjs from 'dayjs';
+import { CreateDuLieuChamCongRequest } from '@/app/models/dulieuchamcong/create-dulieuchamcong-request';
+import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, TimePicker, Radio, message } from 'antd';
+import { specialCharactersRegex } from '@/app/utils/validateInput';
 
 const CreateShiftList = (props:any) => {
-    const { show, close } = props
+    const { refresh, show, close } = props
+    const [messageApi, contextHolder ] = message.useMessage();
     const {Option} = Select
     const [form] = Form.useForm();
-    const onFinish = () => {
 
-    }
+    const onFinish = async (values: any) => {
+        if(dayjs(values.gioBatDauCa) >= dayjs(values.gioKetThucCa)) {
+            messageApi.open({
+                type: 'error',
+                content: 'Giờ kết thúc ca không được nhỏ hơn giờ bắt đầu ca',
+                className: 'custom-class',
+                style: {
+                    fontSize:'16px'
+                },
+                duration: 1.5,
+            });
+            return
+        }
+
+        if(dayjs(values.gioKetThucNghi) <= dayjs(values.gioBatDauNghi)) {
+            messageApi.open({
+                type: 'error',
+                content: 'Giờ kết thúc nghỉ phải lớn hơn giờ bắt đầu nghỉ',
+                className: 'custom-class',
+                style: {
+                    fontSize:'16px'
+                },
+                duration: 1.5,
+            });
+            return
+        }
+
+        if(dayjs(values.gioKetThucCa) < dayjs(values.gioBatDauNghi) || dayjs(values.gioBatDauCa) > dayjs(values.gioBatDauNghi)) {
+            messageApi.open({
+                type: 'error',
+                content: 'Giờ bắt đầu nghỉ phải nằm trong khoảng thời gian của ca',
+                className: 'custom-class',
+                style: {
+                    fontSize:'16px'
+                },
+                duration: 1.5,
+            });
+            return
+        }
+
+        if(dayjs(values.gioKetThucCa) < dayjs(values.gioKetThucNghi) || dayjs(values.gioBatDauCa) > dayjs(values.gioKetThucNghi)) {
+            messageApi.open({
+                type: 'error',
+                content: 'Giờ kết thúc nghỉ phải nằm trong khoảng thời gian của ca',
+                className: 'custom-class',
+                style: {
+                    fontSize:'16px'
+                },
+                duration: 1.5,
+            });
+            return
+        }
+
+        console.log(dayjs(values.gioBatDauCa).format("HH:mm:ss"));
+        
+        const requestData : CreateCaLamViecRequest = {
+            tenCa: values.tenCa ,
+            gioBatDauCa: dayjs(values.gioBatDauCa).format("HH:mm:ss"),
+            gioKetThucCa: dayjs(values.gioKetThucCa).format("HH:mm:ss"),
+            gioBatDauNghi: dayjs(values.gioBatDauNghi).format("HH:mm:ss"),
+            gioKetThucNghi: dayjs(values.gioKetThucNghi).format("HH:mm:ss")
+        }
+    
+        let response = await CaLamViecApi.addCaLamViec(requestData);
+            if(response.statusCode === '200'){
+                refresh()
+                close()
+                messageApi.open({
+                    type: 'success',
+                    content: 'Thêm mới ca làm việc thành công',
+                    className: 'custom-class',
+                    style: {
+                        fontSize:'16px'
+                    },
+                    duration: 1.5,
+                });
+            }else if (response.statusCode === '557') {
+                messageApi.open({
+                    type: 'error',
+                    content: response.message,
+                    className: 'custom-class',
+                    style: {
+                        fontSize:'16px'
+                    },
+                    duration: 1.5,
+                });
+                }
+            else {
+                console.log(response.message)
+            }
+    };
 
     return (
         <Drawer 
@@ -24,6 +119,7 @@ const CreateShiftList = (props:any) => {
                 </Row>
             }
         >
+            {contextHolder}
             <Form form={form} name="insertShiftList" onFinish={onFinish}>
                 <Row gutter={24}>
                     <Col span={12}>
@@ -35,6 +131,11 @@ const CreateShiftList = (props:any) => {
                             required: true,
                             message: 'Vui lòng nhập Tên ca!',
                             },
+                            {
+                                validator(_, value) {
+                                    return specialCharactersRegex(value)
+                                },
+                            }
                         ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -55,7 +156,7 @@ const CreateShiftList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <TimePicker style={{width:'100%', height:'40px'}} popupStyle={{width:'30%'}} use12Hours format="h:mm a" />
+                            <TimePicker style={{width:'100%', height:'40px'}} use12Hours placeholder="Vui lòng chọn" format="hh:mm a" />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -71,7 +172,7 @@ const CreateShiftList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <TimePicker style={{width:'100%', height:'40px'}} popupStyle={{width:'30%'}} use12Hours format="h:mm a" />
+                            <TimePicker style={{width:'100%', height:'40px'}} use12Hours placeholder="Vui lòng chọn" format="hh:mm a" />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -87,7 +188,7 @@ const CreateShiftList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <TimePicker style={{width:'100%', height:'40px'}} popupStyle={{width:'30%'}} use12Hours format="h:mm a" />
+                            <TimePicker style={{width:'100%', height:'40px'}} use12Hours placeholder="Vui lòng chọn" format="hh:mm a" />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -103,7 +204,7 @@ const CreateShiftList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <TimePicker style={{width:'100%', height:'40px'}} popupStyle={{width:'30%'}} use12Hours format="h:mm a" />
+                            <TimePicker style={{width:'100%', height:'40px'}} use12Hours placeholder="Vui lòng chọn" format="hh:mm a" />
                         </Form.Item>
                     </Col>
                 </Row>

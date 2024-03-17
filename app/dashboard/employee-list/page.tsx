@@ -1,16 +1,16 @@
-import EmployeeList from '@/app/ui/employee-list/employee-list';
-import { Metadata } from 'next';
+import EmployeeList from "@/app/ui/employee-list/employee-list";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: 'Quản lý nhân viên',
+  title: "Quản lý nhân viên",
 };
 
 const EmployeeListPage = () => {
-    return (
-        <>
-            <EmployeeList/>
-        </>
-    )
-}
+  return (
+    <>
+      <EmployeeList />
+    </>
+  );
+};
 
-export default EmployeeListPage
+export default EmployeeListPage;

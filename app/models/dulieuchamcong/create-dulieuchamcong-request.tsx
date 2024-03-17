@@ -1,7 +1,7 @@
 export interface CreateDuLieuChamCongRequest{
-    code: string,
-    name: string,
-    url: string,
-    status: number,
-    description: string
+    tenCa:string,
+    gioBatDauCa: Date,
+    gioKetThucCa: Date,
+    gioBatDauNghi: Date,
+    gioKetThucNghi: Date
 }

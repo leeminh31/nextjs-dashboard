@@ -1,14 +1,14 @@
-import '@/app/ui/global.css';
-import { inter, lusitana } from '@/app/ui/fonts';
-import { Metadata } from 'next';
-import { config } from '@fortawesome/fontawesome-svg-core'
-import '@fortawesome/fontawesome-svg-core/styles.css'
-config.autoAddCss = false
+import { inter } from "@/app/ui/fonts";
+import "@/app/ui/global.css";
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { Metadata } from "next";
+config.autoAddCss = false;
 
 export const metadata: Metadata = {
-  title: 'Acme Dashboard',
-  description: 'The official Next.js Course Dashboard, built with App Router.',
-  metadataBase: new URL('https://next-learn-dashboard.vercel.sh'),
+  title: "Acme Dashboard",
+  description: "The official Next.js Course Dashboard, built with App Router.",
+  metadataBase: new URL("https://next-learn-dashboard.vercel.sh"),
 };
 
 export default function RootLayout({
@@ -16,10 +16,14 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>{children}</body>
+      <body
+        suppressHydrationWarning={true}
+        className={`${inter.className} antialiased`}
+      >
+        {children}
+      </body>
     </html>
   );
 }

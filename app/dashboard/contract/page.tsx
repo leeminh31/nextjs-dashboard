@@ -1,16 +1,16 @@
-import Contract from '@/app/ui/contract/contract';
-import { Metadata } from 'next';
+import Contract from "@/app/ui/contract/contract";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: 'Quản lý hợp đồng',
+  title: "Quản lý hợp đồng",
 };
 
 const ContractPage = () => {
-    return (
-        <>
-            <Contract/>
-        </>
-    )
-}
+  return (
+    <>
+      <Contract />
+    </>
+  );
+};
 
-export default ContractPage
+export default ContractPage;

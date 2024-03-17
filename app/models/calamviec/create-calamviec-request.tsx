@@ -1,7 +1,7 @@
-export interface CreateCaLamViecRequest{
-    code: string,
-    name: string,
-    url: string,
-    status: number,
-    description: string
+export interface CreateCaLamViecRequest {
+  tenCa: string;
+  gioBatDauCa: string;
+  gioKetThucCa: string;
+  gioBatDauNghi: string;
+  gioKetThucNghi: string;
 }

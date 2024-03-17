@@ -1,15 +1,13 @@
-'use-client'
-import EmployeeListForm from "./employee-list-form"
-import EmployeeListTable from "./employee-list-table"
+"use-client";
+import EmployeeListTable from "./employee-list-table";
 
 const EmployeeList = () => {
+  return (
+    <>
+      {/* <EmployeeListForm /> */}
+      <EmployeeListTable />
+    </>
+  );
+};
 
-    return (
-        <>
-            {/* <EmployeeListForm /> */}
-            <EmployeeListTable />
-        </>
-    )
-}
-
-export default EmployeeList
+export default EmployeeList;

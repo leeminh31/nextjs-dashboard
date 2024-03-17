@@ -1,18 +1,17 @@
-import ShiftListForm from "@/app/ui/shift-list/shift-list-form"
-import ShiftListTable from "@/app/ui/shift-list/shift-list-table"
-import { Metadata } from 'next';
+import ShiftListTable from "@/app/ui/shift-list/shift-list-table";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Danh sách ca',
+  title: "Danh sách ca",
 };
 
 const ShiftListPage = () => {
-    return (
-        <>
-            <ShiftListForm/>
-            <ShiftListTable/>
-        </>
-    )
-}
+  return (
+    <>
+      {/* <ShiftListForm/> */}
+      <ShiftListTable />
+    </>
+  );
+};
 
-export default ShiftListPage
+export default ShiftListPage;

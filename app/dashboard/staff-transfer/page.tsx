@@ -1,18 +1,18 @@
-import StaffTransferForm from "@/app/ui/staff-transfer/staff-transfer-form"
-import StaffTransferTable from "@/app/ui/staff-transfer/staff-transfer-table"
-import { Metadata } from 'next';
+import StaffTransferForm from "@/app/ui/staff-transfer/staff-transfer-form";
+import StaffTransferTable from "@/app/ui/staff-transfer/staff-transfer-table";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Điều chuyển nhân viên',
+  title: "Điều chuyển nhân viên",
 };
 
 const StaffTransferPage = () => {
-    return (
-        <>
-            <StaffTransferForm/>
-            <StaffTransferTable/>
-        </>
-    )
-}
+  return (
+    <>
+      <StaffTransferForm />
+      <StaffTransferTable />
+    </>
+  );
+};
 
-export default StaffTransferPage
+export default StaffTransferPage;

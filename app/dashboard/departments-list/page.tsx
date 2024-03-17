@@ -1,16 +1,16 @@
-import DepartmentsList from '@/app/ui/departments-list/departments-list';
-import { Metadata } from 'next';
+import DepartmentsList from "@/app/ui/departments-list/departments-list";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: 'Quản lý phòng ban',
+  title: "Quản lý phòng ban",
 };
 
 const DepartmentsListPage = () => {
-    return (
-        <>
-            <DepartmentsList/>
-        </>
-    )
-}
+  return (
+    <>
+      <DepartmentsList />
+    </>
+  );
+};
 
-export default DepartmentsListPage
+export default DepartmentsListPage;

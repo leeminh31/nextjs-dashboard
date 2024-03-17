@@ -1,16 +1,16 @@
-import MonthlyReport from "@/app/ui/monthly-report/monthly-report"
-import { Metadata } from 'next';
+import MonthlyReport from "@/app/ui/monthly-report/monthly-report";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Báo cáo theo tháng',
+  title: "Báo cáo theo tháng",
 };
 
 const MonthlyReportPage = () => {
-    return (
-        <>
-            <MonthlyReport/>
-        </>
-    )
-}
+  return (
+    <>
+      <MonthlyReport />
+    </>
+  );
+};
 
-export default MonthlyReportPage
+export default MonthlyReportPage;

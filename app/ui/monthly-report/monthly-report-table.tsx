@@ -1,435 +1,605 @@
-'use client'
+"use client";
 
-import React, {useEffect, useState} from 'react';
-import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, theme, Flex, Tag, DatePicker, Radio } from 'antd';
-import type { RadioChangeEvent } from 'antd';
+import BaoCaoTheoThangApi from "@/app/api/baocaotheothang";
+import CaLamViecApi from "@/app/api/calamviec";
+import NhanVienApi from "@/app/api/nhanvien";
+import PhongBanApi from "@/app/api/phongban";
+import { BaoCaoTheoThangAllResponse } from "@/app/models/baocaotheothang/baocaotheothangall-response";
+import { CaLamViecResponse } from "@/app/models/calamviec/calamviec-response";
+import { SearchDuLieuChamCongRequest } from "@/app/models/dulieuchamcong/search-dulieuchamcong-request";
+import { NhanVienResponse } from "@/app/models/nhanvien/nhanvien-response";
+import { SearchNhanVienRequest } from "@/app/models/nhanvien/search-nhanvien-request";
+import { PhongBanResponse } from "@/app/models/phongban/phongban-response";
+import { SearchPhongBanRequest } from "@/app/models/phongban/search-phongban-request";
 import {
-  UploadOutlined,
-  DownloadOutlined,
-} from '@ant-design/icons';
-import type { ColumnsType } from 'antd/es/table';
-import type { TableRowSelection } from 'antd/es/table/interface';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
-import localizedFormat from 'dayjs/plugin/localizedFormat'
+  Button,
+  Col,
+  DatePicker,
+  Flex,
+  Form,
+  Input,
+  Row,
+  Select,
+  Spin,
+  Table,
+  theme,
+} from "antd";
+import type { ColumnsType } from "antd/es/table";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import React, { memo, useEffect, useState } from "react";
+import MonthlyReportDrawer from "./monthly-report-drawer";
 const { Option } = Select;
 
 interface DataType {
-  key: string;
-  employee: string;
-  employeeId: string;
-  contract:string;
-  department:string;
-  role:string;
-  signDate: Date;
-  startDate: Date;
-  endDate: Date;
-  contractType: string;
-  status: string;
+  key: React.Key;
+  STT: number;
+  phongBan: string;
+  children?: any[];
 }
 
+const MonthlyReportTable: React.FC = () => {
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+  const { token } = theme.useToken();
+  const [form] = Form.useForm();
+  const [date, setDate] = useState(new Date());
+  const [employeeData, setEmployeeData] = useState<NhanVienResponse[]>([]);
+  const [departmentData, setDepartmentData] = useState<PhongBanResponse[]>();
+  const [shiftList, setShiftList] = useState<CaLamViecResponse[]>([]);
+  const [spinning, setSpinning] = useState(true);
+  const [currentDateClick, setCurrentDateClick] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [isSearch, setIsSearch] = useState(false);
+  const [monthlyData, setMonthlyData] = useState<BaoCaoTheoThangAllResponse[]>(
+    [],
+  );
+  const [reportData, setReportData] = useState<DataType>();
+  const [data, setData] = useState<DataType[]>([]);
 
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
+  dayjs.extend(localizedFormat);
+  dayjs.tz.setDefault("Asia/Ho_Chi_Minh");
 
-const data: DataType[] = [
-  {
-    key: '1',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Ẩm thực',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy',
-    children: [
-      {
-        key: '2',
-        employee: 'Bùi Thị Yên',
-        employeeId: 'APG112233',
-        contract: 'APG112233',
-        department:'Ẩm thực',
-        role:'BA',
-        signDate: new Date(Date.now()),
-        startDate: new Date(Date.now()),
-        endDate: new Date(Date.now()),
-        contractType: 'Thử việc',
-        status: 'Đang chạy'
-      }
-    ]
-  },
-  {
-    key: '2',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '3',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Nghỉ việc'
-  },
-  {
-    key: '4',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Nghỉ việc'
-  },
-  {
-    key: '5',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '6',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '7',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '8',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '9',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '10',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '11',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '12',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '13',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-];
-
-const rowSelection: TableRowSelection<DataType> = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    },
-    onSelect: (record, selected, selectedRows) => {
-      console.log(record, selected, selectedRows);
-    },
-    onSelectAll: (selected, selectedRows, changeRows) => {
-      console.log(selected, selectedRows, changeRows);
-    },
+  const formStyle: React.CSSProperties = {
+    maxWidth: "none",
+    background: token.colorBgContainer,
+    padding: "24px",
   };
 
-const MonthlyReportTable: React.FC = ({date} :any) => {
-    const {
-        token: { colorBgContainer, borderRadiusLG },
-    } = theme.useToken();
-    const [importOpen, setImportOpen] = useState(false);
-    const [addOpen, setAddOpen] = useState(false);
-    const [updateOpen, setUpdateOpen] = useState(false);
-    const [viewOpen, setViewOpen] = useState(false);
-    const [form] = Form.useForm();
-    const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
-    const [value, setValue] = useState(false)
+  const getMonthlyReportByMonth = async (
+    searchRequest: SearchDuLieuChamCongRequest,
+  ) => {
+    let response =
+      await BaoCaoTheoThangApi.getBaoCaoTheoThangAll(searchRequest);
+    if (response?.statusCode === "200") {
+      setMonthlyData(response?.data.reverse());
+    } else if (response?.statusCode === "545") {
+      setMonthlyData(response?.data);
+    } else {
+      console.log(response?.message);
+    }
+  };
 
-    dayjs.extend(utc);
-    dayjs.extend(timezone);
-    dayjs.extend(localizedFormat);
-    dayjs.tz.setDefault('Asia/Ho_Chi_Minh');
+  const getShiftName = async () => {
+    let response = await CaLamViecApi.getCaLamViec(null, null);
+    if (response?.statusCode === "200") {
+      setShiftList(response.data.reverse());
+    } else if (response.statusCode === "545") {
+      setShiftList(response.data);
+    } else {
+      console.log(response.message);
+    }
+  };
 
+  const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
+    let response = await NhanVienApi.getNhanVien(searchRequest);
+    if (response?.statusCode === "200") {
+      setEmployeeData(response.data.reverse());
+    } else if (response?.statusCode === "545") {
+      setEmployeeData(response.data);
+    } else {
+      console.log(response.message);
+    }
+  };
 
-    const generateColumns = () => {
-      let cols: ColumnsType<DataType> = [{
-          title: '#',
-          dataIndex: 'key',
-          key: 'key',
-          width:65,
-          fixed:'left',
-        },
+  const getDepartmentsByParams = async (
+    searchRequest: SearchPhongBanRequest,
+  ) => {
+    let response = await PhongBanApi.getPhongBan(searchRequest);
+    if (response?.statusCode === "200") {
+      setDepartmentData(response?.data);
+    } else if (response?.statusCode === "545") {
+      setDepartmentData([]);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  const refresh = () => {
+    getEmployeeByParams({
+      hoTen: null,
+      maNhanVien: null,
+      idVanTay: null,
+      maPhongBan: null,
+      chucVu: null,
+    });
+
+    getDepartmentsByParams({
+      tenPhongBan: null,
+      thuKyPhongBan: null,
+      truongPhongBan: null,
+    });
+
+    getShiftName();
+  };
+
+  const onFinish = (values: any) => {
+    console.log(values);
+
+    if (values.maNhanVien || values.tenNhanVien) {
+      setIsSearch(true);
+      getEmployeeByParams({
+        hoTen: values.tenNhanVien,
+        maNhanVien: values.maNhanVien,
+        idVanTay: null,
+        maPhongBan: null,
+        chucVu: null,
+      });
+      return;
+    }
+
+    if (!values.maNhanVien && !values.tenNhanVien) {
+      refresh();
+      return;
+    }
+  };
+
+  const generateColumns = () => {
+    let cols: ColumnsType<DataType> = [
+      {
+        title: "STT",
+        dataIndex: "STT",
+        key: "STT",
+        width: 85,
+        fixed: "left",
+      },
+      {
+        title: "Key",
+        dataIndex: "key",
+        key: "key",
+        width: 0,
+        fixed: "left",
+      },
+      {
+        title: "Phòng",
+        dataIndex: "phongBan",
+        key: "phongBan",
+        fixed: "left",
+        width: 80,
+      },
+      {
+        title: "Mã nhân viên",
+        dataIndex: "maNhanVien",
+        key: "maNhanVien",
+        fixed: "left",
+        width: 85,
+      },
+      {
+        title: "Họ tên",
+        dataIndex: "hoTen",
+        key: "hoTen",
+        fixed: "left",
+        width: 100,
+      },
+      {
+        title: "Tổng công",
+        dataIndex: "tongCong",
+        key: "tongCong",
+        fixed: "left",
+        width: 70,
+      },
+    ];
+
+    const daysOfWeekInVietnamese = [
+      "Chủ Nhật",
+      "Thứ 2",
+      "Thứ 3",
+      "Thứ 4",
+      "Thứ 5",
+      "Thứ 6",
+      "Thứ 7",
+    ];
+
+    let days = [];
+
+    // Lấy ngày hiện tại ở múi giờ của Việt Nam
+    const getDate = dayjs(new Date(date)).tz();
+    let startDate = new Date(getDate.year(), getDate.month(), 1);
+    while (startDate.getMonth() === getDate.month()) {
+      days.push(new Date(startDate));
+      startDate.setDate(startDate.getDate() + 1);
+    }
+
+    days.map((day: Date) => {
+      const dateCol = dayjs(day).tz();
+
+      // Định dạng ngày theo mẫu "dddd (D/M)"
+      const dayOfWeekNumber = dateCol.day();
+      const dayOfWeekVietnamese = daysOfWeekInVietnamese[dayOfWeekNumber];
+
+      // Định dạng ngày theo mẫu "Thứ 2 (D/M)"
+      const formattedDate = `${dayOfWeekVietnamese} (${dateCol.format("DD/MM")})`;
+
+      let column: ColumnsType<DataType> = [
         {
-            title: 'Bộ phận',
-            dataIndex: 'department',
-            key: 'department',
-            fixed:'left',
-            width:75,
-        },
-        {
-            title: 'Mã nhân viên',
-            dataIndex: 'employeeId',
-            key: 'employeeId',
-            fixed:'left',
-            width:75,
-        },
-        {
-          title: 'Họ và tên',
-          dataIndex: 'fullname',
-          key: 'fullname',
-          fixed:'left',
-          width:75,
-        },
-        {
-          title: 'Tổng công',
-          dataIndex: 'contract',
-          key: 'contract',
-          fixed:'left',
-          width:75,
+          title: (
+            <>
+              <p>{dayOfWeekVietnamese}</p>
+              <p>({dateCol.format("DD/MM")})</p>
+            </>
+          ),
+          dataIndex: dateCol.date(),
+          key: dateCol.date(),
+          width: 70,
+          onCell: (record, rowIndex) => {
+            return {
+              onClick: (ev) => {
+                setReportData(record);
+              },
+            };
+          },
         },
       ];
 
-      const daysOfWeekInVietnamese = [
-            'Chủ Nhật',
-            'Thứ 2',
-            'Thứ 3',
-            'Thứ 4',
-            'Thứ 5',
-            'Thứ 6',
-            'Thứ 7',
-      ];
-    
-      let days = [];
+      cols.push(column[0]);
+    });
+    return cols;
+  };
 
-      // Lấy ngày hiện tại ở múi giờ của Việt Nam
-      const getDate = dayjs(new Date(date)).tz();
-      let startDate = new Date(getDate.year(),getDate.month(),1)
-      while(startDate.getMonth() === getDate.month()) {
-        days.push(new Date(startDate))
-        startDate.setDate(startDate.getDate() +1)
-      }
+  const handleRowClick = (dateNumber: number) => {
+    setOpen(true);
+    setCurrentDateClick(dateNumber);
+  };
 
-      console.log(days)
-      days.map((day:Date) => {
-        const dateCol = dayjs(day).tz();
-        // Định dạng ngày theo mẫu "dddd (D/M)"
-        const dayOfWeekNumber = dateCol.day();
-        const dayOfWeekVietnamese = daysOfWeekInVietnamese[dayOfWeekNumber];
-    
-        // Định dạng ngày theo mẫu "Thứ 2 (D/M)"
-        const formattedDate = `${dayOfWeekVietnamese} (${dateCol.format('DD/MM')})`;
-        console.log(formattedDate)
+  const generateDataTable = () => {
+    const getData: DataType[] = [];
 
-        
-        let column:ColumnsType<DataType> = [{
-          title: formattedDate,
-          dataIndex:dateCol.daysInMonth.toString(),
-          key:dateCol.daysInMonth.toString(),
-          width:75
-        }];
+    // const listChildren = timekeepingData.filter((item) => item.maNhanVien);
+    // Lấy ngày hiện tại ở múi giờ của Việt Nam
+    const getDate = dayjs(new Date(date)).tz();
 
-        cols.push(column[0])
-      })
+    console.log("Tim kiem de", isSearch);
 
-      // const days = {
-      //   title: "Days",
-      //   dataIndex: "date",
-      //   defaultSorter: "ascend",
-      //   key: "title",
-      //   sorter: (a, b) => a.date.localeCompare(b.date),
-      //   sortDirections: ["descend", "ascend"]
-      //   render: (date) => getDayName(new Date(date)),
-      // };
-      // cols.push(days); // add 'Days' obj to Columns.
-      
-      // // for render: property in cols need to return a function. Here creates that.
-      // const generateRender = (row) => {
-      //   console.log("gen row----", row);
-      //   return (row) => row.section + " - " + row.subject;
-      // };
-    
-      // // create the col objects for each 'Period'. This method works assuming response data has only unique 'Periods'.
-      // data.map((row) => {
-    
-      //   let period = {}; // for create 'Period' obj for cols.
-      //   period["title"] = row.period;
-      //   period["key"] = row.period;
-      //   period["render"] = generateRender(row); // only need this if you render customized data.
-      //   cols.push(period); // add Current Period obj to Columns.
-      // });
-    
-      return cols;
-    };
+    !isSearch
+      ? departmentData?.map((x, index) => {
+          const childrenData = employeeData
+            ?.filter((employee) => employee.maPhongBan === x.maPhongBan)
+            .map((employee, index) => {
+              const rowSpecifyKey: any = {
+                // key: `${employee.maNhanVien}`,
+                STT: index + 1,
+              };
 
-    const closeAddDrawer = () => {
-      setAddOpen(false)
-      form.resetFields()
+              const rowFixedData = {
+                phongBan: x.tenPhongBan,
+                maNhanVien: employee.maNhanVien,
+                hoTen: employee.hoTen,
+                maCa: employee.maCa,
+                tongCong: monthlyData?.find(
+                  (data) => data.maNhanVien === employee.maNhanVien,
+                )
+                  ? monthlyData?.find(
+                      (data) => data.maNhanVien === employee.maNhanVien,
+                    )?.tongCong
+                  : 0,
+              };
+
+              const shiftName = shiftList.find(
+                (shift) => shift.maCa === employee.maCa,
+              )?.tenCa;
+
+              let days: { [key: string]: React.JSX.Element } = {};
+
+              let startDate = new Date(getDate.year(), getDate.month(), 1);
+              while (startDate.getMonth() === getDate.month()) {
+                const currentDay = startDate;
+                const currentDate = startDate.getDate();
+                days[startDate.getDate()] = (
+                  <div
+                    onClick={() => handleRowClick(currentDate)}
+                    style={{
+                      width: "100%",
+                      padding: "0 5px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      minHeight: "50px",
+                      cursor: "pointer",
+                      alignItems: "center",
+                    }}
+                  >
+                    <span> {shiftName} </span>
+                    <span>
+                      {" "}
+                      {monthlyData
+                        ?.find((day) => day.maNhanVien === employee.maNhanVien)
+                        ?.duLieuChamCongResponses?.find(
+                          (dlcc) => dlcc.ngayLamViec === currentDate,
+                        )?.gioLamViec || 0}{" "}
+                    </span>
+                  </div>
+                );
+                startDate.setDate(startDate.getDate() + 1);
+              }
+
+              const row = Object.assign(rowSpecifyKey, rowFixedData, days);
+
+              return row;
+            });
+
+          getData.push({
+            key: index + 1,
+            STT: index + 1,
+            phongBan: x.tenPhongBan,
+            children: childrenData,
+          });
+        })
+      : departmentData
+          ?.filter((c) =>
+            employeeData.some((e) => e.maPhongBan === c.maPhongBan),
+          )
+          .map((x, index) => {
+            const childrenData = employeeData
+              .filter((employee) => employee.maPhongBan === x.maPhongBan)
+              .map((employee, index) => {
+                const rowSpecifyKey: any = {
+                  // key: `${employee.maNhanVien}`,
+                  STT: index + 1,
+                };
+
+                const rowFixedData = {
+                  phongBan: x.tenPhongBan,
+                  maNhanVien: employee.maNhanVien,
+                  hoTen: employee.hoTen,
+                  maCa: employee.maCa,
+                  tongCong: monthlyData?.find(
+                    (data) => data.maNhanVien === employee.maNhanVien,
+                  )
+                    ? monthlyData?.find(
+                        (data) => data.maNhanVien === employee.maNhanVien,
+                      )?.tongCong
+                    : 0,
+                };
+
+                const shiftName = shiftList.find(
+                  (shift) => shift.maCa === employee.maCa,
+                )?.tenCa;
+
+                let days: { [key: string]: React.JSX.Element } = {};
+
+                let startDate = new Date(getDate.year(), getDate.month(), 1);
+                while (startDate.getMonth() === getDate.month()) {
+                  const currentDay = startDate;
+                  const currentDate = startDate.getDate();
+                  days[startDate.getDate()] = (
+                    <div
+                      onClick={() => handleRowClick(currentDate)}
+                      style={{
+                        width: "100%",
+                        padding: "0 5px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        minHeight: "50px",
+                        cursor: "pointer",
+                        alignItems: "center",
+                      }}
+                    >
+                      <span> {shiftName} </span>
+                      <span>
+                        {" "}
+                        {monthlyData
+                          ?.find(
+                            (day) => day.maNhanVien === employee.maNhanVien,
+                          )
+                          ?.duLieuChamCongResponses?.find(
+                            (dlcc) => dlcc.ngayLamViec === currentDate,
+                          )?.gioLamViec || 0}{" "}
+                      </span>
+                    </div>
+                  );
+                  startDate.setDate(startDate.getDate() + 1);
+                }
+
+                const row = Object.assign(rowSpecifyKey, rowFixedData, days);
+
+                return row;
+              });
+
+            getData.push({
+              key: index + 1,
+              STT: index + 1,
+              phongBan: x.tenPhongBan,
+              children: childrenData,
+            });
+          });
+
+    setData(getData);
+  };
+
+  const onChangeDate = (e: any) => {
+    setDate(e);
+  };
+
+  const parseDate = dayjs(new Date(date));
+
+  useEffect(() => {
+    const getDate = dayjs(new Date()).tz();
+
+    getMonthlyReportByMonth({
+      ngayBatDau: new Date(getDate.year(), getDate.month(), 2),
+      ngayKetThuc: dayjs(getDate).endOf("month").toDate(),
+      maNhanVien: null,
+      tenNhanVien: null,
+      idVanTay: null,
+    });
+
+    refresh();
+    generateColumns();
+    generateDataTable();
+
+    setSpinning(false);
+  }, []);
+
+  useEffect(() => {
+    if (isSearch) {
+      generateDataTable();
+      setIsSearch(false);
     }
-  
-    const closeUpdateDrawer = () => {
-      setUpdateOpen(false)
-      form.resetFields()
-    }
+  }, [employeeData]);
 
-    const closeViewDrawer = () => {
-      setViewOpen(false)
-      form.resetFields()
-    }
+  useEffect(() => {
+    generateDataTable();
+    setIsSearch(false);
+  }, [monthlyData]);
 
-    const onChange = (e: RadioChangeEvent) => {
-      console.log('radio checked', e.target.value);
-      setValue(e.target.value);
-    };
+  useEffect(() => {
+    const getDate = dayjs(new Date(date)).tz();
 
-    const onFinish = (values: any) => {
-      console.log('Received values of form: ', values);
-    };
+    getMonthlyReportByMonth({
+      ngayBatDau: new Date(getDate.year(), getDate.month(), 2),
+      ngayKetThuc: dayjs(getDate).endOf("month").toDate(),
+      maNhanVien: null,
+      tenNhanVien: null,
+      idVanTay: null,
+    });
 
-    const parseDate = dayjs(new Date(date))
+    generateColumns();
+    generateDataTable();
+  }, [date]);
 
-    useEffect(() => {
-      generateColumns()
-    }, [date])
+  useEffect(() => {
+    setSpinning(true);
+    generateDataTable();
+    setSpinning(false);
+  }, [departmentData]);
 
-    return (
-      <>  
-        <div style={{paddingLeft:"24px",paddingRight:"24px", backgroundColor:colorBgContainer, marginTop:"20px"}}>
-            <Flex justify='space-between' align='center' style={{height:"50px", borderBottom:"1px solid #bbbfc1", marginBottom:"10px"}}>
-                <span><b>{`Báo cáo thống kê từ ngày 01/${parseDate.month()+1}/${parseDate.year()} đến ngày ${parseDate.daysInMonth()}/${parseDate.month()+1}/${parseDate.year()}`}</b></span>
-                <Row>
-                  <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setImportOpen(true)}>Import</Button>
-                </Row>
-            </Flex>
-            <Table 
-                scroll={{ x:4000, y:500}} 
-                rowSelection={rowSelection} 
-                columns={generateColumns()} 
-                dataSource={data}
-                pagination={{ showQuickJumper:true, total:50 ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}} 
-            />
-        </div>
-        <Drawer 
-        title="Import dữ liệu chấm công" 
-        placement="right" 
-        onClose={() => setImportOpen(false)} 
-        open={importOpen}
-        footer= {
-          <Row justify={'end'}>
-              <Space>
-                  <Button onClick={() => setImportOpen(false)}>Hủy</Button>
-                  <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-              </Space>
-          </Row>
-        }
+  return (
+    <>
+      <Spin spinning={spinning}>
+        <Form
+          form={form}
+          style={formStyle}
+          onFinish={onFinish}
+          name="advanced_search"
         >
-            <Upload>
-                <p>File upload</p>
-                <Button icon={<UploadOutlined />}>Click to Upload</Button>
-            </Upload>
-            <Space direction='vertical'>
-                <p>Template file</p>
-                <Button type='primary' icon={<DownloadOutlined />}>Tải xuống template</Button>
-            </Space>
-        </Drawer>
-      </>
-    )
-}
+          <Row gutter={24}>
+            <Col span={7}>
+              <Form.Item
+                name={"khoangThoiGian"}
+                label="Khoảng thời gian"
+                labelCol={{ span: 24 }}
+              >
+                <DatePicker
+                  format={"MM/YYYY"}
+                  placeholder="Tháng"
+                  picker="month"
+                  onChange={(e) => onChangeDate(e)}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={7}>
+              <Form.Item
+                name={"maNhanVien"}
+                label="Mã nhân viên"
+                labelCol={{ span: 24 }}
+              >
+                <Input
+                  placeholder="Mã nhân viên"
+                  style={{ borderRadius: "0px" }}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={7}>
+              <Form.Item
+                name={"tenNhanVien"}
+                label="Tên nhân viên"
+                labelCol={{ span: 24 }}
+              >
+                <Input
+                  placeholder="Tên nhân viên"
+                  style={{ borderRadius: "0px" }}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row justify="end">
+            <Button type="primary" htmlType="submit">
+              Tìm kiếm
+            </Button>
+            <Button
+              onClick={() => {
+                form.resetFields();
+              }}
+            >
+              Tạo lại
+            </Button>
+          </Row>
+        </Form>
+        <div
+          style={{
+            paddingLeft: "24px",
+            paddingRight: "24px",
+            backgroundColor: colorBgContainer,
+            marginTop: "20px",
+          }}
+        >
+          <Flex
+            justify="space-between"
+            align="center"
+            style={{
+              height: "50px",
+              marginBottom: "10px",
+            }}
+          >
+            <span>
+              <b>{`Báo cáo từ ngày 01/${parseDate.month() + 1}/${parseDate.year()} đến ngày ${parseDate.daysInMonth()}/${parseDate.month() + 1}/${parseDate.year()}`}</b>
+            </span>
+            <Row>
+              <Button
+                type="primary"
+                style={{ marginLeft: "12px" }}
+                onClick={() => console.log("Phân ca")}
+              >
+                Phân ca
+              </Button>
+            </Row>
+          </Flex>
+          <Table
+            className="monthly-report"
+            scroll={{ x: 3500, y: 500 }}
+            // rowSelection={rowSelection}
+            columns={generateColumns()}
+            dataSource={data}
+            pagination={false}
+          />
+        </div>
+      </Spin>
+      <MonthlyReportDrawer
+        dateFull={date}
+        date={currentDateClick}
+        data={reportData}
+        show={open}
+        close={() => {
+          setReportData(undefined);
+          setOpen(false);
+        }}
+      />
+    </>
+  );
+};
 
-export default MonthlyReportTable;
+export default memo(MonthlyReportTable);

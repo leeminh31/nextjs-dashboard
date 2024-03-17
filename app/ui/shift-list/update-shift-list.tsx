@@ -1,12 +1,144 @@
-import { Button, Row,Col, Space, Drawer, Form, Input, Select, TimePicker } from 'antd';
+import CaLamViecApi from '@/app/api/calamviec';
+import { UpdateCaLamViecRequest } from '@/app/models/calamviec/update-calamviec-request';
+import dayjs from 'dayjs'
+import { Button, Row,Col, Space, Drawer, Form, Input, Select, TimePicker, message } from 'antd';
+import { useEffect } from 'react';
+import { specialCharactersRegex } from '@/app/utils/validateInput';
 
 const UpdateShiftList = (props:any) => {
-    const { show, close } = props
+    const { refresh, show, close, data } = props
+    const [messageApi, contextHolder ] = message.useMessage();
     const {Option} = Select
     const [form] = Form.useForm();
-    const onFinish = () => {
 
-    }
+    const onFinish = async (values: any) => {
+        console.log(values);
+        
+
+        if(dayjs(values.gioBatDauCa) >= dayjs(values.gioKetThucCa)) {
+            messageApi.open({
+                type: 'error',
+                content: 'Giờ kết thúc ca không được nhỏ hơn giờ bắt đầu ca',
+                className: 'custom-class',
+                style: {
+                    fontSize:'16px'
+                },
+                duration: 1.5,
+            });
+            return
+        }
+
+        if(dayjs(values.gioKetThucNghi) <= dayjs(values.gioBatDauNghi)) {
+            messageApi.open({
+                type: 'error',
+                content: 'Giờ kết thúc nghỉ phải lớn hơn giờ bắt đầu nghỉ',
+                className: 'custom-class',
+                style: {
+                    fontSize:'16px'
+                },
+                duration: 1.5,
+            });
+            return
+        }
+
+        if(dayjs(values.gioKetThucCa) < dayjs(values.gioBatDauNghi) || dayjs(values.gioBatDauCa) > dayjs(values.gioBatDauNghi)) {
+            messageApi.open({
+                type: 'error',
+                content: 'Giờ bắt đầu nghỉ phải nằm trong khoảng thời gian của ca',
+                className: 'custom-class',
+                style: {
+                    fontSize:'16px'
+                },
+                duration: 1.5,
+            });
+            return
+        }
+
+        if(dayjs(values.gioKetThucCa) < dayjs(values.gioKetThucNghi) || dayjs(values.gioBatDauCa) > dayjs(values.gioKetThucNghi)) {
+            messageApi.open({
+                type: 'error',
+                content: 'Giờ kết thúc nghỉ phải nằm trong khoảng thời gian của ca',
+                className: 'custom-class',
+                style: {
+                    fontSize:'16px'
+                },
+                duration: 1.5,
+            });
+            return
+        }
+
+        const requestData : UpdateCaLamViecRequest = {
+            maCa: values.maCa,
+            tenCa: values.tenCa,
+            gioBatDauCa: dayjs(values.gioBatDauCa).format("HH:mm:ss") ,
+            gioKetThucCa: dayjs(values.gioKetThucCa).format("HH:mm:ss")  ,
+            gioBatDauNghi: dayjs(values.gioBatDauNghi).format("HH:mm:ss")  ,
+            gioKetThucNghi: dayjs(values.gioKetThucNghi).format("HH:mm:ss")  ,
+        }
+    
+        let response = await CaLamViecApi.updateCaLamViec(requestData);
+            if(response.statusCode === '200'){
+                refresh()
+                close()
+                messageApi.open({
+                    type: 'success',
+                    content: 'Cập nhật ca làm việc thành công',
+                    className: 'custom-class',
+                    style: {
+                        fontSize:'16px'
+                    },
+                    duration: 1.5,
+                });
+            }
+            else if (response.statusCode === '551') {
+                messageApi.open({
+                    type: 'error',
+                    content: response.message,
+                    className: 'custom-class',
+                    style: {
+                        fontSize:'16px'
+                    },
+                    duration: 1.5,
+                });
+                }
+            else {
+                messageApi.open({
+                    type: 'error',
+                    content: 'Cập nhật ca làm việc thất bại',
+                    className: 'custom-class',
+                    style: {
+                        fontSize:'16px'
+                    },
+                    duration: 1.5,
+                });
+            }
+    };
+
+    useEffect(() => {
+        if(show)
+            form.setFieldsValue({
+                maCa: data.maCa ,
+                tenCa: data.tenCa ,
+                gioBatDauCa: dayjs(data.gioBatDauCa, "hh:mm:ss") ,
+                gioKetThucCa: dayjs(data.gioKetThucCa, "hh:mm:ss") ,
+                gioBatDauNghi: dayjs(data.gioBatDauNghi, "hh:mm:ss"),
+                gioKetThucNghi: dayjs(data.gioKetThucNghi, "hh:mm:ss")
+            })
+    },[show])
+
+    useEffect(() => {
+        if(data != null) {
+            console.log(data)
+            form.setFieldsValue({
+                maCa: data.maCa ,
+                tenCa: data.tenCa ,
+                gioBatDauCa: dayjs(data.gioBatDauCa, "hh:mm:ss") ,
+                gioKetThucCa: dayjs(data.gioKetThucCa, "hh:mm:ss") ,
+                gioBatDauNghi: dayjs(data.gioBatDauNghi, "hh:mm:ss") ,
+                gioKetThucNghi: dayjs(data.gioKetThucNghi, "hh:mm:ss")
+            })
+        }
+    },[data])
 
     return (
         <Drawer 
@@ -24,8 +156,18 @@ const UpdateShiftList = (props:any) => {
                 </Row>
             }
         >
+            {contextHolder}
             <Form form={form} name="updateShiftList" onFinish={onFinish}>
                 <Row gutter={24}>
+                    <Form.Item
+                        name={'maCa'}
+                        label={'maCa'}
+                        labelCol={{ span:24 }}
+                        wrapperCol={{ span:24 }}
+                        style={{display:'none'}}
+                        >
+                            <Input />
+                    </Form.Item>
                     <Col span={12}>
                         <Form.Item
                         name={'tenCa'}
@@ -35,6 +177,11 @@ const UpdateShiftList = (props:any) => {
                             required: true,
                             message: 'Vui lòng nhập Tên ca!',
                             },
+                            {
+                                validator(_, value) {
+                                    return specialCharactersRegex(value)
+                                },
+                            }
                         ]}
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
@@ -55,7 +202,7 @@ const UpdateShiftList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <TimePicker style={{width:'100%', height:'40px'}} popupStyle={{width:'30%'}} use12Hours format="h:mm a" />
+                            <TimePicker style={{width:'100%', height:'40px'}} use12Hours placeholder="Vui lòng chọn" format="hh:mm a" />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -71,7 +218,7 @@ const UpdateShiftList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <TimePicker style={{width:'100%', height:'40px'}} popupStyle={{width:'30%'}} use12Hours format="h:mm a" />
+                            <TimePicker style={{width:'100%', height:'40px'}} use12Hours placeholder="Vui lòng chọn" format="hh:mm a" />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -87,7 +234,7 @@ const UpdateShiftList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <TimePicker style={{width:'100%', height:'40px'}} popupStyle={{width:'30%'}} use12Hours format="h:mm a" />
+                            <TimePicker style={{width:'100%', height:'40px'}} use12Hours placeholder="Vui lòng chọn" format="hh:mm a" />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -103,7 +250,7 @@ const UpdateShiftList = (props:any) => {
                         labelCol={{ span:24 }}
                         wrapperCol={{ span:24 }}
                         >
-                            <TimePicker style={{width:'100%', height:'40px'}} popupStyle={{width:'30%'}} use12Hours format="h:mm a" />
+                            <TimePicker style={{width:'100%', height:'40px'}} use12Hours placeholder="Vui lòng chọn" format="hh:mm a" />
                         </Form.Item>
                     </Col>
                 </Row>

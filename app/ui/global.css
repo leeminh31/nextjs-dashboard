@@ -2,7 +2,10 @@
 @tailwind components;
 @tailwind utilities; */
 
-html, body, #root, #root>* {
+html,
+body,
+#root,
+#root > * {
   height: 100%;
 }
 
@@ -10,19 +13,68 @@ body {
   margin: 0;
 }
 
-input[type='number'] {
+input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
 }
 
-input[type='number']::-webkit-inner-spin-button {
+input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-input[type='number']::-webkit-outer-spin-button {
+input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.monthly-report td.ant-table-cell:not(.ant-table-cell-fix-left) {
+  padding: 0 !important;
+}
+
+.monthly-drawer .ant-drawer-header-title {
+  flex-direction: row-reverse;
+}
+
+.monthly-drawer .ant-drawer-header-title .ant-drawer-close {
+  color: #fff;
+  background-color: #b98868;
+  padding: 0;
+}
+
+.monthly-drawer .ant-drawer-header {
+  border: none;
+  padding: 4px 0px !important;
+}
+
+.monthly-drawer .ant-drawer-body {
+  padding: 0px !important;
+}
+
+.ant-tabs-tab {
+  background-color: #f4efeb;
+  color: #000;
+}
+
+.ant-tabs-tab.ant-tabs-tab-active {
+  color: #000 !important;
+  background-color: #f4efeb !important;
+}
+
+.ant-tabs-card.ant-tabs-top > .ant-tabs-nav .ant-tabs-tab {
+  border-radius: 0 !important;
+}
+
+.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {
+  color: #b98868;
+}
+
+.ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #000;
+}
+
+.ant-tabs .ant-tabs-tab:hover {
+  color: #b98868;
 }
 
 .ant-upload-wrapper .ant-upload-select {
@@ -48,16 +100,16 @@ input[type='number']::-webkit-outer-spin-button {
   border-color: transparent !important;
 }
 
-.ant-menu-submenu-open >.ant-menu-submenu-title {
-  color: #B98868 !important;
+.ant-menu-submenu-open > .ant-menu-submenu-title {
+  color: #b98868 !important;
 }
 
-.ant-menu-submenu-open >.ant-menu-submenu-title {
-  color: #B98868 !important;
+.ant-menu-submenu-open > .ant-menu-submenu-title {
+  color: #b98868 !important;
 }
 
-.ant-menu-submenu-selected >.ant-menu-submenu-title {
-  color: #B98868 !important;
+.ant-menu-submenu-selected > .ant-menu-submenu-title {
+  color: #b98868 !important;
 }
 
 .ant-select-focused .ant-select-selector {
@@ -74,7 +126,7 @@ input[type='number']::-webkit-outer-spin-button {
   width: 100% !important;
 }
 
-.ant-table-wrapper .ant-table-thead>tr>th {
+.ant-table-wrapper .ant-table-thead > tr > th {
   padding: 8px !important;
 }
 
@@ -90,11 +142,11 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 .ant-table-thead > tr > th {
-  border: 1px solid #f3f3f3 !important
+  border: 1px solid #f3f3f3 !important;
 }
 
 .ant-table-tbody > tr > td {
-  border: 1px solid #f3f3f3
+  border: 1px solid #f3f3f3;
 }
 
 .ant-pagination-item {
@@ -150,7 +202,7 @@ table .ant-btn {
   border-color: #b98868 !important;
 }
 
-.ant-select-focused > .ant-select-selector{
+.ant-select-focused > .ant-select-selector {
   border-color: #b98868 !important;
   box-shadow: none;
 }
@@ -159,9 +211,17 @@ table .ant-btn {
   border-color: #b98868 !important;
 }
 
+.monthly-report th.ant-table-cell p {
+  margin: 0 !important;
+}
+
 .ant-input:focus-within {
   border-color: #b98868 !important;
   box-shadow: none;
+}
+
+.time-keeping .ant-drawer .ant-drawer-body {
+  padding-top: 0 !important;
 }
 
 .ant-checkbox:hover .ant-checkbox-inner {
@@ -185,44 +245,44 @@ table .ant-btn {
   border-color: #b98868 !important;
 }
 
-.ant-table-row.ant-table-row-selected >.ant-table-cell {
+.ant-table-row.ant-table-row-selected > .ant-table-cell {
   background: #faf3eb !important;
 }
 
-.ant-table-row.ant-table-row-selected >.ant-table-cell-row-hover {
+.ant-table-row.ant-table-row-selected > .ant-table-cell-row-hover {
   background: #f8eee3 !important;
 }
 
 .ant-table-body tr > td:last-child {
-  padding: 0 ;
+  padding: 0;
 }
 
 .ant-table-thead .ant-table-cell {
   background-color: #efe4dc !important;
 }
 
-.ant-radio-checked .ant-radio-inner{
+.ant-radio-checked .ant-radio-inner {
   border-color: #b98868 !important ;
   background-color: transparent !important;
 }
 
-.ant-radio-checked .ant-radio-inner:focus{
+.ant-radio-checked .ant-radio-inner:focus {
   border-color: red;
 }
 
-.ant-radio-checked .ant-radio-inner:after{
+.ant-radio-checked .ant-radio-inner:after {
   background-color: #b98868;
 }
 
 .ant-radio:hover .ant-radio-inner {
-  border-color: #b98868 ;
+  border-color: #b98868;
 }
 
 .ant-radio-group {
   width: 100%;
 }
 
-.ant-table-cell >.ant-btn {
+.ant-table-cell > .ant-btn {
   padding: 0 !important;
 }
 
@@ -231,7 +291,7 @@ table .ant-btn {
 }
 
 .ant-card-bordered {
-  border: 2px solid #BC846F !important;
+  border: 2px solid #bc846f !important;
 }
 
 .ant-card-body {
@@ -289,7 +349,9 @@ table .ant-btn {
 .login-form {
   background-color: rgba(192, 192, 192, 0.3);
   padding: 20px;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+  box-shadow:
+    rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
   width: 500px;
   border-radius: 10px;
   z-index: 1;
@@ -342,4 +404,3 @@ table .ant-btn {
   color: #000;
   background-color: #b98868;
 }
-

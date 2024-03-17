@@ -1,13 +1,12 @@
-import TimekeepingListForm from "./timekeeping-list-form"
-import TimekeepingListTable from "./timekeeping-list-table"
+import TimekeepingListTable from "./timekeeping-list-table";
 
 const TimekeepingList = () => {
-    return (
-        <>
-            {/* <TimekeepingListForm /> */}
-            <TimekeepingListTable />
-        </>
-    )
-}
+  return (
+    <>
+      {/* <TimekeepingListForm /> */}
+      <TimekeepingListTable />
+    </>
+  );
+};
 
-export default TimekeepingList
+export default TimekeepingList;

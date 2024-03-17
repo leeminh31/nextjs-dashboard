@@ -1,4 +1,4 @@
 export interface LoginRequestModel{
-    tenDangnNhap: string,
+    tenDangNhap: string,
     matKhau: string,
 }

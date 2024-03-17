@@ -23,7 +23,6 @@ const PhongBanApi = {
     },
 
     deletePhongBan: async (data: string) => {
-      console.log(data)
       let rest = new RestConnection()
       return rest.deleteAsync(`PhongBan?id=`+data)
     },
