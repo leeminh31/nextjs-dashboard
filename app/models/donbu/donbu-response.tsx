@@ -1,8 +1,11 @@
-export interface DonBuResponse{
-    id:number,
-    code: string,
-    name: string,
-    url: string,
-    status: number,
-    description: string
+export interface DonBuResponse {
+  maDonBu: number;
+  loaiDon: number;
+  ngayTaoDon: Date;
+  ngayLamViec: Date;
+  soPhutXinBu: number;
+  lyDo: string;
+  nguoiDuyet: string;
+  trangThai: string;
+  maNhanVien: string;
 }

@@ -1,7 +1,9 @@
-export interface CreateDonConNhoRequest{
-    code: string,
-    name: string,
-    url: string,
-    status: number,
-    description: string
+export interface CreateDonConNhoRequest {
+  ngayTaoDon: Date;
+  tuNgay: Date;
+  denNgay: Date;
+  lyDo: string;
+  nguoiDuyet: string;
+  trangThai: string;
+  maNhanVien: string;
 }

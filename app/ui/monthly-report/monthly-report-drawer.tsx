@@ -1,30 +1,79 @@
 import BaoCaoTheoThangApi from "@/app/api/baocaotheothang";
 import CaLamViecApi from "@/app/api/calamviec";
+import DanhSachDonApi from "@/app/api/danhsachdon";
+import GiaiTrinhApi from "@/app/api/giaitrinh";
 import NhanVienApi from "@/app/api/nhanvien";
 import { SearchBaoCaoTheoThangByDayRequest } from "@/app/models/baocaotheothang/search-baocaotheothangbyday-request";
 import { CaLamViecResponse } from "@/app/models/calamviec/calamviec-response";
+import { DanhSachDonResponse } from "@/app/models/danhsachdon/danhsachdon-response";
+import { CreateDonBuRequest } from "@/app/models/donbu/create-donbu-request";
+import { CreateDonConNhoRequest } from "@/app/models/donconnho/create-donconnho-request";
+import { CreateDonPhepRequest } from "@/app/models/donphep/create-donphep-request";
+import { CreateDonTangCaRequest } from "@/app/models/dontangca/create-dontangca-request";
 import { DuLieuChamCongResponse } from "@/app/models/dulieuchamcong/dulieuchamcong-response";
+import { GiaiTrinhResponse } from "@/app/models/giaitrinh/giaitrinh-response";
 import { NhanVienResponse } from "@/app/models/nhanvien/nhanvien-response";
 import { SearchNhanVienRequest } from "@/app/models/nhanvien/search-nhanvien-request";
 import { subTime } from "@/app/utils/subTime";
-import { Drawer, Form, Select, Space, Tabs } from "antd";
+import {
+  Button,
+  Card,
+  DatePicker,
+  Drawer,
+  Form,
+  Input,
+  message,
+  Modal,
+  Row,
+  Select,
+  Space,
+  Tabs,
+  TimePicker,
+} from "antd";
+import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
 import { memo, useEffect, useState } from "react";
 const { Option } = Select;
 
 const MonthlyReportDrawer = (props: any) => {
   const { show, close, data, date, dateFull } = props;
+  const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
   const [shiftList, setShiftList] = useState<CaLamViecResponse[]>([]);
+  const [listRequestData, setListRequestData] = useState<DanhSachDonResponse>();
+  const [listExplanationData, setListExplanationData] = useState<
+    GiaiTrinhResponse[]
+  >([]);
   const [employeeData, setEmployeeData] = useState<NhanVienResponse[]>([]);
-  const [shiftId, setShiftId] = useState(0);
+  const [createRequestShow, setCreateRequestShow] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [requestType, setRequestType] = useState(0);
   const [listTimekeeping, setListTimekeeping] = useState<
     DuLieuChamCongResponse[]
   >([]);
-  // const [shiftName, setShiftName] = useState("");
-  const [timekeepingData, setTimekeepingData] = useState<
-    DuLieuChamCongResponse[]
-  >([]);
+
+  const getListRequestByParams = async (maNhanVien: string | null) => {
+    let response = await DanhSachDonApi.getDanhSachDonByEmployeeId(maNhanVien);
+    if (response?.statusCode === "200") {
+      setListRequestData(response?.data);
+    } else if (response?.statusCode === "545") {
+      setListRequestData(undefined);
+    } else {
+      console.log(response?.message);
+    }
+  };
+
+  const getListExplanationByParams = async (maNhanVien: string | null) => {
+    let response =
+      await GiaiTrinhApi.getDanhSachGiaiTrinhByEmployeeId(maNhanVien);
+    if (response?.statusCode === "200") {
+      setListExplanationData(response?.data);
+    } else if (response?.statusCode === "545") {
+      setListExplanationData([]);
+    } else {
+      console.log(response?.message);
+    }
+  };
 
   const getTimekeepingByDay = async (
     searchRequest: SearchBaoCaoTheoThangByDayRequest,
@@ -78,11 +127,341 @@ const MonthlyReportDrawer = (props: any) => {
     console.log(key);
   };
 
+  const onFinish = async (values: any) => {
+    let ngayLamViec = currentDate;
+    ngayLamViec.setDate(ngayLamViec.getDate() + 1);
+
+    if (requestType === 1) {
+      const requestData: CreateDonBuRequest = {
+        maNhanVien: data?.maNhanVien,
+        ngayLamViec: new Date(ngayLamViec),
+        ngayTaoDon: new Date(),
+        lyDo: values.lyDo,
+        nguoiDuyet: "",
+        soPhutXinBu: values.soPhutXinBu,
+        trangThai: "0",
+      };
+
+      let response = await DanhSachDonApi.createDonBu(requestData);
+      if (response.statusCode === "200") {
+        refresh();
+        close();
+        messageApi.open({
+          type: "success",
+          content: "Thêm mới đơn bù thành công",
+          className: "custom-class",
+          style: {
+            fontSize: "16px",
+          },
+          duration: 1.5,
+        });
+        setCreateRequestShow(false);
+        form.resetFields();
+        setRequestType(0);
+      } else {
+        console.log(response.message);
+      }
+    }
+
+    if (requestType === 2) {
+      const requestData: CreateDonConNhoRequest = {
+        maNhanVien: data?.maNhanVien,
+        ngayTaoDon: new Date(),
+        lyDo: values.lyDo,
+        nguoiDuyet: "",
+        tuNgay: values.tuNgay,
+        denNgay: values.denNgay,
+        trangThai: "0",
+      };
+
+      let response = await DanhSachDonApi.createDonConNho(requestData);
+      if (response.statusCode === "200") {
+        refresh();
+        close();
+        messageApi.open({
+          type: "success",
+          content: "Thêm mới đơn con nhỏ thành công",
+          className: "custom-class",
+          style: {
+            fontSize: "16px",
+          },
+          duration: 1.5,
+        });
+        setCreateRequestShow(false);
+        form.resetFields();
+        setRequestType(0);
+      } else {
+        console.log(response.message);
+      }
+    }
+
+    if (requestType === 3) {
+      const requestData: CreateDonPhepRequest = {
+        maNhanVien: data?.maNhanVien,
+        ngayTaoDon: new Date(),
+        ngayLamViec: new Date(ngayLamViec),
+        lyDo: values.lyDo,
+        nguoiDuyet: "",
+        trangThai: "0",
+      };
+
+      let response = await DanhSachDonApi.createDonPhep(requestData);
+      if (response.statusCode === "200") {
+        refresh();
+        close();
+        messageApi.open({
+          type: "success",
+          content: "Thêm mới đơn phép thành công",
+          className: "custom-class",
+          style: {
+            fontSize: "16px",
+          },
+          duration: 1.5,
+        });
+        setCreateRequestShow(false);
+        form.resetFields();
+        setRequestType(0);
+      } else {
+        console.log(response.message);
+      }
+    }
+
+    if (requestType === 4) {
+      const requestData: CreateDonTangCaRequest = {
+        maNhanVien: data?.maNhanVien,
+        ngayTaoDon: new Date(),
+        ngayLamViec: new Date(ngayLamViec),
+        lyDo: values.lyDo,
+        nguoiDuyet: "",
+        tangCaTu: values.tangCaTu,
+        tangCaDen: values.tangCaDen,
+        trangThai: "0",
+      };
+
+      let response = await DanhSachDonApi.createDonTangCa(requestData);
+      if (response.statusCode === "200") {
+        refresh();
+        close();
+        messageApi.open({
+          type: "success",
+          content: "Thêm mới đơn tăng ca thành công",
+          className: "custom-class",
+          style: {
+            fontSize: "16px",
+          },
+          duration: 1.5,
+        });
+        setCreateRequestShow(false);
+        form.resetFields();
+        setRequestType(0);
+      } else {
+        console.log(response.message);
+      }
+    }
+  };
+
+  const timeDiff = (tangCaTu: string, tangCaDen: string) => {
+    if (tangCaTu && tangCaDen) {
+      const tangCaTuDate = tangCaTu?.split(":").map(Number);
+      const time1 = new Date(
+        0,
+        0,
+        0,
+        tangCaTuDate[0],
+        tangCaTuDate[1],
+      ).getTime();
+      const tangCaDenDate = tangCaDen?.split(":").map(Number);
+      const time2 = new Date(
+        0,
+        0,
+        0,
+        tangCaDenDate[0],
+        tangCaDenDate[1],
+      ).getTime();
+
+      const diffms = Math.abs(time2 - time1);
+
+      const minutes = Math.floor(diffms / (1000 * 60));
+
+      return minutes;
+    }
+  };
+
+  const handleRequestType = (e: any) => {
+    setRequestType(e);
+  };
+
+  const renderManageView = (loaiDon: number) => {
+    switch (loaiDon) {
+      case 1:
+        return (
+          <>
+            <Space
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#996B4D",
+                padding: "0 16px",
+              }}
+            >
+              <span>Quỹ nghỉ bù hiện có: </span>
+              <span>960</span>
+            </Space>
+            <Space
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#996B4D",
+                padding: "0 16px",
+              }}
+            >
+              <span>Số phút xin bù: </span>
+              <Form.Item name="soPhutXinBu">
+                <Input type={"number"} />
+              </Form.Item>
+            </Space>
+            <Space
+              direction="vertical"
+              style={{
+                color: "#996B4D",
+                padding: "0 16px",
+                width: "100%",
+              }}
+            >
+              <span>Lý do: </span>
+              <Form.Item name="lyDo">
+                <TextArea
+                  style={{ width: "420px" }}
+                  rows={4}
+                  value={data?.lyDo}
+                />
+              </Form.Item>
+            </Space>
+          </>
+        );
+      case 3:
+        return (
+          <>
+            <Space
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#996B4D",
+                padding: "0 16px",
+              }}
+            >
+              <span>Quỹ nghỉ phép hiện có: </span>
+              <span>960</span>
+            </Space>
+            <Space
+              direction="vertical"
+              style={{
+                color: "#996B4D",
+                padding: "0 16px",
+                width: "100%",
+              }}
+            >
+              <p>Lý do: </p>
+              <Form.Item name="lyDo">
+                <TextArea
+                  style={{ width: "100%" }}
+                  rows={4}
+                  value={data?.lyDo}
+                />
+              </Form.Item>
+            </Space>
+          </>
+        );
+      case 2:
+        return (
+          <>
+            <Space
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#996B4D",
+                padding: "0 16px",
+              }}
+            >
+              <Form.Item label="Từ ngày: " name="tuNgay">
+                <DatePicker placeholder="Chọn ngày" format={"DD/MM/YYYY"} />
+              </Form.Item>
+              <Form.Item label="Đến ngày: " name="denNgay">
+                <DatePicker placeholder="Chọn ngày" format={"DD/MM/YYYY"} />
+              </Form.Item>
+            </Space>
+            <Space
+              direction="vertical"
+              style={{
+                color: "#996B4D",
+                padding: "0 16px",
+                width: "100%",
+              }}
+            >
+              <p>Lý do: </p>
+              <Form.Item name="lyDo">
+                <TextArea style={{ width: "100%" }} rows={4} />
+              </Form.Item>
+            </Space>
+          </>
+        );
+      case 4:
+        return (
+          <>
+            <Space
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#996B4D",
+                padding: "0 16px",
+              }}
+            >
+              <Form.Item label="Tăng ca từ" name="tangCaTu">
+                <TimePicker />
+              </Form.Item>
+              <Form.Item label="Tăng ca đến" name="tangCaDen">
+                <TimePicker />
+              </Form.Item>
+            </Space>
+            <Space
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#996B4D",
+                padding: "0 16px",
+              }}
+            >
+              <span>
+                Quy đổi số phút: {timeDiff(data?.tangCaTu, data?.tangCaDen)}
+              </span>
+            </Space>
+            <Space
+              direction="vertical"
+              style={{
+                color: "#996B4D",
+                padding: "0 16px",
+                width: "100%",
+              }}
+            >
+              <p>Lý do: </p>
+              <Form.Item name="lyDo">
+                <TextArea style={{ width: "420px" }} rows={4} />
+              </Form.Item>
+            </Space>
+          </>
+        );
+      default:
+        return null;
+    }
+  };
+
   useEffect(() => {
-    console.log(dateFull);
+    console.log("Ngay an vao la: ", date);
 
     const getDate = dayjs(new Date(dateFull));
     let startDate = new Date(getDate.year(), getDate.month(), date + 1);
+    const currently = new Date(getDate.year(), getDate.month(), date);
+    setCurrentDate(currently);
     if (data) {
       getTimekeepingByDay({
         maNhanVien: data?.maNhanVien,
@@ -104,6 +483,10 @@ const MonthlyReportDrawer = (props: any) => {
         maNhanVien: data?.maNhanVien,
         ngayLamViec: startDate,
       });
+
+      getListRequestByParams(data?.maNhanVien);
+
+      getListExplanationByParams(data?.maNhanVien);
     }
   }, [data]);
 
@@ -116,171 +499,31 @@ const MonthlyReportDrawer = (props: any) => {
       });
       // setShiftName();
     }
-    setShiftId(data?.maCa);
   }, []);
 
   return (
-    <Drawer
-      className="monthly-drawer"
-      size="default"
-      placement="right"
-      onClose={close}
-      open={show}
-    >
-      <Tabs
-        onChange={onChange}
-        type="card"
-        defaultActiveKey="1"
-        items={[
-          {
-            label: "Thông tin",
-            key: "1",
-            children: (
-              <Space direction="vertical" style={{ width: "100%" }}>
-                <Space style={{ display: "flex", justifyContent: "center" }}>
-                  <h2 style={{ color: "#b98868" }}>Ca Làm Việc</h2>
-                </Space>
-                <Space
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    color: "#996B4D",
-                    padding: "8px",
-                  }}
-                >
-                  <span>Tên ca: </span>
-                  <span>
-                    {
-                      shiftList.find((shift) => shift.maCa === data?.maCa)
-                        ?.tenCa
-                    }
-                  </span>
-                </Space>
-                <Space
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    color: "#996B4D",
-                    padding: "8px",
-                  }}
-                >
-                  <span>ID vân tay: </span>
-                  <span>
-                    {
-                      employeeData.find(
-                        (employee) => employee.maNhanVien === data?.maNhanVien,
-                      )?.idVanTay
-                    }
-                  </span>
-                </Space>
-                <Space
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    color: "#996B4D",
-                    padding: "8px",
-                  }}
-                >
-                  <span>Tổng thời gian ca: </span>
-                  <span>
-                    {
-                      <>
-                        {subTime(
-                          shiftList.find((shift) => shift.maCa === data?.maCa)
-                            ?.gioBatDauCa,
-                          shiftList.find((shift) => shift.maCa === data?.maCa)
-                            ?.gioKetThucCa,
-                        ) -
-                          subTime(
-                            shiftList.find((shift) => shift.maCa === data?.maCa)
-                              ?.gioBatDauNghi,
-                            shiftList.find((shift) => shift.maCa === data?.maCa)
-                              ?.gioKetThucNghi,
-                          ) || undefined}
-                      </>
-                    }
-                  </span>
-                </Space>
-                <Space
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    color: "#996B4D",
-                    padding: "8px",
-                  }}
-                >
-                  <span>Giờ bắt đầu ca: </span>
-                  <span>
-                    {
-                      shiftList.find((shift) => shift.maCa === data?.maCa)
-                        ?.gioBatDauCa
-                    }
-                  </span>
-                </Space>
-                <Space
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    color: "#996B4D",
-                    padding: "8px",
-                  }}
-                >
-                  <span>Giờ kết thúc ca: </span>
-                  <span>
-                    {
-                      shiftList.find((shift) => shift.maCa === data?.maCa)
-                        ?.gioKetThucCa
-                    }
-                  </span>
-                </Space>
-                <Space
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    color: "#996B4D",
-                    padding: "8px",
-                  }}
-                >
-                  <span>Tổng thời gian nghỉ: </span>
-                  <span>
-                    {
-                      <>
-                        {subTime(
-                          shiftList.find((shift) => shift.maCa === data?.maCa)
-                            ?.gioBatDauNghi,
-                          shiftList.find((shift) => shift.maCa === data?.maCa)
-                            ?.gioKetThucNghi,
-                        )}
-                      </>
-                    }
-                  </span>
-                </Space>
-                <Space
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    color: "#996B4D",
-                    padding: "8px",
-                  }}
-                >
-                  <span>Thời gian làm việc thực tế: </span>
-                  <span>{listTimekeeping[0]?.thoiGianLamViecThucTe}</span>
-                </Space>
-                <Space
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    color: "#996B4D",
-                    padding: "8px",
-                  }}
-                >
-                  <span>Tính công: </span>
-                  <span>480</span>
-                </Space>
-                <Space style={{ display: "flex", justifyContent: "center" }}>
-                  <h2 style={{ color: "#b98868" }}>Lịch sử chấm công</h2>
-                </Space>
-                {listTimekeeping?.map((item, index) => (
+    <>
+      {contextHolder}
+      <Drawer
+        className="monthly-drawer"
+        size="default"
+        placement="right"
+        onClose={close}
+        open={show}
+      >
+        <Tabs
+          onChange={onChange}
+          type="card"
+          defaultActiveKey="1"
+          items={[
+            {
+              label: "Thông tin",
+              key: "1",
+              children: (
+                <Space direction="vertical" style={{ width: "100%" }}>
+                  <Space style={{ display: "flex", justifyContent: "center" }}>
+                    <h2 style={{ color: "#b98868" }}>Ca Làm Việc</h2>
+                  </Space>
                   <Space
                     style={{
                       display: "flex",
@@ -289,52 +532,778 @@ const MonthlyReportDrawer = (props: any) => {
                       padding: "8px",
                     }}
                   >
-                    <span>Lần {item.lanChamCong}: </span>
+                    <span>Tên ca: </span>
                     <span>
                       {
-                        listTimekeeping?.find(
-                          (timekeeping) =>
-                            timekeeping.lanChamCong === item.lanChamCong,
-                        )?.gioChamCong
+                        shiftList.find((shift) => shift.maCa === data?.maCa)
+                          ?.tenCa
                       }
                     </span>
                   </Space>
-                ))}
-                <Space style={{ display: "flex", justifyContent: "center" }}>
-                  <h2 style={{ color: "#b98868" }}>Lịch sử sửa ca</h2>
+                  <Space
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      color: "#996B4D",
+                      padding: "8px",
+                    }}
+                  >
+                    <span>ID vân tay: </span>
+                    <span>
+                      {
+                        employeeData.find(
+                          (employee) =>
+                            employee.maNhanVien === data?.maNhanVien,
+                        )?.idVanTay
+                      }
+                    </span>
+                  </Space>
+                  <Space
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      color: "#996B4D",
+                      padding: "8px",
+                    }}
+                  >
+                    <span>Tổng thời gian ca: </span>
+                    <span>
+                      {
+                        <>
+                          {subTime(
+                            shiftList.find((shift) => shift.maCa === data?.maCa)
+                              ?.gioBatDauCa,
+                            shiftList.find((shift) => shift.maCa === data?.maCa)
+                              ?.gioKetThucCa,
+                          ) -
+                            subTime(
+                              shiftList.find(
+                                (shift) => shift.maCa === data?.maCa,
+                              )?.gioBatDauNghi,
+                              shiftList.find(
+                                (shift) => shift.maCa === data?.maCa,
+                              )?.gioKetThucNghi,
+                            ) || undefined}
+                        </>
+                      }
+                    </span>
+                  </Space>
+                  <Space
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      color: "#996B4D",
+                      padding: "8px",
+                    }}
+                  >
+                    <span>Giờ bắt đầu ca: </span>
+                    <span>
+                      {
+                        shiftList.find((shift) => shift.maCa === data?.maCa)
+                          ?.gioBatDauCa
+                      }
+                    </span>
+                  </Space>
+                  <Space
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      color: "#996B4D",
+                      padding: "8px",
+                    }}
+                  >
+                    <span>Giờ kết thúc ca: </span>
+                    <span>
+                      {
+                        shiftList.find((shift) => shift.maCa === data?.maCa)
+                          ?.gioKetThucCa
+                      }
+                    </span>
+                  </Space>
+                  <Space
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      color: "#996B4D",
+                      padding: "8px",
+                    }}
+                  >
+                    <span>Tổng thời gian nghỉ: </span>
+                    <span>
+                      {
+                        <>
+                          {subTime(
+                            shiftList.find((shift) => shift.maCa === data?.maCa)
+                              ?.gioBatDauNghi,
+                            shiftList.find((shift) => shift.maCa === data?.maCa)
+                              ?.gioKetThucNghi,
+                          )}
+                        </>
+                      }
+                    </span>
+                  </Space>
+                  <Space
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      color: "#996B4D",
+                      padding: "8px",
+                    }}
+                  >
+                    <span>Thời gian làm việc thực tế: </span>
+                    <span>{listTimekeeping[0]?.thoiGianLamViecThucTe}</span>
+                  </Space>
+                  <Space
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      color: "#996B4D",
+                      padding: "8px",
+                    }}
+                  >
+                    <span>Tính công: </span>
+                    <span>480</span>
+                  </Space>
+                  <Space style={{ display: "flex", justifyContent: "center" }}>
+                    <h2 style={{ color: "#b98868" }}>Lịch sử chấm công</h2>
+                  </Space>
+                  {listTimekeeping?.map((item, index) => (
+                    <Space
+                      key={index}
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        color: "#996B4D",
+                        padding: "8px",
+                      }}
+                    >
+                      <span>Lần {item.lanChamCong}: </span>
+                      <span>
+                        {
+                          listTimekeeping?.find(
+                            (timekeeping) =>
+                              timekeeping.lanChamCong === item.lanChamCong,
+                          )?.gioChamCong
+                        }
+                      </span>
+                    </Space>
+                  ))}
+                  <Space style={{ display: "flex", justifyContent: "center" }}>
+                    <h2 style={{ color: "#b98868" }}>Lịch sử sửa ca</h2>
+                  </Space>
+                  <Space
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      color: "#996B4D",
+                      padding: "8px",
+                    }}
+                  >
+                    <span>Lần 1:</span>
+                    <span>8A -{">"} 9A</span>
+                  </Space>
                 </Space>
-                <Space
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    color: "#996B4D",
-                    padding: "8px",
-                  }}
-                >
-                  <span>Lần 1:</span>
-                  <span>8A -{">"} 9A</span>
-                </Space>
-              </Space>
-            ),
-          },
-          {
-            label: "Sửa ca",
-            key: "2",
-            children: "Sửa ca",
-          },
-          {
-            label: "Đơn",
-            key: "3",
-            children: "Đơn",
-          },
-          {
-            label: "Giải trình",
-            key: "4",
-            children: "Giải trình",
-          },
-        ]}
-      />
-    </Drawer>
+              ),
+            },
+            {
+              label: "Sửa ca",
+              key: "2",
+              children: "Sửa ca",
+            },
+            {
+              label: "Đơn",
+              key: "3",
+              children: (
+                <>
+                  <Space
+                    direction="vertical"
+                    className="request-list"
+                    size="middle"
+                    style={{
+                      display: "flex",
+                      paddingLeft: "1rem",
+                      paddingRight: "1rem",
+                      paddingBottom: "1rem",
+                    }}
+                  >
+                    <h2 style={{ textAlign: "center", color: "#b98868" }}>
+                      Danh sách đơn
+                    </h2>
+                    {listRequestData?.listDonBu.map((item, index) => (
+                      <Card
+                        bodyStyle={{ padding: "0 10px" }}
+                        key={index}
+                        size="small"
+                      >
+                        <p
+                          style={{
+                            width: "100%",
+                            margin: "0",
+                            fontWeight: "bold",
+                            color: "#b98868",
+                          }}
+                        >
+                          Đơn bù
+                        </p>
+                        <p
+                          style={{
+                            width: "100%",
+                            margin: "0",
+                            color: "#b98868",
+                          }}
+                        >
+                          Ngày tạo:{" "}
+                          {dayjs(item.ngayTaoDon).format("DD/MM/YYYY")}
+                        </p>
+                        <p
+                          style={{
+                            width: "100%",
+                            margin: "0",
+                            color: "#b98868",
+                          }}
+                        >
+                          Trạng thái:{"   "}
+                          {item.trangThai === "0" ? (
+                            <div
+                              style={{
+                                border: "1px solid rgb(185, 136, 104)",
+                                borderRadius: "10px",
+                                width: "80px",
+                                textAlign: "center",
+                                display: "inline-block",
+                                padding: "0 10px",
+                              }}
+                            >
+                              Chờ duyệt
+                            </div>
+                          ) : item.trangThai === "1" ? (
+                            <div
+                              style={{
+                                border: "1px solid rgb(185, 136, 104)",
+                                borderRadius: "10px",
+                                width: "80px",
+                                textAlign: "center",
+                                display: "inline-block",
+                                padding: "0 10px",
+                                backgroundColor: "#31CD23",
+                                color: "#fff",
+                              }}
+                            >
+                              Đã duyệt
+                            </div>
+                          ) : (
+                            <div
+                              style={{
+                                border: "1px solid rgb(185, 136, 104)",
+                                borderRadius: "10px",
+                                width: "80px",
+                                textAlign: "center",
+                                display: "inline-block",
+                                padding: "0 10px",
+                                backgroundColor: "#F95454",
+                                color: "#fff",
+                              }}
+                            >
+                              Đã hủy
+                            </div>
+                          )}
+                        </p>
+                      </Card>
+                    ))}
+                    {listRequestData?.listDonConNho.map((item, index) => (
+                      <Card
+                        bodyStyle={{ padding: "0 10px" }}
+                        key={index + 1000}
+                        size="small"
+                      >
+                        <p
+                          style={{
+                            width: "100%",
+                            margin: "0",
+                            fontWeight: "bold",
+                            color: "#b98868",
+                          }}
+                        >
+                          Đơn con nhỏ
+                        </p>
+                        <p
+                          style={{
+                            width: "100%",
+                            margin: "0",
+                            color: "#b98868",
+                          }}
+                        >
+                          Ngày tạo:{" "}
+                          {dayjs(item.ngayTaoDon).format("DD/MM/YYYY")}
+                        </p>
+                        <p
+                          style={{
+                            width: "100%",
+                            margin: "0",
+                            color: "#b98868",
+                          }}
+                        >
+                          Trạng thái:{"   "}
+                          {item.trangThai === "0" ? (
+                            <div
+                              style={{
+                                border: "1px solid rgb(185, 136, 104)",
+                                borderRadius: "10px",
+                                width: "80px",
+                                textAlign: "center",
+                                display: "inline-block",
+                                padding: "0 10px",
+                              }}
+                            >
+                              Chờ duyệt
+                            </div>
+                          ) : item.trangThai === "1" ? (
+                            <div
+                              style={{
+                                border: "1px solid rgb(185, 136, 104)",
+                                borderRadius: "10px",
+                                width: "80px",
+                                textAlign: "center",
+                                display: "inline-block",
+                                padding: "0 10px",
+                                backgroundColor: "#31CD23",
+                                color: "#fff",
+                              }}
+                            >
+                              Đã duyệt
+                            </div>
+                          ) : (
+                            <div
+                              style={{
+                                border: "1px solid rgb(185, 136, 104)",
+                                borderRadius: "10px",
+                                width: "80px",
+                                textAlign: "center",
+                                display: "inline-block",
+                                padding: "0 10px",
+                                backgroundColor: "#F95454",
+                                color: "#fff",
+                              }}
+                            >
+                              Đã hủy
+                            </div>
+                          )}
+                        </p>
+                      </Card>
+                    ))}
+                    {listRequestData?.listDonTangCa.map((item, index) => (
+                      <Card
+                        bodyStyle={{ padding: "0 10px" }}
+                        key={index + 2000}
+                        size="small"
+                      >
+                        <p
+                          style={{
+                            width: "100%",
+                            margin: "0",
+                            fontWeight: "bold",
+                            color: "#b98868",
+                          }}
+                        >
+                          Đơn tăng ca
+                        </p>
+                        <p
+                          style={{
+                            width: "100%",
+                            margin: "0",
+                            color: "#b98868",
+                          }}
+                        >
+                          Ngày tạo:{" "}
+                          {dayjs(item.ngayTaoDon).format("DD/MM/YYYY")}
+                        </p>
+                        <p
+                          style={{
+                            width: "100%",
+                            margin: "0",
+                            color: "#b98868",
+                          }}
+                        >
+                          Trạng thái:{"   "}
+                          {item.trangThai === "0" ? (
+                            <div
+                              style={{
+                                border: "1px solid rgb(185, 136, 104)",
+                                borderRadius: "10px",
+                                width: "80px",
+                                textAlign: "center",
+                                display: "inline-block",
+                                padding: "0 10px",
+                              }}
+                            >
+                              Chờ duyệt
+                            </div>
+                          ) : item.trangThai === "1" ? (
+                            <div
+                              style={{
+                                border: "1px solid rgb(185, 136, 104)",
+                                borderRadius: "10px",
+                                width: "80px",
+                                textAlign: "center",
+                                display: "inline-block",
+                                padding: "0 10px",
+                                backgroundColor: "#31CD23",
+                                color: "#fff",
+                              }}
+                            >
+                              Đã duyệt
+                            </div>
+                          ) : (
+                            <div
+                              style={{
+                                border: "1px solid rgb(185, 136, 104)",
+                                borderRadius: "10px",
+                                width: "80px",
+                                textAlign: "center",
+                                display: "inline-block",
+                                padding: "0 10px",
+                                backgroundColor: "#F95454",
+                                color: "#fff",
+                              }}
+                            >
+                              Đã hủy
+                            </div>
+                          )}
+                        </p>
+                      </Card>
+                    ))}
+                    {listRequestData?.listDonPhep.map((item, index) => (
+                      <Card
+                        bodyStyle={{ padding: "0 10px" }}
+                        key={index + 3000}
+                        size="small"
+                      >
+                        <p
+                          style={{
+                            width: "100%",
+                            margin: "0",
+                            fontWeight: "bold",
+                            color: "#b98868",
+                          }}
+                        >
+                          Đơn phép
+                        </p>
+                        <p
+                          style={{
+                            width: "100%",
+                            margin: "0",
+                            color: "#b98868",
+                          }}
+                        >
+                          Ngày tạo:{" "}
+                          {dayjs(item.ngayTaoDon).format("DD/MM/YYYY")}
+                        </p>
+                        <p
+                          style={{
+                            width: "100%",
+                            margin: "0",
+                            color: "#b98868",
+                          }}
+                        >
+                          Trạng thái:{"   "}
+                          {item.trangThai === "0" ? (
+                            <div
+                              style={{
+                                border: "1px solid rgb(185, 136, 104)",
+                                borderRadius: "10px",
+                                width: "80px",
+                                textAlign: "center",
+                                display: "inline-block",
+                                padding: "0 10px",
+                              }}
+                            >
+                              Chờ duyệt
+                            </div>
+                          ) : item.trangThai === "1" ? (
+                            <div
+                              style={{
+                                border: "1px solid rgb(185, 136, 104)",
+                                borderRadius: "10px",
+                                width: "80px",
+                                textAlign: "center",
+                                display: "inline-block",
+                                padding: "0 10px",
+                                backgroundColor: "#31CD23",
+                                color: "#fff",
+                              }}
+                            >
+                              Đã duyệt
+                            </div>
+                          ) : (
+                            <div
+                              style={{
+                                border: "1px solid rgb(185, 136, 104)",
+                                borderRadius: "10px",
+                                width: "80px",
+                                textAlign: "center",
+                                display: "inline-block",
+                                padding: "0 10px",
+                                backgroundColor: "#F95454",
+                                color: "#fff",
+                              }}
+                            >
+                              Đã hủy
+                            </div>
+                          )}
+                        </p>
+                      </Card>
+                    ))}
+                  </Space>
+                  <Row justify={"center"} style={{ height: "70px" }}>
+                    <Space
+                      style={{
+                        position: "fixed",
+                        bottom: "25px",
+                      }}
+                    >
+                      <Button
+                        onClick={() => {
+                          setCreateRequestShow(true);
+                        }}
+                        type="primary"
+                      >
+                        Tạo đơn
+                      </Button>
+                      <Button onClick={close}>Thoát</Button>
+                    </Space>
+                  </Row>
+                </>
+              ),
+            },
+            {
+              label: "Giải trình",
+              key: "4",
+              children: (
+                <>
+                  <Space
+                    direction="vertical"
+                    className="request-list"
+                    size="middle"
+                    style={{
+                      display: "flex",
+                      paddingLeft: "1rem",
+                      paddingRight: "1rem",
+                      paddingBottom: "1rem",
+                    }}
+                  >
+                    <h2 style={{ textAlign: "center", color: "#b98868" }}>
+                      Danh sách giải trình
+                    </h2>
+                    {listExplanationData?.map((item, index) => (
+                      <Card
+                        bodyStyle={{ padding: "0 10px" }}
+                        key={index}
+                        size="small"
+                      >
+                        <p
+                          style={{
+                            width: "100%",
+                            margin: "0",
+                            fontWeight: "bold",
+                            color: "#b98868",
+                          }}
+                        >
+                          Giải trình {item.loaiGiaiTrinh.toLowerCase()}
+                        </p>
+                        <p
+                          style={{
+                            width: "100%",
+                            margin: "0",
+                            color: "#b98868",
+                          }}
+                        >
+                          Ngày tạo:{" "}
+                          {dayjs(item.ngayTaoGiaiTrinh).format("DD/MM/YYYY")}
+                        </p>
+                        <p
+                          style={{
+                            width: "100%",
+                            margin: "0",
+                            color: "#b98868",
+                          }}
+                        >
+                          Trạng thái:{"   "}
+                          {item.trangThai === "0" ? (
+                            <div
+                              style={{
+                                border: "1px solid rgb(185, 136, 104)",
+                                borderRadius: "10px",
+                                width: "80px",
+                                textAlign: "center",
+                                display: "inline-block",
+                                padding: "0 10px",
+                              }}
+                            >
+                              Chờ duyệt
+                            </div>
+                          ) : item.trangThai === "1" ? (
+                            <div
+                              style={{
+                                border: "1px solid rgb(185, 136, 104)",
+                                borderRadius: "10px",
+                                width: "80px",
+                                textAlign: "center",
+                                display: "inline-block",
+                                padding: "0 10px",
+                                backgroundColor: "#31CD23",
+                                color: "#fff",
+                              }}
+                            >
+                              Đã duyệt
+                            </div>
+                          ) : (
+                            <div
+                              style={{
+                                border: "1px solid rgb(185, 136, 104)",
+                                borderRadius: "10px",
+                                width: "80px",
+                                textAlign: "center",
+                                display: "inline-block",
+                                padding: "0 10px",
+                                backgroundColor: "#F95454",
+                                color: "#fff",
+                              }}
+                            >
+                              Đã hủy
+                            </div>
+                          )}
+                        </p>
+                      </Card>
+                    ))}
+                  </Space>
+                  <Row justify={"center"} style={{ height: "70px" }}>
+                    <Space
+                      style={{
+                        position: "fixed",
+                        bottom: "25px",
+                      }}
+                    >
+                      <Button
+                        onClick={() => {
+                          setCreateRequestShow(true);
+                        }}
+                        type="primary"
+                      >
+                        Tạo giải trình
+                      </Button>
+                      <Button onClick={close}>Thoát</Button>
+                    </Space>
+                  </Row>
+                </>
+              ),
+            },
+          ]}
+        />
+      </Drawer>
+      <Modal
+        className="manage-request-drawer"
+        closable={false}
+        centered
+        footer={
+          <>
+            <Button
+              type="primary"
+              onClick={() => {
+                form.submit();
+              }}
+            >
+              {" "}
+              Tạo đơn{" "}
+            </Button>
+            <Button
+              onClick={() => {
+                setCreateRequestShow(false);
+                form.resetFields();
+                setRequestType(0);
+              }}
+            >
+              {" "}
+              Thoát{" "}
+            </Button>
+          </>
+        }
+        open={createRequestShow}
+        width={500}
+      >
+        <Form
+          className="view-request"
+          form={form}
+          name="viewApplication"
+          onFinish={onFinish}
+        >
+          <Space direction="vertical" style={{ width: "100%" }}>
+            <Space style={{ display: "flex", justifyContent: "center" }}>
+              <h3 style={{ color: "#b98868" }}>Đơn nhân viên</h3>
+            </Space>
+            <Space
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#996B4D",
+                padding: "0 16px",
+              }}
+            >
+              <b>Thông tin chi tiết nhân viên</b>
+            </Space>
+            <Space
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#996B4D",
+                padding: "0 16px",
+              }}
+            >
+              <span>Họ tên nhân viên: {data?.hoTen} </span>
+              <span>Ngày tạo: {dayjs(new Date()).format("DD/MM/YYYY")}</span>
+            </Space>
+            <Space
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#996B4D",
+                padding: "0 16px",
+              }}
+            >
+              <span>Mã nhân viên: {data?.maNhanVien} </span>
+              <span>
+                Ngày làm việc: {dayjs(currentDate).format("DD/MM/YYYY")}
+              </span>
+            </Space>
+            <Space
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#996B4D",
+                padding: "0 16px",
+              }}
+            >
+              <span>Phòng ban: {data?.phongBan} </span>
+            </Space>
+            <Space
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#996B4D",
+                padding: "0 16px",
+              }}
+            >
+              <span>
+                Chức vụ:{" "}
+                {
+                  employeeData?.find((e) => e.maNhanVien === data?.maNhanVien)
+                    ?.chucVu
+                }{" "}
+              </span>
+            </Space>
+          </Space>
+        </Form>
+      </Modal>
+    </>
   );
 };
 

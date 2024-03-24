@@ -1,8 +1,10 @@
-export interface DonPhepResponse{
-    id:number,
-    code: string,
-    name: string,
-    url: string,
-    status: number,
-    description: string
+export interface DonPhepResponse {
+  maDonPhep: number;
+  loaiDon: number;
+  ngayTaoDon: Date;
+  ngayLamViec: Date;
+  lyDo: string;
+  nguoiDuyet: string;
+  trangThai: string;
+  maNhanVien: string;
 }

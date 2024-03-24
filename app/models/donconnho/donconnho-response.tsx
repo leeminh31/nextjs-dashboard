@@ -1,8 +1,11 @@
-export interface DonConNhoResponse{
-    id:number,
-    code: string,
-    name: string,
-    url: string,
-    status: number,
-    description: string
+export interface DonConNhoResponse {
+  maDonConNho: number;
+  loaiDon: number;
+  ngayTaoDon: Date;
+  tuNgay: Date;
+  denNgay: Date;
+  lyDo: string;
+  nguoiDuyet: string;
+  trangThai: string;
+  maNhanVien: string;
 }

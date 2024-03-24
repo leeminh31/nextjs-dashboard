@@ -1,16 +1,14 @@
-'use client'
+"use client";
 
-import ManageExplanationsForm from "./manage-explanations-form"
-import ManageExplanationsTable from "./manage-explanations-table"
+import ManageExplanationsTable from "./manage-explanations-table";
 
 const ManageExplanations = () => {
+  return (
+    <>
+      {/* <ManageExplanationsForm /> */}
+      <ManageExplanationsTable />
+    </>
+  );
+};
 
-    return (
-        <>
-            <ManageExplanationsForm />
-            <ManageExplanationsTable />
-        </>
-    )
-}
-
-export default ManageExplanations
+export default ManageExplanations;

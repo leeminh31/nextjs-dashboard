@@ -1,8 +1,12 @@
-export interface DonTangCaResponse{
-    id:number,
-    code: string,
-    name: string,
-    url: string,
-    status: number,
-    description: string
+export interface DonTangCaResponse {
+  maDonTangCa: number;
+  loaiDon: number;
+  ngayTaoDon: Date;
+  ngayLamViec: Date;
+  tangCaTu: string;
+  tangCaDen: string;
+  lyDo: string;
+  nguoiDuyet: string;
+  trangThai: string;
+  maNhanVien: string;
 }

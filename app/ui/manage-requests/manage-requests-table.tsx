@@ -1,211 +1,412 @@
-'use client'
+"use client";
 
-import React, {useState} from 'react';
-import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, theme, Flex, Tag, DatePicker, Radio } from 'antd';
-import type { RadioChangeEvent } from 'antd';
+import DanhSachDonApi from "@/app/api/danhsachdon";
+import NhanVienApi from "@/app/api/nhanvien";
+import PhongBanApi from "@/app/api/phongban";
+import { DanhSachDonResponse } from "@/app/models/danhsachdon/danhsachdon-response";
+import { SearchDanhSachDonRequest } from "@/app/models/danhsachdon/search-danhsachdon-request";
+import { NhanVienResponse } from "@/app/models/nhanvien/nhanvien-response";
+import { SearchNhanVienRequest } from "@/app/models/nhanvien/search-nhanvien-request";
+import { PhongBanResponse } from "@/app/models/phongban/phongban-response";
+import { SearchPhongBanRequest } from "@/app/models/phongban/search-phongban-request";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  EditTwoTone,
-  EyeTwoTone,
-  HistoryOutlined,
-  ExportOutlined,
-  UploadOutlined,
-  DownloadOutlined,
-} from '@ant-design/icons';
-import type { ColumnsType } from 'antd/es/table';
-import type { TableRowSelection } from 'antd/es/table/interface';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faClockRotateLeft,faArrowUpRightFromSquare, faPencil, faEye } from '@fortawesome/free-solid-svg-icons'
+  Button,
+  Col,
+  DatePicker,
+  Flex,
+  Form,
+  Input,
+  message,
+  Row,
+  Select,
+  Table,
+  theme,
+} from "antd";
+import type { ColumnsType } from "antd/es/table";
+import { TableRowSelection } from "antd/es/table/interface";
+import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
+import ViewManageRequest from "./view-manage-requests";
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
-interface DataType {
-  key: string;
-  employee: string;
-  employeeId: string;
-  contract:string;
-  department:string;
-  role:string;
-  signDate: Date;
-  startDate: Date;
-  endDate: Date;
-  contractType: string;
-  status: string;
-}
+const ManageRequestsTable: React.FC = () => {
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+  const [messageApi, contextHolder] = message.useMessage();
+  const [viewOpen, setViewOpen] = useState(false);
+  const [form] = Form.useForm();
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [selectedRows, setSelectedRow] = useState<DataType[]>([]);
+  const [employeeData, setEmployeeData] = useState<NhanVienResponse[]>([]);
+  const [rowData, setRowData] = useState<DataType>();
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [data, setData] = useState<DanhSachDonResponse>();
+  const [departmentData, setDepartmentData] = useState<PhongBanResponse[]>([]);
+  const { token } = theme.useToken();
 
-const data: DataType[] = [
-  {
-    key: '1',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '2',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '3',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Nghỉ việc'
-  },
-  {
-    key: '4',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Nghỉ việc'
-  },
-  {
-    key: '5',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '6',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '7',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '8',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '9',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '10',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '11',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '12',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '13',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-];
+  interface DataType {
+    key: React.Key;
+    maDon: number;
+    hoTen: string;
+    phongBan: string;
+    ngayLamViec: string;
+    ngayTaoDon: string;
+    loaiDon: number;
+    nguoiDuyet: string;
+    trangThai: string;
+    chucVu: string;
+    lyDo: string;
+    maNhanVien: string;
+    soPhutXinBu: number;
+    tuNgay: string;
+    denNgay: string;
+    tangCaTu: string;
+    tangCaDen: string;
+  }
 
-const rowSelection: TableRowSelection<DataType> = {
+  const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
+    let response = await NhanVienApi.getNhanVien(searchRequest);
+    if (response.statusCode === "200" || response.statusCode === "545") {
+      setEmployeeData(response.data);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  const getDepartmentsByParams = async (
+    searchRequest: SearchPhongBanRequest,
+  ) => {
+    let response = await PhongBanApi.getPhongBan(searchRequest);
+    if (response?.statusCode === "200") {
+      setDepartmentData(response?.data);
+    } else if (response?.statusCode === "545") {
+      setDepartmentData([]);
+    } else {
+      console.log(response?.message);
+    }
+  };
+
+  const getListRequestByParams = async (
+    searchRequest: SearchDanhSachDonRequest,
+  ) => {
+    let response = await DanhSachDonApi.getDanhSachDon(searchRequest);
+    if (response?.statusCode === "200") {
+      setData(response?.data);
+      setTotalRecords(response?.data?.length);
+    } else if (response?.statusCode === "545") {
+      setData(undefined);
+      setTotalRecords(0);
+    } else {
+      console.log(response?.message);
+    }
+  };
+
+  const onApprove = async () => {
+    if (!selectedRowKeys.length) {
+      messageApi.open({
+        type: "error",
+        content: "Vui lòng chọn ít nhất một đơn yêu cầu!",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
+
+      return;
+    }
+
+    const listDonBu = selectedRows
+      .filter((row) => row.loaiDon === 1)
+      .map((row) => row.maDon)
+      .join(",");
+
+    const listDonConNho = selectedRows
+      .filter((row) => row.loaiDon === 2)
+      .map((row) => row.maDon)
+      .join(",");
+
+    const listDonPhep = selectedRows
+      .filter((row) => row.loaiDon === 3)
+      .map((row) => row.maDon)
+      .join(",");
+
+    const listDonTangCa = selectedRows
+      .filter((row) => row.loaiDon === 4)
+      .map((row) => row.maDon)
+      .join(",");
+
+    let response = await DanhSachDonApi.approveRequest({
+      maDonBu: listDonBu,
+      maDonPhep: listDonPhep,
+      maDonTangCa: listDonTangCa,
+      maDonConNho: listDonConNho,
+    });
+    if (response?.statusCode === "200") {
+      getListRequestByParams({
+        tenNhanVien: null,
+        loaiDon: null,
+        ngayLamViecBatDau: null,
+        ngayLamViecKetThuc: null,
+        ngayTaoBatDau: null,
+        ngayTaoKetThuc: null,
+        trangThai: null,
+      });
+      messageApi.open({
+        type: "success",
+        content: "Duyệt đơn thành công!",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
+      setSelectedRow([]);
+      setSelectedRowKeys([]);
+      return;
+    } else {
+      console.log(response?.message);
+    }
+  };
+
+  const onReject = async () => {
+    if (!selectedRowKeys.length) {
+      messageApi.open({
+        type: "error",
+        content: "Vui lòng chọn ít nhất một đơn yêu cầu!",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
+
+      return;
+    }
+
+    const listDonBu = selectedRows
+      .filter((row) => row.loaiDon === 1)
+      .map((row) => row.maDon)
+      .join(",");
+
+    const listDonConNho = selectedRows
+      .filter((row) => row.loaiDon === 2)
+      .map((row) => row.maDon)
+      .join(",");
+
+    const listDonPhep = selectedRows
+      .filter((row) => row.loaiDon === 3)
+      .map((row) => row.maDon)
+      .join(",");
+
+    const listDonTangCa = selectedRows
+      .filter((row) => row.loaiDon === 4)
+      .map((row) => row.maDon)
+      .join(",");
+
+    let response = await DanhSachDonApi.rejectRequest({
+      maDonBu: listDonBu,
+      maDonPhep: listDonPhep,
+      maDonTangCa: listDonTangCa,
+      maDonConNho: listDonConNho,
+    });
+    if (response?.statusCode === "200") {
+      getListRequestByParams({
+        tenNhanVien: null,
+        loaiDon: null,
+        ngayLamViecBatDau: null,
+        ngayLamViecKetThuc: null,
+        ngayTaoBatDau: null,
+        ngayTaoKetThuc: null,
+        trangThai: null,
+      });
+      messageApi.open({
+        type: "success",
+        content: "Hủy đơn thành công!",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
+      setSelectedRow([]);
+      setSelectedRowKeys([]);
+      return;
+    } else {
+      console.log(response?.message);
+    }
+  };
+
+  const refresh = () => {
+    getEmployeeByParams({
+      hoTen: null,
+      maNhanVien: null,
+      idVanTay: null,
+      maPhongBan: null,
+      chucVu: null,
+    });
+
+    getDepartmentsByParams({
+      tenPhongBan: null,
+      thuKyPhongBan: null,
+      truongPhongBan: null,
+    });
+
+    getListRequestByParams({
+      tenNhanVien: null,
+      loaiDon: null,
+      ngayLamViecBatDau: null,
+      ngayLamViecKetThuc: null,
+      ngayTaoBatDau: null,
+      ngayTaoKetThuc: null,
+      trangThai: null,
+    });
+  };
+
+  let tableData: DataType[] = [];
+  if (data) {
+    data.listDonBu?.map((donbu, index) => {
+      const nhanVien = employeeData?.find(
+        (e) => e.maNhanVien === donbu.maNhanVien,
+      )!;
+
+      tableData.push({
+        key: index,
+        hoTen: nhanVien?.hoTen,
+        phongBan: departmentData?.find(
+          (d) => d.maPhongBan === nhanVien.maPhongBan,
+        )?.tenPhongBan!,
+        ngayLamViec: dayjs(donbu.ngayLamViec).format("DD/MM/YYYY"),
+        ngayTaoDon: dayjs(donbu.ngayTaoDon).format("DD/MM/YYYY"),
+        loaiDon: donbu.loaiDon,
+        nguoiDuyet: donbu.nguoiDuyet,
+        trangThai: donbu.trangThai,
+        lyDo: donbu.lyDo,
+        maNhanVien: donbu.maNhanVien,
+        soPhutXinBu: donbu.soPhutXinBu,
+        tuNgay: "",
+        denNgay: "",
+        tangCaTu: "",
+        tangCaDen: "",
+        chucVu: employeeData?.find((e) => e.maNhanVien === donbu.maNhanVien)!
+          .chucVu,
+        maDon: donbu.maDonBu,
+      });
+    });
+
+    data.listDonPhep?.map((donphep, index) => {
+      const nhanVien = employeeData?.find(
+        (e) => e.maNhanVien === donphep.maNhanVien,
+      )!;
+
+      tableData.push({
+        key: index + 1000,
+        hoTen: nhanVien.hoTen,
+        phongBan: departmentData?.find(
+          (d) => d.maPhongBan === nhanVien.maPhongBan,
+        )?.tenPhongBan!,
+        ngayLamViec: dayjs(donphep.ngayLamViec).format("DD/MM/YYYY"),
+        ngayTaoDon: dayjs(donphep.ngayTaoDon).format("DD/MM/YYYY"),
+        loaiDon: donphep.loaiDon,
+        nguoiDuyet: donphep.nguoiDuyet,
+        trangThai: donphep.trangThai,
+        lyDo: donphep.lyDo,
+        maNhanVien: donphep.maNhanVien,
+        soPhutXinBu: 0,
+        tuNgay: "",
+        denNgay: "",
+        tangCaTu: "",
+        tangCaDen: "",
+        chucVu: employeeData?.find((e) => e.maNhanVien === donphep.maNhanVien)!
+          .chucVu!,
+        maDon: donphep.maDonPhep,
+      });
+    });
+
+    data.listDonTangCa?.map((dontangca, index) => {
+      const nhanVien = employeeData?.find(
+        (e) => e.maNhanVien === dontangca.maNhanVien,
+      )!;
+
+      tableData.push({
+        key: index + 2000,
+        hoTen: nhanVien.hoTen,
+        phongBan: departmentData?.find(
+          (d) => d.maPhongBan === nhanVien.maPhongBan,
+        )?.tenPhongBan!,
+        ngayLamViec: dayjs(dontangca.ngayLamViec).format("DD/MM/YYYY"),
+        ngayTaoDon: dayjs(dontangca.ngayTaoDon).format("DD/MM/YYYY"),
+        loaiDon: dontangca.loaiDon,
+        nguoiDuyet: dontangca.nguoiDuyet,
+        trangThai: dontangca.trangThai,
+        lyDo: dontangca.lyDo,
+        maNhanVien: dontangca.maNhanVien,
+        soPhutXinBu: 0,
+        tuNgay: "",
+        denNgay: "",
+        tangCaTu: dontangca.tangCaTu,
+        tangCaDen: dontangca.tangCaDen,
+        chucVu: employeeData?.find(
+          (e) => e.maNhanVien === dontangca.maNhanVien,
+        )!.chucVu!,
+        maDon: dontangca.maDonTangCa,
+      });
+    });
+
+    data.listDonConNho?.map((donconnho, index) => {
+      const nhanVien = employeeData?.find(
+        (e) => e.maNhanVien === donconnho.maNhanVien,
+      )!;
+
+      tableData.push({
+        key: index + 3000,
+        hoTen: nhanVien.hoTen,
+        phongBan: departmentData?.find(
+          (d) => d.maPhongBan === nhanVien.maPhongBan,
+        )?.tenPhongBan!,
+        ngayLamViec: "",
+        ngayTaoDon: dayjs(donconnho.ngayTaoDon).format("DD/MM/YYYY"),
+        loaiDon: donconnho.loaiDon,
+        nguoiDuyet: donconnho.nguoiDuyet,
+        trangThai: donconnho.trangThai,
+        lyDo: donconnho.lyDo,
+        maNhanVien: donconnho.maNhanVien,
+        soPhutXinBu: 0,
+        tuNgay: dayjs(donconnho.tuNgay).format("DD/MM/YYYY"),
+        denNgay: dayjs(donconnho.denNgay).format("DD/MM/YYYY"),
+        tangCaTu: "",
+        tangCaDen: "",
+        chucVu: employeeData?.find(
+          (e) => e.maNhanVien === donconnho.maNhanVien,
+        )!.chucVu!,
+        maDon: donconnho.maDonConNho,
+      });
+    });
+  } else {
+    tableData = [];
+  }
+
+  const formStyle: React.CSSProperties = {
+    maxWidth: "none",
+    background: token.colorBgContainer,
+    padding: "24px",
+  };
+
+  const rowSelection: TableRowSelection<DataType> = {
     onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      console.log(
+        `selectedRowKeys: ${selectedRowKeys}`,
+        "selectedRows: ",
+        selectedRows,
+      );
+      setSelectedRow(selectedRows);
+      setSelectedRowKeys(selectedRowKeys);
     },
     onSelect: (record, selected, selectedRows) => {
       console.log(record, selected, selectedRows);
@@ -213,480 +414,290 @@ const rowSelection: TableRowSelection<DataType> = {
     onSelectAll: (selected, selectedRows, changeRows) => {
       console.log(selected, selectedRows, changeRows);
     },
+    getCheckboxProps: (record) => ({
+      disabled: record.trangThai !== "0",
+    }),
   };
 
-const ManageRequestsTable: React.FC = () => {
-    const {
-        token: { colorBgContainer, borderRadiusLG },
-    } = theme.useToken();
-    const [importOpen, setImportOpen] = useState(false);
-    const [addOpen, setAddOpen] = useState(false);
-    const [updateOpen, setUpdateOpen] = useState(false);
-    const [viewOpen, setViewOpen] = useState(false);
-    const [form] = Form.useForm();
-    const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
-    const [value, setValue] = useState(false)
+  const handleView = (record: DataType) => {
+    setRowData(record);
+    setViewOpen(true);
+  };
 
-    const columns: ColumnsType<DataType> = [
-      {
-          title: '#',
-          dataIndex: 'key',
-          key: 'key',
-          width:50
+  const columns: ColumnsType<DataType> = [
+    {
+      title: "STT",
+      dataIndex: "STT",
+      key: "STT",
+      width: 50,
+      render: (value, record, index) => {
+        return <>{(page - 1) * pageSize + index + 1}</>;
       },
-      {
-          title: 'Trạng thái',
-          dataIndex: 'status',
-          key: 'status',
+    },
+    {
+      title: "Họ tên",
+      dataIndex: "hoTen",
+      key: "hoTen",
+    },
+    {
+      title: "Phòng ban",
+      dataIndex: "phongBan",
+      key: "phongBan",
+    },
+    {
+      title: "Ngày làm việc",
+      dataIndex: "ngayLamViec",
+      key: "ngayLamViec",
+    },
+    {
+      title: "Ngày tạo",
+      dataIndex: "ngayTaoDon",
+      key: "ngayTaoDon",
+    },
+    {
+      title: "Loại đơn",
+      key: "loaiDon",
+      dataIndex: "loaiDon",
+      render: (value, record, index) => {
+        return (
+          <>
+            {record.trangThai === "0"
+              ? "Chờ duyệt"
+              : record.trangThai === "1"
+                ? "Đã duyệt"
+                : "Đã hủy"}
+          </>
+        );
       },
-      {
-        title: 'Họ và tên',
-        dataIndex: 'fullname',
-        key: 'fullname',
+    },
+    {
+      title: "Người duyệt",
+      key: "nguoiDuyet",
+      dataIndex: "nguoiDuyet",
+    },
+    {
+      title: "Trạng thái",
+      key: "trangThai",
+      dataIndex: "trangThai",
+      render: (value, record, index) => {
+        return (
+          <>
+            {record.loaiDon === 1
+              ? "Đơn bù"
+              : record.loaiDon === 2
+                ? "Đơn con nhỏ"
+                : record.loaiDon === 3
+                  ? "Đơn phép"
+                  : "Đơn tăng ca"}
+          </>
+        );
       },
-      {
-          title: 'Mã nhân viên',
-          dataIndex: 'employeeId',
-          key: 'employeeId',
-      },
-      {
-          title: 'Công ty',
-          dataIndex: 'company',
-          key: 'company',
-      },
-      {
-          title: 'Phòng ban',
-          key: 'department',
-          dataIndex: 'department',
-      },
-      {
-          title: 'Chức vụ',
-          key: 'role',
-          dataIndex: 'role',
-      },
-      {
-          title: 'Loại đơn',
-          key: 'applicationType',
-          dataIndex: 'applicationType',
-      },
-      {
-          title: 'Vì lý do',
-          key: 'reason',
-          dataIndex: 'reason',
-      },
-      {
-          title: 'Từ ngày',
-          key: 'fromDate',
-          dataIndex: 'fromDate',
-      },
-      {
-          title: 'Đến ngày',
-          key: 'toDate',
-          dataIndex: 'toDate',
-      },
-      {
-        title: 'Số phút',
-        key: 'minutes',
-        dataIndex: 'minutes',
-      },
-      {
-        title: 'Số phút cũ',
-        key: 'oldMinutes',
-        dataIndex: 'oldMinutes',
-      },
-      {
-        title: 'Người duyệt',
-        key: 'approvedBy',
-        dataIndex: 'approvedBy',
-      },
-      {
-        title: 'HCNS duyệt',
-        key: 'HcnsApproved',
-        dataIndex: 'HcnsApproved',
-      },
-      {
-        title: 'Ngày duyệt',
-        key: 'approvedDate',
-        dataIndex: 'approvedDate',
-      },
-      {
-          title: 'Hoạt động',
-          key: 'action',
-          fixed:'right',
-          width:150,
-          align: 'center' as 'center',
-          render: () => (
-            <>
-              <Button 
-              style={{backgroundColor:'transparent', color:'#6c8cad', border:'none'}}
-              onClick={() => setUpdateOpen(true)}
-              >
-                <FontAwesomeIcon icon={faPencil} />
-              </Button>
-              <Button 
-              style={{backgroundColor:'transparent', color:'#6c8cad', border:'none'}}
-              onClick={() => setViewOpen(true)}
-              >
-                <FontAwesomeIcon icon={faEye} />
-              </Button>
-            </>
-          ) 
-      },
+    },
+    {
+      title: "Hoạt động",
+      key: "action",
+      fixed: "right",
+      width: 75,
+      align: "center" as "center",
+      render: (value, record, index) => (
+        <>
+          <Button
+            style={{
+              backgroundColor: "transparent",
+              color: "#6c8cad",
+              border: "none",
+            }}
+            onClick={() => handleView(record)}
+          >
+            <FontAwesomeIcon icon={faEye} />
+          </Button>
+        </>
+      ),
+    },
   ];
 
-    const closeAddDrawer = () => {
-      setAddOpen(false)
-      form.resetFields()
-    }
-  
-    const closeUpdateDrawer = () => {
-      setUpdateOpen(false)
-      form.resetFields()
-    }
+  const onFinish = (values: any) => {
+    console.log("Received values of form: ", values);
 
-    const onChange = (e: RadioChangeEvent) => {
-      console.log('radio checked', e.target.value);
-      setValue(e.target.value);
+    console.log(values.ngayLamViec);
+    console.log(values.ngayTaoDon);
+
+    const requestData: SearchDanhSachDonRequest = {
+      tenNhanVien: values.tenNhanVien,
+      loaiDon: values.loaiDon,
+      ngayLamViecBatDau: null,
+      ngayLamViecKetThuc: null,
+      ngayTaoBatDau: null,
+      ngayTaoKetThuc: null,
+      trangThai: values.trangThai,
     };
 
-    const onFinish = (values: any) => {
-      console.log('Received values of form: ', values);
-    };
+    if (values.ngayLamViec) {
+      requestData.ngayLamViecBatDau = values.ngayLamViec[0];
+      requestData.ngayLamViecKetThuc = values.ngayLamViec[1];
+    }
 
-    return (
-      <>  
-        <div style={{paddingLeft:"24px",paddingRight:"24px", backgroundColor:colorBgContainer, marginTop:"20px"}}>
-            <Flex justify='space-between' align='center' style={{height:"50px", borderBottom:"1px solid #bbbfc1", marginBottom:"10px"}}>
-                <span><b>Danh sách đơn yêu cầu</b></span>
-                <Row>
-                  <Button type="primary" style={{marginLeft:'12px'}}><ExportOutlined /></Button>
-                  <Button type="primary" style={{marginLeft:'12px'}}>Duyệt đơn</Button>
-                  <Button type="primary" style={{marginLeft:'12px'}}>Hủy đơn</Button>
-                  <Button type="primary" style={{marginLeft:'12px'}}>Xóa đơn</Button>
-                </Row>
-            </Flex>
-            <Table 
-                scroll={{ x: 2000, y:350}} 
-                rowSelection={rowSelection} 
-                columns={columns} 
-                dataSource={data}
-                pagination={{ showQuickJumper:true, total:50 ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}}  
-            />
-        </div>
-        <Drawer 
-            size='large' 
-            title="Sửa đơn" 
-            placement="right" 
-            onClose={closeUpdateDrawer} 
-            open={updateOpen} 
-            footer= {
-                <Row justify={'end'}>
-                    <Space>
-                        <Button onClick={() => setUpdateOpen(false)}>Hủy</Button>
-                        <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-                    </Space>
-                </Row>
-            }
+    if (values.ngayTaoDon) {
+      requestData.ngayTaoBatDau = values.ngayTaoDon[0];
+      requestData.ngayTaoKetThuc = values.ngayTaoDon[1];
+    }
+
+    getListRequestByParams(requestData);
+  };
+
+  useEffect(() => {
+    refresh();
+  }, []);
+
+  return (
+    <>
+      <Form
+        form={form}
+        onFinish={onFinish}
+        style={formStyle}
+        name="advanced_search"
+      >
+        {contextHolder}
+        <Row gutter={24}>
+          <Col span={8}>
+            <Form.Item
+              label="Tên nhân viên:"
+              name="tenNhanVien"
+              labelCol={{ style: { width: 120, textAlign: "left" } }}
+            >
+              <Input
+                placeholder="Tên nhân viên"
+                style={{ borderRadius: "0px" }}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              label="Loại đơn"
+              name="loaiDon"
+              labelCol={{ style: { width: 120, textAlign: "left" } }}
+            >
+              <Select placeholder="Vui lòng chọn">
+                <Option value="1">Đơn bù</Option>
+                <Option value="2">Đơn con nhỏ</Option>
+                <Option value="3">Đơn phép</Option>
+                <Option value="4">Đơn tăng ca</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              label="Ngày làm việc:"
+              name="ngayLamViec"
+              labelCol={{ style: { width: 120, textAlign: "left" } }}
+            >
+              <RangePicker
+                format={"DD/MM/YYYY"}
+                placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              label="Ngày tạo:"
+              name="ngayTaoDon"
+              labelCol={{ style: { width: 120, textAlign: "left" } }}
+            >
+              <RangePicker
+                format={"DD/MM/YYYY"}
+                placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              label="Trạng thái đơn"
+              name="trangThai"
+              labelCol={{ style: { width: 120, textAlign: "left" } }}
+            >
+              <Select placeholder="Vui lòng chọn">
+                <Option value="0">Chờ duyệt</Option>
+                <Option value="1">Đã duyệt</Option>
+                <Option value="2">Đã hủy</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row justify="end">
+          <Button type="primary" htmlType="submit">
+            Tìm kiếm
+          </Button>
+          <Button onClick={() => form.resetFields()}>Tạo lại</Button>
+        </Row>
+      </Form>
+      <div
+        style={{
+          paddingLeft: "24px",
+          paddingRight: "24px",
+          backgroundColor: colorBgContainer,
+          marginTop: "20px",
+        }}
+      >
+        <Flex
+          justify="space-between"
+          align="center"
+          style={{
+            height: "50px",
+            borderBottom: "1px solid #bbbfc1",
+            marginBottom: "10px",
+          }}
         >
-            <Form form={form} name="updateApplication" onFinish={onFinish}>
-                <Row gutter={24}>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'approvedBy'}
-                        label={'Người duyệt'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng chọn!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'applicationType'}
-                        label={'Loại đơn'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng chọn!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'company'}
-                        label={'Công ty'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'reason'}
-                        label={'Vì lý do'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'reasonDescription'}
-                        label={'Lý do'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input/>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'minutes'}
-                        label={'Số phút'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input type={'number'}/>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'fromDate'}
-                        label={'Từ ngày'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <DatePicker />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'toDate'}
-                        label={'Đến ngày'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <DatePicker />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'workCoefficient'}
-                        label={'Hệ số công'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input type={'number'}/>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'coefficientsSalary'}
-                        label={'Hệ số lương'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input type={'number'}/>
-                        </Form.Item>
-                    </Col>
-                </Row>
-            </Form>
-        </Drawer>
-        <Drawer 
-            size='large' 
-            title="Thông tin chi tiết" 
-            placement="right" 
-            onClose={() => setViewOpen(false)} 
-            open={viewOpen} 
-            footer= {
-                <Row justify={'end'}>
-                    <Space>
-                        <Button onClick={() => setViewOpen(false)}>Hủy</Button>
-                        <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-                    </Space>
-                </Row>
-            }
-        >
-            <Form form={form} name="viewApplication" onFinish={onFinish}>
-                <Row gutter={24}>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'approvedBy'}
-                        label={'Người duyệt'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng chọn!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn" disabled>
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'applicationType'}
-                        label={'Loại đơn'}
-                        rules={[
-                            {
-                            required: true,
-                            message: 'Vui lòng chọn!',
-                            },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn" disabled>
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'company'}
-                        label={'Công ty'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn" disabled>
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'reason'}
-                        label={'Vì lý do'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn" disabled>
-                                <Option value="1">Bùi Thị Yên</Option>
-                                <Option value="2">Bùi Thị Yên</Option>
-                                <Option value="3">Bùi Thị Yên</Option>
-                                <Option value="4">Bùi Thị Yên</Option>
-                                <Option value="5">Bùi Thị Yên</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'reasonDescription'}
-                        label={'Lý do'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input disabled/>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'minutes'}
-                        label={'Số phút'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input type={'number'} disabled/>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'fromDate'}
-                        label={'Từ ngày'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <DatePicker disabled/>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'toDate'}
-                        label={'Đến ngày'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <DatePicker disabled/>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'workCoefficient'}
-                        label={'Hệ số công'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input type={'number'} disabled/>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name={'coefficientsSalary'}
-                        label={'Hệ số lương'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input type={'number'} disabled/>
-                        </Form.Item>
-                    </Col>
-                </Row>
-            </Form>
-        </Drawer>
-      </>
-    )
-}
+          <span>
+            <b>Danh sách đơn yêu cầu</b>
+          </span>
+          <Row>
+            <Button
+              onClick={() => onApprove()}
+              type="primary"
+              style={{ marginLeft: "12px" }}
+            >
+              Duyệt đơn
+            </Button>
+            <Button
+              onClick={() => onReject()}
+              type="primary"
+              style={{ marginLeft: "12px" }}
+            >
+              Hủy đơn
+            </Button>
+          </Row>
+        </Flex>
+        <Table
+          scroll={{ x: 1000, y: 350 }}
+          rowSelection={rowSelection}
+          columns={columns}
+          dataSource={tableData}
+          pagination={{
+            showQuickJumper: true,
+            total: totalRecords,
+            defaultPageSize: 10,
+            showSizeChanger: true,
+            pageSizeOptions: ["10", "20", "30"],
+            locale: {
+              jump_to: "Đến",
+              page: "Trang",
+              items_per_page: "/ trang",
+            },
+            onChange: (page, pageSize) => {
+              setPage(page);
+              setPageSize(pageSize);
+            },
+            showTotal: (total) => `Tổng ${total} bản ghi`,
+          }}
+        />
+      </div>
+      <ViewManageRequest
+        data={rowData}
+        show={viewOpen}
+        close={() => setViewOpen(false)}
+      />
+    </>
+  );
+};
 
 export default ManageRequestsTable;

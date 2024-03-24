@@ -1,13 +1,12 @@
-import ManageRequestsForm from "./manage-requests-form"
-import ManageRequestsTable from "./manage-requests-table"
+import ManageRequestsTable from "./manage-requests-table";
 
 const ManageRequests = () => {
-    return (
-        <>
-            <ManageRequestsForm />
-            <ManageRequestsTable />
-        </>
-    )
-}
+  return (
+    <>
+      {/* <ManageRequestsForm /> */}
+      <ManageRequestsTable />
+    </>
+  );
+};
 
-export default ManageRequests
+export default ManageRequests;

@@ -28,6 +28,30 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
+.manage-request-drawer .ant-form-item {
+  margin: 0 !important;
+}
+
+.request-list .ant-card-bordered {
+  border: 1px solid #bc846f !important;
+}
+
+.manage-request-drawer .ant-drawer-body {
+  padding: 0;
+}
+
+.manage-request-drawer .ant-select-single .ant-select-selector {
+  color: #b98868 !important;
+}
+
+.manage-request-drawer .ant-modal-footer {
+  text-align: center !important;
+}
+
+.manage-request-drawer .ant-picker:hover {
+  border-color: #b98868;
+}
+
 .monthly-report td.ant-table-cell:not(.ant-table-cell-fix-left) {
   padding: 0 !important;
 }
@@ -49,6 +73,14 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .monthly-drawer .ant-drawer-body {
   padding: 0px !important;
+}
+
+.view-request .ant-form-item .ant-form-item-label > label {
+  color: #b98868;
+}
+
+.view-request .ant-select-selector {
+  width: 180px !important;
 }
 
 .ant-tabs-tab {

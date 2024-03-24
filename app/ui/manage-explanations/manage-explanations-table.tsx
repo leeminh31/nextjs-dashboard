@@ -1,211 +1,120 @@
-'use client'
+"use client";
 
-import React, {useEffect, useState} from 'react';
-import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, theme, Flex, Tag, DatePicker, Radio, Skeleton } from 'antd';
-import type { RadioChangeEvent } from 'antd';
+import GiaiTrinhApi from "@/app/api/giaitrinh";
+import NhanVienApi from "@/app/api/nhanvien";
+import PhongBanApi from "@/app/api/phongban";
+import { SearchGiaiTrinhRequest } from "@/app/models/giaitrinh/search-giaitrinh-request";
+import { NhanVienResponse } from "@/app/models/nhanvien/nhanvien-response";
+import { SearchNhanVienRequest } from "@/app/models/nhanvien/search-nhanvien-request";
+import { PhongBanResponse } from "@/app/models/phongban/phongban-response";
+import { SearchPhongBanRequest } from "@/app/models/phongban/search-phongban-request";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  EditTwoTone,
-  EyeTwoTone,
-  HistoryOutlined,
-  ExportOutlined,
-  UploadOutlined,
-  DownloadOutlined,
-} from '@ant-design/icons';
-import type { ColumnsType } from 'antd/es/table';
-import type { TableRowSelection } from 'antd/es/table/interface';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faClockRotateLeft,faArrowUpRightFromSquare, faPencil, faEye } from '@fortawesome/free-solid-svg-icons'
+  Button,
+  Col,
+  DatePicker,
+  Flex,
+  Form,
+  Input,
+  message,
+  Row,
+  Select,
+  Table,
+  theme,
+} from "antd";
+import type { ColumnsType } from "antd/es/table";
+import type { TableRowSelection } from "antd/es/table/interface";
+import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
+import ViewManagExplanation from "./view-manage-explanation";
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 interface DataType {
-  key: string;
-  employee: string;
-  employeeId: string;
-  contract:string;
-  department:string;
-  role:string;
-  signDate: Date;
-  startDate: Date;
-  endDate: Date;
-  contractType: string;
-  status: string;
+  key: React.Key;
+  maGiaiTrinh: number;
+  hoTen: string;
+  phongBan: string;
+  ngayLamViec: string;
+  ngayTaoGiaiTrinh: string;
+  loaiGiaiTrinh: string;
+  nguoiDuyet: string;
+  trangThai: string;
+  chucVu: string;
+  lyDo: string;
+  maNhanVien: string;
 }
 
-const data: DataType[] = [
-  {
-    key: '1',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '2',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '3',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Nghỉ việc'
-  },
-  {
-    key: '4',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Nghỉ việc'
-  },
-  {
-    key: '5',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '6',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '7',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '8',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '9',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '10',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '11',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '12',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-  {
-    key: '13',
-    employee: 'Bùi Thị Yên',
-    employeeId: 'APG112233',
-    contract: 'APG112233',
-    department:'Develope',
-    role:'BA',
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: 'Thử việc',
-    status: 'Đang chạy'
-  },
-];
+const ManageExplanationsTable: React.FC = () => {
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+  const [messageApi, contextHolder] = message.useMessage();
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [viewOpen, setViewOpen] = useState(false);
+  const [rowData, setRowData] = useState<DataType>();
+  const [employeeData, setEmployeeData] = useState<NhanVienResponse[]>([]);
+  const [departmentData, setDepartmentData] = useState<PhongBanResponse[]>([]);
+  const [data, setData] = useState<DataType[]>([]);
+  const [selectedRows, setSelectedRows] = useState<DataType[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [form] = Form.useForm();
 
-const rowSelection: TableRowSelection<DataType> = {
+  const formStyle: React.CSSProperties = {
+    maxWidth: "none",
+    background: colorBgContainer,
+    padding: "24px",
+  };
+
+  const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
+    let response = await NhanVienApi.getNhanVien(searchRequest);
+    if (response.statusCode === "200" || response.statusCode === "545") {
+      setEmployeeData(response.data);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  const getDepartmentsByParams = async (
+    searchRequest: SearchPhongBanRequest,
+  ) => {
+    let response = await PhongBanApi.getPhongBan(searchRequest);
+    if (response?.statusCode === "200") {
+      setDepartmentData(response?.data);
+    } else if (response?.statusCode === "545") {
+      setDepartmentData([]);
+    } else {
+      console.log(response?.message);
+    }
+  };
+
+  const getListExplanationByParams = async (
+    searchRequest: SearchGiaiTrinhRequest,
+  ) => {
+    let response = await GiaiTrinhApi.getGiaiTrinh(searchRequest);
+    if (response?.statusCode === "200") {
+      setData(response?.data);
+      setTotalRecords(response?.data.length);
+    } else if (response?.statusCode === "545") {
+      setData([]);
+      setTotalRecords(0);
+    } else {
+      console.log(response?.message);
+    }
+  };
+
+  const handleView = (record: DataType) => {
+    setRowData(record);
+    setViewOpen(true);
+  };
+
+  const rowSelection: TableRowSelection<DataType> = {
     onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      setSelectedRows(selectedRows);
+      setSelectedRowKeys(selectedRowKeys);
     },
     onSelect: (record, selected, selectedRows) => {
       console.log(record, selected, selectedRows);
@@ -213,301 +122,420 @@ const rowSelection: TableRowSelection<DataType> = {
     onSelectAll: (selected, selectedRows, changeRows) => {
       console.log(selected, selectedRows, changeRows);
     },
+    getCheckboxProps: (record) => ({
+      disabled: record.trangThai !== "0",
+    }),
   };
 
-const ManageExplanationsTable: React.FC = () => {
-    const {
-        token: { colorBgContainer, borderRadiusLG },
-    } = theme.useToken();
-    const [importOpen, setImportOpen] = useState(false);
-    const [addOpen, setAddOpen] = useState(false);
-    const [updateOpen, setUpdateOpen] = useState(false);
-    const [viewOpen, setViewOpen] = useState(false);
-    const [loading, setLoading] = useState(true)
-    const [form] = Form.useForm();
-    const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
-    const [value, setValue] = useState(false)
-
-    const columns: ColumnsType<DataType> = [
-      {
-          title: '#',
-          dataIndex: 'key',
-          key: 'key',
-          width:50
+  const columns: ColumnsType<DataType> = [
+    {
+      title: "STT",
+      dataIndex: "STT",
+      key: "STT",
+      width: 50,
+      render: (value, record, index) => {
+        return <>{(page - 1) * pageSize + index + 1}</>;
       },
-      {
-          title: 'Mã nhân viên',
-          dataIndex: 'employeeId',
-          key: 'employeeId',
-      },
-      {
-          title: 'Họ và tên',
-          dataIndex: 'employeeName',
-          key: 'employeeName',
-      },
-      {
-        title: 'Vị trí',
-        key: 'position',
-        dataIndex: 'position',
-      },
-      {
-          title: 'Phòng ban',
-          key: 'department',
-          dataIndex: 'department',
-      },
-      
-      {
-          title: 'Ngày vi phạm',
-          key: 'dateOfViolation',
-          dataIndex: 'dateOfViolation',
-      },
-      {
-          title: 'Loại giải trình',
-          key: 'applicationType',
-          dataIndex: 'applicationType',
-      },
-      {
-          title: 'Shift from -To',
-          key: 'shift',
-          dataIndex: 'shift',
-          children: [
-            {
-              title: 'From',
-              dataIndex: 'fromHour',
-              key: 'fromHour',
-              width:100,
-            },
-            {
-              title: 'To',
-              dataIndex: 'toHour',
-              key: 'toHour',
-              width: 100,
-            },
-          ],
-      },
-      {
-          title: 'Ca gãy',
-          key: 'splitShift',
-          dataIndex: 'splitShift',
-      },
-      {
-        title: 'Chấm công thực tế',
-        key: 'realTimekeeping',
-        dataIndex: 'realTimekeeping',
-      },
-      {
-        title: 'Validation data',
-        key: 'validationData',
-        dataIndex: 'validationData',
-      },
-      {
-        title: 'Lý do',
-        key: 'reasonDescription',
-        dataIndex: 'reasonDescription',
-      },
-      {
-        title: 'Đã duyệt',
-        key: 'isApproved',
-        dataIndex: 'isApproved',
-      },
-      {
-        title: 'Người duyệt',
-        key: 'approvedBy',
-        dataIndex: 'approvedBy',
-      },
-      {
-        title: 'Ghi chú',
-        key: 'description',
-        dataIndex: 'description',
-      },
-      {
-        title: 'Hoạt động',
-        key: 'action',
-        fixed:'right',
-        width:150,
-        align: 'center' as 'center',
-        render: () => (
+    },
+    {
+      title: "Họ tên",
+      dataIndex: "hoTen",
+      key: "hoTen",
+    },
+    {
+      title: "Phòng ban",
+      dataIndex: "phongBan",
+      key: "phongBan",
+    },
+    {
+      title: "Ngày làm việc",
+      dataIndex: "ngayLamViec",
+      key: "ngayLamViec",
+    },
+    {
+      title: "Ngày tạo",
+      dataIndex: "ngayTaoGiaiTrinh",
+      key: "ngayTaoGiaiTrinh",
+    },
+    {
+      title: "Loại giải trình",
+      key: "loaiGiaiTrinh",
+      dataIndex: "loaiGiaiTrinh",
+      render: (value, record, index) => {
+        return (
           <>
-            <Button 
-            style={{backgroundColor:'transparent', color:'#6c8cad', border:'none'}}
-            onClick={() => setUpdateOpen(true)}
-            >
-              <FontAwesomeIcon icon={faPencil} />
-            </Button>
-            <Button 
-            style={{backgroundColor:'transparent', color:'#6c8cad', border:'none'}}
-            onClick={() => setViewOpen(true)}
-            >
-              <FontAwesomeIcon icon={faEye} />
-            </Button>
+            {record.trangThai === "0"
+              ? "Chờ duyệt"
+              : record.trangThai === "1"
+                ? "Đã duyệt"
+                : "Đã hủy"}
           </>
-        ) 
+        );
+      },
+    },
+    {
+      title: "Người duyệt",
+      key: "nguoiDuyet",
+      dataIndex: "nguoiDuyet",
+    },
+    {
+      title: "Trạng thái",
+      key: "trangThai",
+      dataIndex: "trangThai",
+      render: (value, record, index) => {
+        return <>{record.loaiGiaiTrinh}</>;
+      },
+    },
+    {
+      title: "Hoạt động",
+      key: "action",
+      fixed: "right",
+      width: 75,
+      align: "center" as "center",
+      render: (value, record, index) => (
+        <>
+          <Button
+            style={{
+              backgroundColor: "transparent",
+              color: "#6c8cad",
+              border: "none",
+            }}
+            onClick={() => handleView(record)}
+          >
+            <FontAwesomeIcon icon={faEye} />
+          </Button>
+        </>
+      ),
     },
   ];
 
-    const closeAddDrawer = () => {
-      setAddOpen(false)
-      form.resetFields()
-    }
-  
-    const closeUpdateDrawer = () => {
-      setUpdateOpen(false)
-      form.resetFields()
+  const onApprove = async () => {
+    if (!selectedRowKeys.length) {
+      messageApi.open({
+        type: "error",
+        content: "Vui lòng chọn ít nhất một giải trình!",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
+      return;
     }
 
-    const onChange = (e: RadioChangeEvent) => {
-      console.log('radio checked', e.target.value);
-      setValue(e.target.value);
+    let response = await GiaiTrinhApi.approveExplantion(
+      selectedRowKeys.join(","),
+    );
+
+    if (response?.statusCode === "200") {
+      getListExplanationByParams({
+        tenNhanVien: null,
+        loaiGiaiTrinh: null,
+        ngayLamViecBatDau: null,
+        ngayLamViecKetThuc: null,
+        ngayTaoBatDau: null,
+        ngayTaoKetThuc: null,
+        trangThai: null,
+      });
+      messageApi.open({
+        type: "success",
+        content: "Duyệt giải trình thành công!",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
+      setSelectedRows([]);
+      setSelectedRowKeys([]);
+      return;
+    } else {
+      console.log(response?.message);
+    }
+  };
+
+  const onReject = async () => {
+    if (!selectedRowKeys.length) {
+      messageApi.open({
+        type: "error",
+        content: "Vui lòng chọn ít nhất một giải trình!",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
+
+      return;
+    }
+
+    let response = await GiaiTrinhApi.rejectExplanation(
+      selectedRowKeys.join(","),
+    );
+    if (response?.statusCode === "200") {
+      getListExplanationByParams({
+        tenNhanVien: null,
+        loaiGiaiTrinh: null,
+        ngayLamViecBatDau: null,
+        ngayLamViecKetThuc: null,
+        ngayTaoBatDau: null,
+        ngayTaoKetThuc: null,
+        trangThai: null,
+      });
+      messageApi.open({
+        type: "success",
+        content: "Hủy giải trình thành công!",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
+      setSelectedRows([]);
+      setSelectedRowKeys([]);
+      return;
+    } else {
+      console.log(response?.message);
+    }
+  };
+
+  const refresh = () => {
+    getEmployeeByParams({
+      hoTen: null,
+      maNhanVien: null,
+      idVanTay: null,
+      maPhongBan: null,
+      chucVu: null,
+    });
+
+    getDepartmentsByParams({
+      tenPhongBan: null,
+      thuKyPhongBan: null,
+      truongPhongBan: null,
+    });
+
+    getListExplanationByParams({
+      tenNhanVien: null,
+      loaiGiaiTrinh: null,
+      ngayLamViecBatDau: null,
+      ngayLamViecKetThuc: null,
+      ngayTaoBatDau: null,
+      ngayTaoKetThuc: null,
+      trangThai: null,
+    });
+  };
+
+  let tableData: DataType[] = [];
+  if (data) {
+    data.map((giaitrinh, index) => {
+      const nhanVien = employeeData?.find(
+        (e) => e.maNhanVien === giaitrinh.maNhanVien,
+      )!;
+
+      console.log(
+        "GiaiTrinh:",
+        dayjs(giaitrinh.ngayLamViec).format("DD/MM/YYYY"),
+      );
+
+      tableData.push({
+        key: giaitrinh.maGiaiTrinh,
+        hoTen: nhanVien?.hoTen,
+        phongBan: departmentData?.find(
+          (d) => d.maPhongBan === nhanVien.maPhongBan,
+        )?.tenPhongBan!,
+        ngayLamViec: dayjs(giaitrinh.ngayLamViec).format("DD/MM/YYYY"),
+        ngayTaoGiaiTrinh: dayjs(giaitrinh.ngayTaoGiaiTrinh).format(
+          "DD/MM/YYYY",
+        ),
+        loaiGiaiTrinh: giaitrinh.loaiGiaiTrinh,
+        nguoiDuyet: giaitrinh.nguoiDuyet,
+        trangThai: giaitrinh.trangThai,
+        lyDo: giaitrinh.lyDo,
+        maNhanVien: giaitrinh.maNhanVien,
+        chucVu: employeeData?.find(
+          (e) => e.maNhanVien === giaitrinh.maNhanVien,
+        )!.chucVu!,
+        maGiaiTrinh: giaitrinh.maGiaiTrinh,
+      });
+    });
+  } else {
+    tableData = [];
+  }
+
+  const onFinish = (values: any) => {
+    const requestData: SearchGiaiTrinhRequest = {
+      tenNhanVien: values.tenNhanVien,
+      loaiGiaiTrinh: values.loaiGiaiTrinh,
+      ngayLamViecBatDau: null,
+      ngayLamViecKetThuc: null,
+      ngayTaoBatDau: null,
+      ngayTaoKetThuc: null,
+      trangThai: values.trangThai,
     };
 
-    const onFinish = (values: any) => {
-      console.log('Received values of form: ', values);
-    };
+    if (values.ngayLamViec) {
+      requestData.ngayLamViecBatDau = values.ngayLamViec[0];
+      requestData.ngayLamViecKetThuc = values.ngayLamViec[1];
+    }
 
-    useEffect(() => {
-      setLoading(false)
-    },[])
+    if (values.ngayTaoDon) {
+      requestData.ngayTaoBatDau = values.ngayTaoDon[0];
+      requestData.ngayTaoKetThuc = values.ngayTaoDon[1];
+    }
 
-    return (
-      <>  
-        <Skeleton loading={loading} active>
-          <div style={{paddingLeft:"24px",paddingRight:"24px", backgroundColor:colorBgContainer, marginTop:"20px"}}>
-            <Flex justify='space-between' align='center' style={{height:"50px", borderBottom:"1px solid #bbbfc1", marginBottom:"10px"}}>
-              <span><b>Yêu cầu giải trình</b></span>
-              <Row>
-                <Button type="primary" style={{marginLeft:'12px'}}><ExportOutlined /></Button>
-                <Button type="primary" style={{marginLeft:'12px'}} >Duyệt</Button>
-                <Button type="primary" style={{marginLeft:'12px'}} >Từ chối</Button>
-                <Button type="primary" style={{marginLeft:'12px'}}>Xóa</Button>
-              </Row>
-            </Flex>
-              <Table 
-                  scroll={{ x: 2000, y:350}} 
-                  rowSelection={rowSelection} 
-                  columns={columns} 
-                  dataSource={data}
-                  pagination={{ showQuickJumper:true, total:50 ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}}  
+    getListExplanationByParams(requestData);
+  };
+
+  useEffect(() => {
+    refresh();
+  }, []);
+
+  return (
+    <>
+      {contextHolder}
+      <Form
+        form={form}
+        onFinish={onFinish}
+        style={formStyle}
+        name="advanced_search"
+      >
+        <Row gutter={24}>
+          <Col span={8}>
+            <Form.Item
+              label="Tên nhân viên"
+              name="tenNhanVien"
+              labelCol={{ style: { width: 120, textAlign: "left" } }}
+            >
+              <Input placeholder="Tên nhân viên" />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              label="Loại giải trình"
+              name="loaiGiaiTrinh"
+              labelCol={{ style: { width: 120, textAlign: "left" } }}
+            >
+              <Select placeholder="Vui lòng chọn">
+                <Option value="Đi muộn">Đi muộn</Option>
+                <Option value="Về sớm">Về sớm</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              label="Trạng thái đơn"
+              name="trangThai"
+              labelCol={{ style: { width: 120, textAlign: "left" } }}
+            >
+              <Select placeholder="Vui lòng chọn">
+                <Option value="0">Chờ duyệt</Option>
+                <Option value="1">Đã duyệt</Option>
+                <Option value="2">Đã hủy</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col span={8}>
+            <Form.Item
+              label="Ngày làm việc:"
+              name="ngayLamViec"
+              labelCol={{ style: { width: 120, textAlign: "left" } }}
+            >
+              <RangePicker
+                format={"DD/MM/YYYY"}
+                placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
               />
-          </div>
-        </Skeleton>
-        <Drawer 
-            title="Sửa giải trình" 
-            placement="right" 
-            onClose={closeUpdateDrawer} 
-            open={updateOpen} 
-            footer= {
-                <Row justify={'end'}>
-                    <Space>
-                        <Button onClick={() => setUpdateOpen(false)}>Hủy</Button>
-                        <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-                    </Space>
-                </Row>
-            }
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              label="Ngày tạo:"
+              name="ngayTaoDon"
+              labelCol={{ style: { width: 120, textAlign: "left" } }}
+            >
+              <RangePicker
+                format={"DD/MM/YYYY"}
+                placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row justify="end">
+          <Button type="primary" htmlType="submit">
+            Tìm kiếm
+          </Button>
+          <Button onClick={() => form.resetFields()}>Tạo lại</Button>
+        </Row>
+      </Form>
+      <div
+        style={{
+          paddingLeft: "24px",
+          paddingRight: "24px",
+          backgroundColor: colorBgContainer,
+          marginTop: "20px",
+        }}
+      >
+        <Flex
+          justify="space-between"
+          align="center"
+          style={{
+            height: "50px",
+            borderBottom: "1px solid #bbbfc1",
+            marginBottom: "10px",
+          }}
         >
-            <Form form={form} name="updateExplanations" onFinish={onFinish}>
-                <Row gutter={24}>
-                    <Col span={24}>
-                        <Form.Item
-                        name={'approvedBy'}
-                        label={'Người duyệt'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Vui lòng nhập Người duyệt" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item
-                        name={'reason'}
-                        label={'Lý do'}
-                        rules={[
-                          {
-                          required: true,
-                          message: 'Vui lòng chọn!',
-                          },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Công việc</Option>
-                                <Option value="2">Cá nhân</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item
-                        name={'description'}
-                        label={'Ghi chú'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input/>
-                        </Form.Item>
-                    </Col>
-                </Row>
-            </Form>
-        </Drawer>
-        <Drawer 
-            title="Thông tin chi tiết" 
-            placement="right" 
-            onClose={() => setViewOpen(false)} 
-            open={viewOpen} 
-            footer= {
-                <Row justify={'end'}>
-                    <Space>
-                        <Button onClick={() => setViewOpen(false)}>Hủy</Button>
-                        <Button onClick={() => form.submit()}  type='primary'>Lưu</Button>
-                    </Space>
-                </Row>
-            }
-        >
-            <Form form={form} name="viewExplanations" onFinish={onFinish}>
-                <Row gutter={24}>
-                    <Col span={24}>
-                        <Form.Item
-                        name={'approvedBy'}
-                        label={'Người duyệt'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input placeholder="Vui lòng nhập Người duyệt" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item
-                        name={'reason'}
-                        label={'Lý do'}
-                        rules={[
-                          {
-                          required: true,
-                          message: 'Vui lòng chọn!',
-                          },
-                        ]}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Select placeholder = "Vui lòng chọn">
-                                <Option value="1">Công việc</Option>
-                                <Option value="2">Cá nhân</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item
-                        name={'description'}
-                        label={'Ghi chú'}
-                        labelCol={{ span:24 }}
-                        wrapperCol={{ span:24 }}
-                        >
-                            <Input/>
-                        </Form.Item>
-                    </Col>
-                </Row>
-            </Form>
-        </Drawer>
-      </>
-    )
-}
+          <span>
+            <b>Yêu cầu giải trình</b>
+          </span>
+          <Row>
+            <Button
+              type="primary"
+              onClick={onApprove}
+              style={{ marginLeft: "12px" }}
+            >
+              Duyệt giải trình
+            </Button>
+            <Button
+              type="primary"
+              onClick={onReject}
+              style={{ marginLeft: "12px" }}
+            >
+              Hủy giải trình
+            </Button>
+          </Row>
+        </Flex>
+        <Table
+          scroll={{ x: 1000, y: 350 }}
+          rowSelection={rowSelection}
+          columns={columns}
+          dataSource={tableData}
+          pagination={{
+            showQuickJumper: true,
+            total: totalRecords,
+            defaultPageSize: 10,
+            showSizeChanger: true,
+            pageSizeOptions: ["10", "20", "30"],
+            locale: {
+              jump_to: "Đến",
+              page: "Trang",
+              items_per_page: "/ trang",
+            },
+            onChange: (page, pageSize) => {
+              setPage(page);
+              setPageSize(pageSize);
+            },
+            showTotal: (total) => `Tổng ${total} bản ghi`,
+          }}
+        />
+      </div>
+      <ViewManagExplanation
+        data={rowData}
+        show={viewOpen}
+        close={() => setViewOpen(false)}
+      />
+    </>
+  );
+};
 
 export default ManageExplanationsTable;

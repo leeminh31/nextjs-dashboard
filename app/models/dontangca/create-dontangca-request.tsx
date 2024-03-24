@@ -1,7 +1,10 @@
-export interface CreateDonTangCaRequest{
-    code: string,
-    name: string,
-    url: string,
-    status: number,
-    description: string
+export interface CreateDonTangCaRequest {
+  ngayTaoDon: Date;
+  ngayLamViec: Date;
+  tangCaTu: string;
+  tangCaDen: string;
+  lyDo: string;
+  nguoiDuyet: string;
+  trangThai: string;
+  maNhanVien: string;
 }
