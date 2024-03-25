@@ -1,13 +1,11 @@
-import OnLeaveForm from "./on-leave-form"
-import OnLeaveTable from "./on-leave-table"
+import OnLeaveTable from "./on-leave-table";
 
 const OnLeave = () => {
-    return (
-        <>
-            <OnLeaveForm />
-            <OnLeaveTable />
-        </>
-    )
-}
+  return (
+    <>
+      <OnLeaveTable />
+    </>
+  );
+};
 
-export default OnLeave
+export default OnLeave;

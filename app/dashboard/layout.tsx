@@ -95,8 +95,6 @@ export default function LayoutDashboard({
   const [collapsed, setCollapsed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
-  const [userDetails, setUserDetails] = useState();
-  const [token, setToken] = useState();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -165,12 +163,11 @@ export default function LayoutDashboard({
 
     console.log("Token", getTokenFromLocalStorage);
 
-    if (!getTokenFromLocalStorage) {
-      router.replace("/login");
-      return;
-    }
-    setUsername(getTokenFromLocalStorage.hoTen);
-    setToken(getTokenFromLocalStorage);
+    // if (!getTokenFromLocalStorage) {
+    //   router.replace("/login");
+    //   return;
+    // }
+    setUsername(getTokenFromLocalStorage?.hoTen);
     setCurrent(pathname);
     setLoading(false);
   }, []);

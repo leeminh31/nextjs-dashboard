@@ -1,6 +1,20 @@
 "use client";
 
-import { Button, Flex, Form, Row, Select, Skeleton, Table, theme } from "antd";
+import { EyeTwoTone } from "@ant-design/icons";
+import {
+  Button,
+  Col,
+  DatePicker,
+  Flex,
+  Form,
+  Input,
+  Row,
+  Select,
+  Skeleton,
+  Space,
+  Table,
+  theme,
+} from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { TableRowSelection } from "antd/es/table/interface";
 import React, { useEffect, useState } from "react";
@@ -20,925 +34,6 @@ interface DataType {
   contractType: string;
   status: string;
 }
-
-const columns: ColumnsType<DataType> = [
-  {
-    title: "#",
-    dataIndex: "key",
-    key: "key",
-    width: 50,
-  },
-  {
-    title: "Ngày tính bù",
-    dataIndex: "compensatoryDays",
-    key: "compensatoryDays",
-    width: 150,
-  },
-  {
-    title: "Mã nhân sự",
-    dataIndex: "employeeId",
-    key: "employeeId",
-    width: 150,
-  },
-  {
-    title: "Họ và tên",
-    dataIndex: "employeeName",
-    key: "employeeName",
-    width: 150,
-  },
-  {
-    title: "Ngày vào làm",
-    key: "startWorkingDate",
-    dataIndex: "startWorkingDate",
-    width: 150,
-  },
-  {
-    title: "Cấp bậc",
-    key: "rank",
-    dataIndex: "rank",
-    width: 100,
-  },
-  {
-    title: "Phòng ban",
-    key: "department",
-    dataIndex: "department",
-    width: 150,
-  },
-  {
-    title: "Chức vụ",
-    key: "position",
-    dataIndex: "position",
-    width: 100,
-  },
-  {
-    title: "Ngày nghỉ việc",
-    key: "endWorkingDate",
-    dataIndex: "endWorkingDate",
-    width: 150,
-  },
-  {
-    title: "Ngày ký HĐLĐ",
-    key: "signDate",
-    dataIndex: "signDate",
-    width: 150,
-  },
-  {
-    title: "Loại hợp đồng",
-    key: "contractType",
-    dataIndex: "contractType",
-  },
-  {
-    title: "Tháng 1",
-    key: "january",
-    dataIndex: "january",
-    width: 750,
-    children: [
-      {
-        title: "Phát sinh tăng",
-        dataIndex: "havingIncreased",
-        key: "havingIncreased",
-        width: 250,
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Sử dụng",
-        dataIndex: "used",
-        key: "used",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Tăng ca",
-        dataIndex: "overtime",
-        key: "overtime",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Tháng 2",
-    key: "february",
-    dataIndex: "february",
-    children: [
-      {
-        title: "Phát sinh tăng",
-        dataIndex: "havingIncreased",
-        key: "havingIncreased",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Sử dụng",
-        dataIndex: "used",
-        key: "used",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Tăng ca",
-        dataIndex: "overtime",
-        key: "overtime",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Tháng 3",
-    key: "march",
-    dataIndex: "march",
-    children: [
-      {
-        title: "Phát sinh tăng",
-        dataIndex: "havingIncreased",
-        key: "havingIncreased",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Sử dụng",
-        dataIndex: "used",
-        key: "used",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Tăng ca",
-        dataIndex: "overtime",
-        key: "overtime",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Tháng 4",
-    key: "april",
-    dataIndex: "april",
-    children: [
-      {
-        title: "Phát sinh tăng",
-        dataIndex: "havingIncreased",
-        key: "havingIncreased",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Sử dụng",
-        dataIndex: "used",
-        key: "used",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Tăng ca",
-        dataIndex: "overtime",
-        key: "overtime",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Tháng 5",
-    key: "may",
-    dataIndex: "may",
-    children: [
-      {
-        title: "Phát sinh tăng",
-        dataIndex: "havingIncreased",
-        key: "havingIncreased",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Sử dụng",
-        dataIndex: "used",
-        key: "used",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Tăng ca",
-        dataIndex: "overtime",
-        key: "overtime",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Tháng 6",
-    key: "june",
-    dataIndex: "june",
-    children: [
-      {
-        title: "Phát sinh tăng",
-        dataIndex: "havingIncreased",
-        key: "havingIncreased",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Sử dụng",
-        dataIndex: "used",
-        key: "used",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Tăng ca",
-        dataIndex: "overtime",
-        key: "overtime",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Tháng 7",
-    key: "july",
-    dataIndex: "july",
-    children: [
-      {
-        title: "Phát sinh tăng",
-        dataIndex: "havingIncreased",
-        key: "havingIncreased",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Sử dụng",
-        dataIndex: "used",
-        key: "used",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Tăng ca",
-        dataIndex: "overtime",
-        key: "overtime",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Tháng 8",
-    key: "august",
-    dataIndex: "august",
-    children: [
-      {
-        title: "Phát sinh tăng",
-        dataIndex: "havingIncreased",
-        key: "havingIncreased",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Sử dụng",
-        dataIndex: "used",
-        key: "used",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Tăng ca",
-        dataIndex: "overtime",
-        key: "overtime",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Tháng 9",
-    key: "september",
-    dataIndex: "september",
-    children: [
-      {
-        title: "Phát sinh tăng",
-        dataIndex: "havingIncreased",
-        key: "havingIncreased",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Sử dụng",
-        dataIndex: "used",
-        key: "used",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Tăng ca",
-        dataIndex: "overtime",
-        key: "overtime",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Tháng 10",
-    key: "october",
-    dataIndex: "october",
-    children: [
-      {
-        title: "Phát sinh tăng",
-        dataIndex: "havingIncreased",
-        key: "havingIncreased",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Sử dụng",
-        dataIndex: "used",
-        key: "used",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Tăng ca",
-        dataIndex: "overtime",
-        key: "overtime",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Tháng 11",
-    key: "november",
-    dataIndex: "november",
-    children: [
-      {
-        title: "Phát sinh tăng",
-        dataIndex: "havingIncreased",
-        key: "havingIncreased",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Sử dụng",
-        dataIndex: "used",
-        key: "used",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Tăng ca",
-        dataIndex: "overtime",
-        key: "overtime",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Tháng 12",
-    key: "december",
-    dataIndex: "december",
-    children: [
-      {
-        title: "Phát sinh tăng",
-        dataIndex: "havingIncreased",
-        key: "havingIncreased",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Sử dụng",
-        dataIndex: "used",
-        key: "used",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-      {
-        title: "Tăng ca",
-        dataIndex: "overtime",
-        key: "overtime",
-        children: [
-          {
-            title: "Thử việc",
-            dataIndex: "probation",
-            key: "probation",
-            width: 100,
-          },
-          {
-            title: "Chính thức",
-            dataIndex: "official",
-            key: "official",
-            width: 150,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Tổng tăng (phút)",
-    dataIndex: "totalIncrementbyMinutes",
-    key: "totalIncrementbyMinutes",
-    children: [
-      {
-        title: "Thử việc",
-        dataIndex: "probation",
-        key: "probation",
-        width: 100,
-      },
-      {
-        title: "Chính thức",
-        dataIndex: "official",
-        key: "official",
-        width: 150,
-      },
-      {
-        title: "TV-OVT",
-        dataIndex: "tv-ovt",
-        key: "tv-ovt",
-        width: 100,
-      },
-      {
-        title: "CT-OVT",
-        dataIndex: "ct-ovt",
-        key: "ct-ovt",
-        width: 100,
-      },
-    ],
-  },
-  {
-    title: "Tổng dùng (phút)",
-    dataIndex: "totalUsingByMinutes",
-    key: "totalUsingByMinutes",
-    children: [
-      {
-        title: "Thử việc",
-        dataIndex: "probation",
-        key: "probation",
-        width: 100,
-      },
-      {
-        title: "Chính thức",
-        dataIndex: "official",
-        key: "official",
-        width: 150,
-      },
-    ],
-  },
-  {
-    title: "Còn lại (Ngày)",
-    dataIndex: "leftByDays",
-    key: "leftByDays",
-    children: [
-      {
-        title: "Thử việc",
-        dataIndex: "probation",
-        key: "probation",
-        width: 100,
-      },
-      {
-        title: "Chính thức",
-        dataIndex: "official",
-        key: "official",
-        width: 150,
-      },
-      {
-        title: "Còn lại",
-        dataIndex: "left",
-        key: "left",
-        width: 100,
-      },
-    ],
-  },
-  {
-    title: "Ghi chú",
-    dataIndex: "description",
-    key: "description",
-    width: 100,
-  },
-];
 
 const data: DataType[] = [
   {
@@ -1130,11 +225,348 @@ const rowSelection: TableRowSelection<DataType> = {
 
 const CompensatoryLeaveTable: React.FC = () => {
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer },
   } = theme.useToken();
+  const { token } = theme.useToken();
   const [importOpen, setImportOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [form] = Form.useForm();
+
+  const columns: ColumnsType<DataType> = [
+    {
+      title: "#",
+      dataIndex: "key",
+      key: "key",
+      width: 50,
+    },
+    {
+      title: "Thông tin nhân viên",
+      dataIndex: "thongTinNhanVien",
+      key: "thongTinNhanVien",
+      children: [
+        {
+          title: "Mã nhân viên",
+          dataIndex: "maNhanVien",
+          key: "maNhanVien",
+          width: 100,
+        },
+        {
+          title: "Họ tên",
+          dataIndex: "hoTen",
+          key: "hoTen",
+          width: 100,
+        },
+        {
+          title: "Phòng ban",
+          dataIndex: "phongBan",
+          key: "phongBan",
+          width: 150,
+        },
+        {
+          title: "Năm",
+          dataIndex: "nam",
+          key: "nam",
+          width: 100,
+        },
+        {
+          title: "Tổng phép",
+          dataIndex: "tongPhep",
+          key: "tongPhep",
+          width: 100,
+        },
+      ],
+    },
+    {
+      title: "Sử dụng bù",
+      key: "suDungBu",
+      dataIndex: "suDungBu",
+      children: [
+        {
+          title: "Tháng 1",
+          dataIndex: "thang1",
+          key: "thang1",
+          width: 200,
+          children: [
+            {
+              title: "Phát sinh",
+              dataIndex: "phatSinh",
+              key: "phatSinh",
+              width: 100,
+            },
+            {
+              title: "Sử dụng",
+              dataIndex: "suDung",
+              key: "suDung",
+              width: 100,
+            },
+          ],
+        },
+        {
+          title: "Tháng 2",
+          dataIndex: "thang2",
+          key: "thang2",
+          width: 200,
+          children: [
+            {
+              title: "Phát sinh",
+              dataIndex: "phatSinh",
+              key: "phatSinh",
+              width: 100,
+            },
+            {
+              title: "Sử dụng",
+              dataIndex: "suDung",
+              key: "suDung",
+              width: 100,
+            },
+          ],
+        },
+        {
+          title: "Tháng 3",
+          dataIndex: "thang3",
+          key: "thang3",
+          width: 200,
+          children: [
+            {
+              title: "Phát sinh",
+              dataIndex: "phatSinh",
+              key: "phatSinh",
+              width: 100,
+            },
+            {
+              title: "Sử dụng",
+              dataIndex: "suDung",
+              key: "suDung",
+              width: 100,
+            },
+          ],
+        },
+        {
+          title: "Tháng 4",
+          dataIndex: "thang4",
+          key: "thang4",
+          width: 200,
+          children: [
+            {
+              title: "Phát sinh",
+              dataIndex: "phatSinh",
+              key: "phatSinh",
+              width: 100,
+            },
+            {
+              title: "Sử dụng",
+              dataIndex: "suDung",
+              key: "suDung",
+              width: 100,
+            },
+          ],
+        },
+        {
+          title: "Tháng 5",
+          dataIndex: "thang5",
+          key: "thang5",
+          width: 200,
+          children: [
+            {
+              title: "Phát sinh",
+              dataIndex: "phatSinh",
+              key: "phatSinh",
+              width: 100,
+            },
+            {
+              title: "Sử dụng",
+              dataIndex: "suDung",
+              key: "suDung",
+              width: 100,
+            },
+          ],
+        },
+        {
+          title: "Tháng 6",
+          dataIndex: "thang6",
+          key: "thang6",
+          width: 200,
+          children: [
+            {
+              title: "Phát sinh",
+              dataIndex: "phatSinh",
+              key: "phatSinh",
+              width: 100,
+            },
+            {
+              title: "Sử dụng",
+              dataIndex: "suDung",
+              key: "suDung",
+              width: 100,
+            },
+          ],
+        },
+        {
+          title: "Tháng 7",
+          dataIndex: "thang7",
+          key: "thang7",
+          width: 200,
+          children: [
+            {
+              title: "Phát sinh",
+              dataIndex: "phatSinh",
+              key: "phatSinh",
+              width: 100,
+            },
+            {
+              title: "Sử dụng",
+              dataIndex: "suDung",
+              key: "suDung",
+              width: 100,
+            },
+          ],
+        },
+        {
+          title: "Tháng 8",
+          dataIndex: "thang8",
+          key: "thang8",
+          width: 200,
+          children: [
+            {
+              title: "Phát sinh",
+              dataIndex: "phatSinh",
+              key: "phatSinh",
+              width: 100,
+            },
+            {
+              title: "Sử dụng",
+              dataIndex: "suDung",
+              key: "suDung",
+              width: 100,
+            },
+          ],
+        },
+        {
+          title: "Tháng 9",
+          dataIndex: "thang9",
+          key: "thang9",
+          width: 200,
+          children: [
+            {
+              title: "Phát sinh",
+              dataIndex: "phatSinh",
+              key: "phatSinh",
+              width: 100,
+            },
+            {
+              title: "Sử dụng",
+              dataIndex: "suDung",
+              key: "suDung",
+              width: 100,
+            },
+          ],
+        },
+        {
+          title: "Tháng 10",
+          dataIndex: "thang10",
+          key: "thang10",
+          width: 200,
+          children: [
+            {
+              title: "Phát sinh",
+              dataIndex: "phatSinh",
+              key: "phatSinh",
+              width: 100,
+            },
+            {
+              title: "Sử dụng",
+              dataIndex: "suDung",
+              key: "suDung",
+              width: 100,
+            },
+          ],
+        },
+        {
+          title: "Tháng 11",
+          dataIndex: "thang11",
+          key: "thang11",
+          width: 200,
+          children: [
+            {
+              title: "Phát sinh",
+              dataIndex: "phatSinh",
+              key: "phatSinh",
+              width: 100,
+            },
+            {
+              title: "Sử dụng",
+              dataIndex: "suDung",
+              key: "suDung",
+              width: 100,
+            },
+          ],
+        },
+        {
+          title: "Tháng 12",
+          dataIndex: "thang12",
+          key: "thang12",
+          width: 200,
+          children: [
+            {
+              title: "Phát sinh",
+              dataIndex: "phatSinh",
+              key: "phatSinh",
+              width: 100,
+            },
+            {
+              title: "Sử dụng",
+              dataIndex: "suDung",
+              key: "suDung",
+              width: 100,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      title: "Hoạt động",
+      dataIndex: "action",
+      fixed: "right",
+      align: "center",
+      width: 75,
+      children: [
+        {
+          title: "Xem",
+          dataIndex: "xem",
+          key: "xem",
+          width: 75,
+          align: "center",
+        },
+      ],
+      render: (value, record) => {
+        return (
+          <Space style={{ gap: "16px" }}>
+            <Button
+              icon={<EyeTwoTone />}
+              style={{
+                backgroundColor: "transparent",
+                border: "none",
+                boxShadow: "none",
+              }}
+              onClick={() => onUpdate(record)}
+            ></Button>
+          </Space>
+        );
+      },
+    },
+  ];
+
+  const onUpdate = (record: any) => {};
+
+  const formStyle: React.CSSProperties = {
+    maxWidth: "none",
+    background: token.colorBgContainer,
+    padding: "24px",
+  };
+
+  const onFinish = (values: any) => {
+    console.log("Received values of form: ", values);
+  };
 
   useEffect(() => {
     setLoading(false);
@@ -1142,6 +574,56 @@ const CompensatoryLeaveTable: React.FC = () => {
 
   return (
     <>
+      <Form
+        form={form}
+        onFinish={onFinish}
+        style={formStyle}
+        name="advanced_search"
+      >
+        <Row gutter={24}>
+          <Col span={8}>
+            <Form.Item
+              label="Tên nhân viên"
+              labelCol={{ style: { width: 120, textAlign: "left" } }}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              label="Mã nhân viên"
+              labelCol={{ style: { width: 120, textAlign: "left" } }}
+            >
+              <Input placeholder="Mã nhân viên" />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              label="Phòng ban"
+              labelCol={{ style: { width: 120, textAlign: "left" } }}
+            >
+              <Select placeholder="Vui lòng chọn">
+                <Option value="1">Bùi Thị Yên</Option>
+                <Option value="2">Bùi Thị Yên</Option>
+                <Option value="3">Bùi Thị Yên</Option>
+                <Option value="4">Bùi Thị Yên</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              label="Năm"
+              labelCol={{ style: { width: 120, textAlign: "left" } }}
+            >
+              <DatePicker placeholder="Vui lòng chọn" picker="year" />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row justify="end">
+          <Button type="primary">Tìm kiếm</Button>
+          <Button>Tạo lại</Button>
+        </Row>
+      </Form>
       <Skeleton loading={loading} active>
         <div
           style={{
@@ -1156,12 +638,11 @@ const CompensatoryLeaveTable: React.FC = () => {
             align="center"
             style={{
               height: "50px",
-              borderBottom: "1px solid #bbbfc1",
               marginBottom: "10px",
             }}
           >
             <span>
-              <b>Quản lý bù</b>
+              <b>Quỹ bù nhân viên</b>
             </span>
             <Row>
               <Button
@@ -1175,7 +656,7 @@ const CompensatoryLeaveTable: React.FC = () => {
           </Flex>
           <Table
             size="small"
-            scroll={{ x: 11700, y: 500 }}
+            scroll={{ x: 2500, y: 500 }}
             rowSelection={rowSelection}
             columns={columns}
             dataSource={data}
