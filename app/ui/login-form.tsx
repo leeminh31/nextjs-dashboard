@@ -14,12 +14,9 @@ export default function LoginForm() {
   const onFinish = async (values: any) => {
     let response = await LoginApi.login(values.username, values.password);
     if (response.data !== null) {
-      console.log("DMM");
       router.push("/dashboard/employee-list");
     } else {
       console.log(response.message);
-      // setErrorMessage(response.message);
-      // setShowNoti(true);
     }
   };
 

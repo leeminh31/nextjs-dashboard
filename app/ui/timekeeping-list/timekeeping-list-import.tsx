@@ -35,14 +35,12 @@ const ImportTimeKeeping = (props: any) => {
   };
 
   const uploadFile = async (file: any) => {
-    console.log(file);
     fetch(HRMSystemApi + "DuLieuChamCong/upload", {
       method: "POST",
       body: file,
     })
       .then((r) => r.json())
       .then((response) => {
-        console.log(response);
         if (response.statusCode === "200") {
           refresh();
           messageApi.open({
@@ -83,7 +81,6 @@ const ImportTimeKeeping = (props: any) => {
     if (e.target.files != null) {
       let form = new FormData();
       form.append("formFile", e.target.files[0]);
-      console.log(e.target.files[0].name);
 
       setFileName(e.target.files[0].name);
       // uploadFile(form)
@@ -91,8 +88,6 @@ const ImportTimeKeeping = (props: any) => {
   };
 
   useEffect(() => {
-    console.log(show);
-
     if (show) {
       setFileName("");
       inputFileRef.current.value = "";

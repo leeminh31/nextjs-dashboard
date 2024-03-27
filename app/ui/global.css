@@ -32,8 +32,16 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0 !important;
 }
 
+.request-list .ant-card {
+  border-radius: 0 !important;
+}
+
+.request-list .ant-card-body {
+  row-gap: 10px;
+}
+
 .request-list .ant-card-bordered {
-  border: 1px solid #bc846f !important;
+  border: 1px solid #e2e0e0 !important;
 }
 
 .manage-request-drawer .ant-drawer-body {
@@ -57,13 +65,15 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .monthly-drawer .ant-drawer-header-title {
+  height: 20px;
+}
+
+.monthly-drawer .ant-drawer-header-title {
   flex-direction: row-reverse;
 }
 
 .monthly-drawer .ant-drawer-header-title .ant-drawer-close {
-  color: #fff;
-  background-color: #b98868;
-  padding: 0;
+  display: none;
 }
 
 .monthly-drawer .ant-drawer-header {
@@ -73,6 +83,18 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .monthly-drawer .ant-drawer-body {
   padding: 0px !important;
+}
+
+.input-right-align .ant-form-item-control-input {
+  justify-content: end;
+}
+
+.highlighted-cell {
+  border: 1px solid red !important;
+}
+
+.input-right-align .ant-form-item-control-input-content {
+  flex: none;
 }
 
 .view-request .ant-form-item .ant-form-item-label > label {
@@ -88,13 +110,28 @@ input[type="number"]::-webkit-outer-spin-button {
   color: #000;
 }
 
+.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list {
+  width: 100%;
+}
+
+.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab {
+  padding: 8px;
+}
+
+.ant-tabs-card.ant-tabs-top > .ant-tabs-nav .ant-tabs-tab + .ant-tabs-tab {
+  margin: 0 !important;
+}
+
 .ant-tabs-tab.ant-tabs-tab-active {
   color: #000 !important;
-  background-color: #f4efeb !important;
+  background-color: #eadbd1 !important;
 }
 
 .ant-tabs-card.ant-tabs-top > .ant-tabs-nav .ant-tabs-tab {
   border-radius: 0 !important;
+  width: 25%;
+  display: flex;
+  justify-content: center;
 }
 
 .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {

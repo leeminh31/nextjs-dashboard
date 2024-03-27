@@ -103,7 +103,6 @@ const EmployeeListTable: React.FC = () => {
   const getEmployeeId = async () => {
     let response = await LoginApi.getEmployeeId();
     if (response.statusCode === "200") {
-      console.log(response.data);
       setListId(response.data);
     } else {
       console.log(response.message);
@@ -113,8 +112,6 @@ const EmployeeListTable: React.FC = () => {
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
     let response = await NhanVienApi.getNhanVien(searchRequest);
     if (response.statusCode === "200") {
-      console.log("-------------------------------------");
-      console.log(response.data);
       setData(response.data.reverse());
       setTotalRecords(response.data?.length);
     } else if (response.statusCode === "545") {

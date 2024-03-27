@@ -1,33 +1,26 @@
 "use client";
 
-import React, { useState } from "react";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { RadioChangeEvent } from "antd";
 import {
   Button,
-  Table,
-  Row,
   Col,
-  Space,
+  DatePicker,
   Drawer,
-  Upload,
+  Flex,
   Form,
   Input,
+  Row,
   Select,
-  theme,
-  Flex,
+  Space,
+  Table,
   Tag,
-  DatePicker,
-  Radio,
+  theme,
 } from "antd";
-import type { RadioChangeEvent } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { TableRowSelection } from "antd/es/table/interface";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faClockRotateLeft,
-  faArrowUpRightFromSquare,
-  faPencil,
-  faEye,
-} from "@fortawesome/free-solid-svg-icons";
+import React, { useState } from "react";
 const { Option } = Select;
 
 interface DataType {
@@ -232,7 +225,7 @@ const rowSelection: TableRowSelection<DataType> = {
   },
 };
 
-const StaffTransferTable: React.FC = () => {
+const RegisterShiftTable: React.FC = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -708,4 +701,4 @@ const StaffTransferTable: React.FC = () => {
   );
 };
 
-export default StaffTransferTable;
+export default RegisterShiftTable;

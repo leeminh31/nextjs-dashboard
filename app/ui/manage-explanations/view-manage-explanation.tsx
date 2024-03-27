@@ -19,7 +19,6 @@ const ViewManagExplanation = (props: any) => {
   ) => {
     let response = await PhongBanApi.getPhongBan(searchRequest);
     if (response.statusCode === "200") {
-      console.log(response.data);
       setDepartments(response.data);
     } else {
       console.log(response.message);
@@ -249,8 +248,6 @@ const ViewManagExplanation = (props: any) => {
 
   useEffect(() => {
     if (data != null) {
-      console.log(data);
-
       form.setFieldsValue({
         maNhanVien: data.maNhanVien,
         hoTen: data.hoTen,

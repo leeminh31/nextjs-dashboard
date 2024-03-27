@@ -255,9 +255,7 @@ const DepartmentsListTable: React.FC = () => {
     getDepartmentsByParams(requestData);
   };
 
-  useEffect(() => {
-    console.log("Tabledata:", data);
-  }, [data]);
+  useEffect(() => {}, [data]);
 
   useEffect(() => {
     setLoading(false);

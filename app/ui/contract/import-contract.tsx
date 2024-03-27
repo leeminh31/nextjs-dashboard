@@ -41,7 +41,6 @@ const ImportContract = (props: any) => {
     })
       .then((r) => r.json())
       .then((response) => {
-        console.log(response);
         if (response.statusCode === "200") {
           refresh();
           messageApi.open({
@@ -87,8 +86,6 @@ const ImportContract = (props: any) => {
   };
 
   useEffect(() => {
-    console.log(show);
-
     if (show) {
       setFileName("");
       inputFileRefContract.current.value = "";

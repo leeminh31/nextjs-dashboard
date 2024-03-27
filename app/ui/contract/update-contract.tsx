@@ -46,14 +46,12 @@ const UpdateContract = (props: any) => {
   };
 
   const onChange = (e: RadioChangeEvent) => {
-    console.log("radio checked", e.target.value);
     setValue(e.target.value);
   };
 
   const onFinish = async (values: any) => {
     let dateStart = new Date(values.ngayBatDauHopDong);
     let dateEnd = new Date(values.ngayKetThucHopDong);
-    console.log("Ket Thuc", FormatDate(values.ngayKetThucHopDong));
 
     if (dateStart.getTime() >= dateEnd.getTime()) {
       messageApi.open({
@@ -158,7 +156,6 @@ const UpdateContract = (props: any) => {
 
   useEffect(() => {
     if (data != null) {
-      console.log(data);
       form.setFieldsValue({
         tenHopDong: data.tenHopDong,
         maNhanVien: data.maNhanVien,

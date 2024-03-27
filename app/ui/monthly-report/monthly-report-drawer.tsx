@@ -11,6 +11,7 @@ import { CreateDonConNhoRequest } from "@/app/models/donconnho/create-donconnho-
 import { CreateDonPhepRequest } from "@/app/models/donphep/create-donphep-request";
 import { CreateDonTangCaRequest } from "@/app/models/dontangca/create-dontangca-request";
 import { DuLieuChamCongResponse } from "@/app/models/dulieuchamcong/dulieuchamcong-response";
+import { CreateGiaiTrinhRequest } from "@/app/models/giaitrinh/create-giaitrinh-request";
 import { GiaiTrinhResponse } from "@/app/models/giaitrinh/giaitrinh-response";
 import { NhanVienResponse } from "@/app/models/nhanvien/nhanvien-response";
 import { SearchNhanVienRequest } from "@/app/models/nhanvien/search-nhanvien-request";
@@ -39,6 +40,7 @@ const MonthlyReportDrawer = (props: any) => {
   const { show, close, data, date, dateFull } = props;
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
+  const [form2] = Form.useForm();
   const [shiftList, setShiftList] = useState<CaLamViecResponse[]>([]);
   const [listRequestData, setListRequestData] = useState<DanhSachDonResponse>();
   const [listExplanationData, setListExplanationData] = useState<
@@ -46,6 +48,8 @@ const MonthlyReportDrawer = (props: any) => {
   >([]);
   const [employeeData, setEmployeeData] = useState<NhanVienResponse[]>([]);
   const [createRequestShow, setCreateRequestShow] = useState(false);
+  const [createExplanationShow, setCreateExplanationShow] = useState(false);
+  const [requestData, setRequestData] = useState<any>();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [requestType, setRequestType] = useState(0);
   const [listTimekeeping, setListTimekeeping] = useState<
@@ -123,8 +127,41 @@ const MonthlyReportDrawer = (props: any) => {
     getShiftName();
   };
 
-  const onChange = (key: string) => {
-    console.log(key);
+  const onChange = (key: string) => {};
+
+  const onCreateExplanation = async (values: any) => {
+    let ngayLamViec = currentDate;
+    ngayLamViec.setDate(ngayLamViec.getDate() + 1);
+
+    const requestData: CreateGiaiTrinhRequest = {
+      maNhanVien: data?.maNhanVien,
+      ngayLamViec: new Date(ngayLamViec),
+      ngayTaoGiaiTrinh: new Date(),
+      lyDo: values.lyDo,
+      nguoiDuyet: "",
+      loaiGiaiTrinh: values.loaiGiaiTrinh,
+      trangThai: "0",
+    };
+
+    let response = await GiaiTrinhApi.createGiaiTrinh(requestData);
+    if (response.statusCode === "200") {
+      refresh();
+      close();
+      messageApi.open({
+        type: "success",
+        content: "Thêm mới giải trình thành công",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
+      form2.resetFields();
+    } else {
+      console.log(response.message);
+    }
+
+    setCreateExplanationShow(false);
   };
 
   const onFinish = async (values: any) => {
@@ -155,7 +192,6 @@ const MonthlyReportDrawer = (props: any) => {
           },
           duration: 1.5,
         });
-        setCreateRequestShow(false);
         form.resetFields();
         setRequestType(0);
       } else {
@@ -187,7 +223,6 @@ const MonthlyReportDrawer = (props: any) => {
           },
           duration: 1.5,
         });
-        setCreateRequestShow(false);
         form.resetFields();
         setRequestType(0);
       } else {
@@ -218,7 +253,6 @@ const MonthlyReportDrawer = (props: any) => {
           },
           duration: 1.5,
         });
-        setCreateRequestShow(false);
         form.resetFields();
         setRequestType(0);
       } else {
@@ -251,13 +285,22 @@ const MonthlyReportDrawer = (props: any) => {
           },
           duration: 1.5,
         });
-        setCreateRequestShow(false);
         form.resetFields();
         setRequestType(0);
       } else {
         console.log(response.message);
       }
     }
+
+    setCreateRequestShow(false);
+  };
+
+  const handleUpdateAndViewRequest = (data: any) => {
+    console.log("Thong Tin Don: ", data);
+
+    setRequestType(data.loaiDon);
+    setRequestData(data);
+    setCreateRequestShow(true);
   };
 
   const timeDiff = (tangCaTu: string, tangCaDen: string) => {
@@ -304,8 +347,17 @@ const MonthlyReportDrawer = (props: any) => {
                 padding: "0 16px",
               }}
             >
-              <span>Quỹ nghỉ bù hiện có: </span>
-              <span>960</span>
+              <Form.Item
+                labelCol={{ style: { width: 180, textAlign: "left" } }}
+                name="quyNghiBuHienCo"
+                label="Quỹ nghỉ bù hiện có"
+                className="input-right-align"
+                wrapperCol={{
+                  style: { width: 180 },
+                }}
+              >
+                <b style={{ width: "70px", color: "#996B4D" }}>960</b>
+              </Form.Item>
             </Space>
             <Space
               style={{
@@ -315,9 +367,20 @@ const MonthlyReportDrawer = (props: any) => {
                 padding: "0 16px",
               }}
             >
-              <span>Số phút xin bù: </span>
-              <Form.Item name="soPhutXinBu">
-                <Input type={"number"} />
+              <Form.Item
+                labelCol={{ style: { width: 180, textAlign: "left" } }}
+                name="soPhutXinBu"
+                label="Số phút xin bù"
+                className="input-right-align"
+                wrapperCol={{
+                  style: { width: 180 },
+                }}
+              >
+                <Input
+                  value={requestData?.soPhutXinBu}
+                  style={{ width: "70px" }}
+                  type={"number"}
+                />
               </Form.Item>
             </Space>
             <Space
@@ -331,9 +394,9 @@ const MonthlyReportDrawer = (props: any) => {
               <span>Lý do: </span>
               <Form.Item name="lyDo">
                 <TextArea
+                  value={requestData?.lyDo}
                   style={{ width: "420px" }}
                   rows={4}
-                  value={data?.lyDo}
                 />
               </Form.Item>
             </Space>
@@ -350,8 +413,22 @@ const MonthlyReportDrawer = (props: any) => {
                 padding: "0 16px",
               }}
             >
-              <span>Quỹ nghỉ phép hiện có: </span>
-              <span>960</span>
+              <Form.Item
+                labelCol={{ style: { width: 180, textAlign: "left" } }}
+                name="quyNghiBuHienCo"
+                label="Quỹ nghỉ phép hiện có"
+                className="input-right-align"
+                wrapperCol={{
+                  style: { width: 180 },
+                }}
+              >
+                <Input
+                  style={{ width: "70px" }}
+                  type={"number"}
+                  defaultValue="960"
+                  disabled
+                />
+              </Form.Item>
             </Space>
             <Space
               direction="vertical"
@@ -361,12 +438,12 @@ const MonthlyReportDrawer = (props: any) => {
                 width: "100%",
               }}
             >
-              <p>Lý do: </p>
+              <span>Lý do: </span>
               <Form.Item name="lyDo">
                 <TextArea
-                  style={{ width: "100%" }}
+                  value={requestData?.lyDo}
+                  style={{ width: "420px" }}
                   rows={4}
-                  value={data?.lyDo}
                 />
               </Form.Item>
             </Space>
@@ -378,16 +455,25 @@ const MonthlyReportDrawer = (props: any) => {
             <Space
               style={{
                 display: "flex",
-                justifyContent: "space-between",
                 color: "#996B4D",
                 padding: "0 16px",
               }}
             >
               <Form.Item label="Từ ngày: " name="tuNgay">
-                <DatePicker placeholder="Chọn ngày" format={"DD/MM/YYYY"} />
+                <DatePicker
+                  style={{ width: "120px" }}
+                  placeholder="Chọn ngày"
+                  format={"DD/MM/YYYY"}
+                  value={requestData.tuNgay}
+                />
               </Form.Item>
               <Form.Item label="Đến ngày: " name="denNgay">
-                <DatePicker placeholder="Chọn ngày" format={"DD/MM/YYYY"} />
+                <DatePicker
+                  style={{ width: "120px" }}
+                  placeholder="Chọn ngày"
+                  format={"DD/MM/YYYY"}
+                  value={requestData.denNgay}
+                />
               </Form.Item>
             </Space>
             <Space
@@ -398,9 +484,13 @@ const MonthlyReportDrawer = (props: any) => {
                 width: "100%",
               }}
             >
-              <p>Lý do: </p>
+              <span>Lý do: </span>
               <Form.Item name="lyDo">
-                <TextArea style={{ width: "100%" }} rows={4} />
+                <TextArea
+                  value={requestData.lyDo}
+                  style={{ width: "420px" }}
+                  rows={4}
+                />
               </Form.Item>
             </Space>
           </>
@@ -411,16 +501,23 @@ const MonthlyReportDrawer = (props: any) => {
             <Space
               style={{
                 display: "flex",
-                justifyContent: "space-between",
                 color: "#996B4D",
                 padding: "0 16px",
               }}
             >
               <Form.Item label="Tăng ca từ" name="tangCaTu">
-                <TimePicker />
+                <TimePicker
+                  style={{ width: "100px" }}
+                  placeholder="Vui lòng chọn"
+                  value={requestData.tangCaTu}
+                />
               </Form.Item>
-              <Form.Item label="Tăng ca đến" name="tangCaDen">
-                <TimePicker />
+              <Form.Item label="đến: " name="tangCaDen">
+                <TimePicker
+                  style={{ width: "100px" }}
+                  placeholder="Vui lòng chọn"
+                  value={requestData.tangCaDen}
+                />
               </Form.Item>
             </Space>
             <Space
@@ -432,7 +529,8 @@ const MonthlyReportDrawer = (props: any) => {
               }}
             >
               <span>
-                Quy đổi số phút: {timeDiff(data?.tangCaTu, data?.tangCaDen)}
+                Quy đổi số phút:{" "}
+                {timeDiff(requestData?.tangCaTu, requestData?.tangCaDen)}
               </span>
             </Space>
             <Space
@@ -443,9 +541,13 @@ const MonthlyReportDrawer = (props: any) => {
                 width: "100%",
               }}
             >
-              <p>Lý do: </p>
+              <span>Lý do: </span>
               <Form.Item name="lyDo">
-                <TextArea style={{ width: "420px" }} rows={4} />
+                <TextArea
+                  value={requestData.lyDo}
+                  style={{ width: "420px" }}
+                  rows={4}
+                />
               </Form.Item>
             </Space>
           </>
@@ -456,8 +558,6 @@ const MonthlyReportDrawer = (props: any) => {
   };
 
   useEffect(() => {
-    console.log("Ngay an vao la: ", date);
-
     const getDate = dayjs(new Date(dateFull));
     let startDate = new Date(getDate.year(), getDate.month(), date + 1);
     const currently = new Date(getDate.year(), getDate.month(), date);
@@ -475,7 +575,6 @@ const MonthlyReportDrawer = (props: any) => {
   }, [dateFull]);
 
   useEffect(() => {
-    console.log(data);
     const getDate = dayjs(new Date(dateFull));
     let startDate = new Date(getDate.year(), getDate.month(), date + 1);
     if (data) {
@@ -506,7 +605,8 @@ const MonthlyReportDrawer = (props: any) => {
       {contextHolder}
       <Drawer
         className="monthly-drawer"
-        size="default"
+        // size="default"
+        width={350}
         placement="right"
         onClose={close}
         open={show}
@@ -523,6 +623,28 @@ const MonthlyReportDrawer = (props: any) => {
                 <Space direction="vertical" style={{ width: "100%" }}>
                   <Space style={{ display: "flex", justifyContent: "center" }}>
                     <h2 style={{ color: "#b98868" }}>Ca Làm Việc</h2>
+                  </Space>
+                  <Space
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      color: "#996B4D",
+                      padding: "8px",
+                    }}
+                  >
+                    <span>Tên nhân viên: </span>
+                    <span>{data?.hoTen}</span>
+                  </Space>
+                  <Space
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      color: "#996B4D",
+                      padding: "8px",
+                    }}
+                  >
+                    <span>Ngày: </span>
+                    <span>{dayjs(currentDate).format("DD/MM/YYYY")}</span>
                   </Space>
                   <Space
                     style={{
@@ -696,7 +818,7 @@ const MonthlyReportDrawer = (props: any) => {
                       display: "flex",
                       justifyContent: "space-between",
                       color: "#996B4D",
-                      padding: "8px",
+                      padding: "0px 8px 32px 8px",
                     }}
                   >
                     <span>Lần 1:</span>
@@ -726,7 +848,13 @@ const MonthlyReportDrawer = (props: any) => {
                       paddingBottom: "1rem",
                     }}
                   >
-                    <h2 style={{ textAlign: "center", color: "#b98868" }}>
+                    <h2
+                      style={{
+                        textAlign: "center",
+                        color: "#b98868",
+                        margin: "0",
+                      }}
+                    >
                       Danh sách đơn
                     </h2>
                     {listRequestData?.listDonBu.map((item, index) => (
@@ -734,6 +862,7 @@ const MonthlyReportDrawer = (props: any) => {
                         bodyStyle={{ padding: "0 10px" }}
                         key={index}
                         size="small"
+                        onClick={() => handleUpdateAndViewRequest(item)}
                       >
                         <p
                           style={{
@@ -815,6 +944,7 @@ const MonthlyReportDrawer = (props: any) => {
                         bodyStyle={{ padding: "0 10px" }}
                         key={index + 1000}
                         size="small"
+                        onClick={() => handleUpdateAndViewRequest(item)}
                       >
                         <p
                           style={{
@@ -896,6 +1026,7 @@ const MonthlyReportDrawer = (props: any) => {
                         bodyStyle={{ padding: "0 10px" }}
                         key={index + 2000}
                         size="small"
+                        onClick={() => handleUpdateAndViewRequest(item)}
                       >
                         <p
                           style={{
@@ -977,6 +1108,7 @@ const MonthlyReportDrawer = (props: any) => {
                         bodyStyle={{ padding: "0 10px" }}
                         key={index + 3000}
                         size="small"
+                        onClick={() => handleUpdateAndViewRequest(item)}
                       >
                         <p
                           style={{
@@ -1185,7 +1317,7 @@ const MonthlyReportDrawer = (props: any) => {
                     >
                       <Button
                         onClick={() => {
-                          setCreateRequestShow(true);
+                          setCreateExplanationShow(true);
                         }}
                         type="primary"
                       >
@@ -1299,6 +1431,169 @@ const MonthlyReportDrawer = (props: any) => {
                     ?.chucVu
                 }{" "}
               </span>
+            </Space>
+            <Space
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#996B4D",
+                padding: "0 16px",
+                marginTop: "24px",
+              }}
+            >
+              <b>Nội dung chi tiết đơn: </b>
+            </Space>
+            <Space
+              style={{
+                display: "flex",
+                color: "#996B4D",
+                padding: "0 16px",
+              }}
+            >
+              <Form.Item
+                labelCol={{ style: { width: 180, textAlign: "left" } }}
+                label="Loại đơn"
+                name="loaiDon"
+              >
+                <Select value={requestType} onChange={handleRequestType}>
+                  <Option value={1}>Đơn bù</Option>
+                  <Option value={2}>Đơn con nhỏ</Option>
+                  <Option value={3}>Đơn phép</Option>
+                  <Option value={4}>Đơn tăng ca</Option>
+                </Select>
+              </Form.Item>
+            </Space>
+            {renderManageView(requestType)}
+          </Space>
+        </Form>
+      </Modal>
+      <Modal
+        className="manage-request-drawer"
+        closable={false}
+        centered
+        footer={
+          <>
+            <Button
+              type="primary"
+              onClick={() => {
+                form2.submit();
+              }}
+            >
+              {" "}
+              Tạo giải trình{" "}
+            </Button>
+            <Button
+              onClick={() => {
+                setCreateExplanationShow(false);
+                form2.resetFields();
+                setRequestType(0);
+              }}
+            >
+              {" "}
+              Thoát{" "}
+            </Button>
+          </>
+        }
+        open={createExplanationShow}
+        width={500}
+      >
+        <Form
+          className="view-request"
+          form={form2}
+          name="createExplanationModal"
+          onFinish={onCreateExplanation}
+        >
+          <Space direction="vertical" style={{ width: "100%" }}>
+            <Space style={{ display: "flex", justifyContent: "center" }}>
+              <h3 style={{ color: "#b98868" }}>Giải trình nhân viên</h3>
+            </Space>
+            <Space
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#996B4D",
+                padding: "0 16px",
+              }}
+            >
+              <b>Thông tin chi tiết nhân viên</b>
+            </Space>
+            <Space
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#996B4D",
+                padding: "0 16px",
+              }}
+            >
+              <span>Họ tên nhân viên: {data?.hoTen} </span>
+              <span>Ngày tạo: {dayjs(new Date()).format("DD/MM/YYYY")}</span>
+            </Space>
+            <Space
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#996B4D",
+                padding: "0 16px",
+              }}
+            >
+              <span>Mã nhân viên: {data?.maNhanVien} </span>
+              <span>
+                Ngày làm việc: {dayjs(currentDate).format("DD/MM/YYYY")}
+              </span>
+            </Space>
+            <Space
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#996B4D",
+                padding: "0 16px",
+              }}
+            >
+              <span>Phòng ban: {data?.phongBan} </span>
+            </Space>
+            <Space
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#996B4D",
+                padding: "0 16px",
+              }}
+            >
+              <span>
+                Chức vụ:{" "}
+                {
+                  employeeData?.find((e) => e.maNhanVien === data?.maNhanVien)
+                    ?.chucVu
+                }{" "}
+              </span>
+            </Space>
+            <Space
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#996B4D",
+                padding: "0 16px",
+              }}
+            >
+              <Form.Item label="Loại giải trình" name="loaiGiaiTrinh">
+                <Select>
+                  <Option value="Đi muộn">Đi muộn</Option>
+                  <Option value="Về sớm">Về sớm</Option>
+                </Select>
+              </Form.Item>
+            </Space>
+            <Space
+              direction="vertical"
+              style={{
+                color: "#996B4D",
+                padding: "0 16px",
+                width: "100%",
+              }}
+            >
+              <span>Lý do: </span>
+              <Form.Item name="lyDo">
+                <TextArea style={{ width: "420px" }} rows={4} />
+              </Form.Item>
             </Space>
           </Space>
         </Form>

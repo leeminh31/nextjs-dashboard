@@ -33,8 +33,6 @@ const CreateContract = (props: any) => {
   };
 
   const onFinish = async (values: any) => {
-    console.log(values);
-
     let dateStart = new Date(values.ngayBatDauHopDong);
     let dateEnd = new Date(values.ngayKetThucHopDong);
 

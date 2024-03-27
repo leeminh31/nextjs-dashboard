@@ -28,7 +28,6 @@ const ViewEmployeeList = (props: any) => {
   ) => {
     let response = await PhongBanApi.getPhongBan(searchRequest);
     if (response.statusCode === "200") {
-      console.log(response.data);
       setDepartments(response.data);
     } else {
       console.log(response.message);

@@ -1,24 +1,39 @@
-'use client'
+"use client";
 
-import React, { use, useEffect, useState } from 'react';
-import { Button, Table, Row,Col, Space, Drawer, Upload, Form, Input, Select, TimePicker, Radio, theme, message } from 'antd';
+import React, { use, useEffect, useState } from "react";
 import {
-    EditTwoTone,
-    EyeTwoTone,
-    HistoryOutlined,
-    ExportOutlined,
-    UploadOutlined,
-    DownloadOutlined,
-  } from '@ant-design/icons';
-import type { ColumnsType } from 'antd/es/table';
-import CreateShiftList from './create-shift-list';
-import UpdateShiftList from './update-shift-list';
-import CaLamViecApi from '@/app/api/calamviec';
-import { CaLamViecResponse } from '@/app/models/calamviec/calamviec-response';
-import { NhanVienResponse } from '@/app/models/nhanvien/nhanvien-response';
-import NhanVienApi from '@/app/api/nhanvien';
-import { SearchNhanVienRequest } from '@/app/models/nhanvien/search-nhanvien-request';
-import { TableRowSelection } from 'antd/es/table/interface';
+  Button,
+  Table,
+  Row,
+  Col,
+  Space,
+  Drawer,
+  Upload,
+  Form,
+  Input,
+  Select,
+  TimePicker,
+  Radio,
+  theme,
+  message,
+} from "antd";
+import {
+  EditTwoTone,
+  EyeTwoTone,
+  HistoryOutlined,
+  ExportOutlined,
+  UploadOutlined,
+  DownloadOutlined,
+} from "@ant-design/icons";
+import type { ColumnsType } from "antd/es/table";
+import CreateShiftList from "./create-shift-list";
+import UpdateShiftList from "./update-shift-list";
+import CaLamViecApi from "@/app/api/calamviec";
+import { CaLamViecResponse } from "@/app/models/calamviec/calamviec-response";
+import { NhanVienResponse } from "@/app/models/nhanvien/nhanvien-response";
+import NhanVienApi from "@/app/api/nhanvien";
+import { SearchNhanVienRequest } from "@/app/models/nhanvien/search-nhanvien-request";
+import { TableRowSelection } from "antd/es/table/interface";
 const { Option } = Select;
 
 interface DataType {
@@ -31,12 +46,10 @@ interface DataType {
   gioKetThucNghi: string;
 }
 
-
-
 const ShiftListTable: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [addOpen, setAddOpen] = useState(false);
-  const [messageApi, contextHolder ] = message.useMessage();
+  const [messageApi, contextHolder] = message.useMessage();
   const [updateOpen, setUpdateOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -48,60 +61,66 @@ const ShiftListTable: React.FC = () => {
   const { token } = theme.useToken();
 
   const formStyle: React.CSSProperties = {
-    maxWidth: 'none',
+    maxWidth: "none",
     background: token.colorBgContainer,
-    marginBottom:'24px',
-    padding:'24px'
+    marginBottom: "24px",
+    padding: "24px",
   };
 
   const columns: ColumnsType<DataType> = [
     {
-      title: 'STT',
-      dataIndex: 'key',
-      width:50,
+      title: "STT",
+      dataIndex: "key",
+      width: 50,
       render: (value, record, index) => {
-          return (
-          <>{(page - 1) * pageSize + index + 1}</>
-          )
-      }
+        return <>{(page - 1) * pageSize + index + 1}</>;
+      },
     },
     {
-        title: 'Tên ca',
-        dataIndex: 'tenCa',
-        width:75
+      title: "Tên ca",
+      dataIndex: "tenCa",
+      width: 75,
     },
     {
-      title: 'Giờ bắt đầu ca',
-      dataIndex: 'gioBatDauCa',
+      title: "Giờ bắt đầu ca",
+      dataIndex: "gioBatDauCa",
     },
     {
-      title: 'Giờ kết thúc ca',
-      dataIndex: 'gioKetThucCa',
+      title: "Giờ kết thúc ca",
+      dataIndex: "gioKetThucCa",
     },
     {
-      title: 'Giờ bắt đầu nghỉ',
-      dataIndex: 'gioBatDauNghi',
+      title: "Giờ bắt đầu nghỉ",
+      dataIndex: "gioBatDauNghi",
     },
     {
-      title: 'Giờ kết thúc nghỉ',
-      dataIndex: 'gioKetThucNghi',
+      title: "Giờ kết thúc nghỉ",
+      dataIndex: "gioKetThucNghi",
     },
     {
-      title: 'Hành động',
-      dataIndex: 'action',
-      fixed:'right',
-      align:'center',
-      width:150,
+      title: "Hành động",
+      dataIndex: "action",
+      fixed: "right",
+      align: "center",
+      width: 150,
       render: (value, record) => {
-          return (
-              <Space style={{gap:'16px'}}>
-                  <Button icon={<EditTwoTone />} style={{backgroundColor:'transparent', border:'none', boxShadow:'none'}} onClick={() => onUpdate(record)}></Button>
-              </Space>
-          )
-      }
+        return (
+          <Space style={{ gap: "16px" }}>
+            <Button
+              icon={<EditTwoTone />}
+              style={{
+                backgroundColor: "transparent",
+                border: "none",
+                boxShadow: "none",
+              }}
+              onClick={() => onUpdate(record)}
+            ></Button>
+          </Space>
+        );
+      },
     },
   ];
-  
+
   const tableData: DataType[] = [];
   for (let i = 0; i < shiftList?.length; i++) {
     tableData.push({
@@ -117,8 +136,12 @@ const ShiftListTable: React.FC = () => {
 
   const rowSelection: TableRowSelection<DataType> = {
     onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-      setSelectedRowKeys(selectedRowKeys)
+      console.log(
+        `selectedRowKeys: ${selectedRowKeys}`,
+        "selectedRows: ",
+        selectedRows,
+      );
+      setSelectedRowKeys(selectedRowKeys);
     },
     onSelect: (record, selected, selectedRows) => {
       console.log(record, selected, selectedRows);
@@ -128,104 +151,94 @@ const ShiftListTable: React.FC = () => {
     },
   };
 
-  const getEmployeeByParams = async (searchRequest :SearchNhanVienRequest) => {
+  const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
     let response = await NhanVienApi.getNhanVien(searchRequest);
-    if(response.statusCode === '200' || response.statusCode === '545') {
-        setEmployeeData(response.data)
+    if (response.statusCode === "200" || response.statusCode === "545") {
+      setEmployeeData(response.data);
+    } else {
+      console.log(response.message);
     }
-    else {
-        console.log(response.message)
-    }
-  }
+  };
 
-  const getShiftName = async (maCa: number | null, tenCa:string | null) => {
-    let response = await CaLamViecApi.getCaLamViec(maCa,tenCa);
-    if(response?.statusCode === '200') {
-      setShiftList(response.data.reverse())
-      setTotalRecords(response.data?.length)
-    } else if (response.statusCode === '545') {
-      setShiftList(response.data)
-      setTotalRecords(0)
+  const getShiftName = async (maCa: number | null, tenCa: string | null) => {
+    let response = await CaLamViecApi.getCaLamViec(maCa, tenCa);
+    if (response?.statusCode === "200") {
+      setShiftList(response.data.reverse());
+      setTotalRecords(response.data?.length);
+    } else if (response.statusCode === "545") {
+      setShiftList(response.data);
+      setTotalRecords(0);
+    } else {
+      console.log(response.message);
     }
-    else {
-        console.log(response.message)
-    }
-}
-  const onUpdate = (record:any) => {
-    setUpdateData(record)
-    setUpdateOpen(true)
-  }
+  };
+  const onUpdate = (record: any) => {
+    setUpdateData(record);
+    setUpdateOpen(true);
+  };
 
   const deleteShiftLists = async (selectedRowKeys: any) => {
-    
     let response = await CaLamViecApi.deleteCaLamViec(selectedRowKeys);
-    if(response.statusCode === '200'){
-      refresh()
+    if (response.statusCode === "200") {
+      refresh();
       messageApi.open({
-        type: 'success',
-        content: 'Xóa ca làm việc thành công',
-        className: 'custom-class',
+        type: "success",
+        content: "Xóa ca làm việc thành công",
+        className: "custom-class",
         style: {
-            fontSize:'16px'
+          fontSize: "16px",
         },
         duration: 1.5,
       });
+    } else {
+      console.log(response.message);
     }
-    else {
-      console.log(response.message)
-    }
-  }
+  };
 
   const onDelete = () => {
-
-    if(selectedRowKeys.length ==0) {
+    if (selectedRowKeys.length == 0) {
       messageApi.open({
-        type: 'error',
-        content: 'Vui lòng chọn ít nhất một ca làm việc!',
-        className: 'custom-class',
+        type: "error",
+        content: "Vui lòng chọn ít nhất một ca làm việc!",
+        className: "custom-class",
         style: {
-            fontSize:'16px'
+          fontSize: "16px",
         },
         duration: 1.5,
       });
-      return
+      return;
     }
 
     let flag = false;
     selectedRowKeys.forEach((value) => {
-      if(employeeData.some((item) => item.maCa == value))
-      {
+      if (employeeData.some((item) => item.maCa == value)) {
         flag = true;
       }
-    })
+    });
 
-    if(flag)
-    {
+    if (flag) {
       messageApi.open({
-        type: 'error',
-        content: 'Ca làm việc này đang có nhân viên, bạn không được phép xóa!',
-        className: 'custom-class',
+        type: "error",
+        content: "Ca làm việc này đang có nhân viên, bạn không được phép xóa!",
+        className: "custom-class",
         style: {
-            fontSize:'16px'
+          fontSize: "16px",
         },
         duration: 1.5,
       });
-      return
+      return;
     }
-      
 
-    const shiftListsId = selectedRowKeys.join(',');
+    const shiftListsId = selectedRowKeys.join(",");
     deleteShiftLists(shiftListsId);
-  }
+  };
 
-  const refresh = ( ) => {
-    getShiftName(null,null)
-  }
+  const refresh = () => {
+    getShiftName(null, null);
+  };
 
   const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
-
-    getShiftName(null, values.tenCa?.trimStart().trimEnd())
+    getShiftName(null, values.tenCa?.trimStart().trimEnd());
   };
 
   useEffect(() => {
@@ -235,25 +248,27 @@ const ShiftListTable: React.FC = () => {
       maNhanVien: null,
       idVanTay: null,
       maPhongBan: null,
-      chucVu: null
-    })
-  },[])
+      chucVu: null,
+    });
+  }, []);
 
   return (
     <>
-    {contextHolder}
-    <Form form={form} name="advanced_search" style={formStyle} onFinish={onFinish}>
+      {contextHolder}
+      <Form
+        form={form}
+        name="advanced_search"
+        style={formStyle}
+        onFinish={onFinish}
+      >
         <Row gutter={24}>
-            <Col span={7}>
-                <Form.Item
-                    name={'tenCa'}
-                    label={'Tên ca'}
-                >
-                    <Input placeholder="Vui lòng nhập Tên ca" />
-                </Form.Item>
-            </Col>
+          <Col span={7}>
+            <Form.Item name={"tenCa"} label={"Tên ca"}>
+              <Input placeholder="Vui lòng nhập Tên ca" />
+            </Form.Item>
+          </Col>
         </Row>
-        <div style={{ textAlign: 'right' }}>
+        <div style={{ textAlign: "right" }}>
           <Space size="small">
             <Button type="primary" htmlType="submit">
               Tìm kiếm
@@ -268,24 +283,59 @@ const ShiftListTable: React.FC = () => {
           </Space>
         </div>
       </Form>
-        <div style={{backgroundColor:'#fff', padding:'24px'}}>
-            <Row justify={'space-between'} style={{marginBottom:'24px'}}>
-                <span style={{textAlign:'center'}}><b>Danh sách ca</b></span>
-                <Col>
-                    <Button type="primary" style={{marginLeft:'12px'}} onClick={() => setAddOpen(true)}>Tạo mới</Button>
-                    <Button type="primary" style={{marginLeft:'12px'}} onClick={() => onDelete()}>Xóa</Button>
-                </Col>
-            </Row>
-            <Table 
-              scroll={{x:1000, y:400}} 
-              rowSelection={rowSelection} 
-              columns={columns} 
-              dataSource={tableData} 
-              pagination={{ showQuickJumper:true, total:totalRecords ,defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30'], locale:{ jump_to: "Đến", page: 'Trang', items_per_page: '/ trang' }, showTotal:(total) => `Tổng ${total} bản ghi`}} 
-            />
-        </div>
-        <CreateShiftList refresh={refresh} show={addOpen} close={() => setAddOpen(false)} />
-        <UpdateShiftList refresh={refresh} data={updateData} show={updateOpen} close={() => setUpdateOpen(false)} />
+      <div style={{ backgroundColor: "#fff", padding: "24px" }}>
+        <Row justify={"space-between"} style={{ marginBottom: "24px" }}>
+          <span style={{ textAlign: "center" }}>
+            <b>Danh sách ca</b>
+          </span>
+          <Col>
+            <Button
+              type="primary"
+              style={{ marginLeft: "12px" }}
+              onClick={() => setAddOpen(true)}
+            >
+              Tạo mới
+            </Button>
+            <Button
+              type="primary"
+              style={{ marginLeft: "12px" }}
+              onClick={() => onDelete()}
+            >
+              Xóa
+            </Button>
+          </Col>
+        </Row>
+        <Table
+          scroll={{ x: 1000, y: 400 }}
+          rowSelection={rowSelection}
+          columns={columns}
+          dataSource={tableData}
+          pagination={{
+            showQuickJumper: true,
+            total: totalRecords,
+            defaultPageSize: 10,
+            showSizeChanger: true,
+            pageSizeOptions: ["10", "20", "30"],
+            locale: {
+              jump_to: "Đến",
+              page: "Trang",
+              items_per_page: "/ trang",
+            },
+            showTotal: (total) => `Tổng ${total} bản ghi`,
+          }}
+        />
+      </div>
+      <CreateShiftList
+        refresh={refresh}
+        show={addOpen}
+        close={() => setAddOpen(false)}
+      />
+      <UpdateShiftList
+        refresh={refresh}
+        data={updateData}
+        show={updateOpen}
+        close={() => setUpdateOpen(false)}
+      />
     </>
   );
 };

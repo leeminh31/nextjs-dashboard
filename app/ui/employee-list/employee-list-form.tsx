@@ -21,7 +21,6 @@ const EmployeeListForm = () => {
   };
 
   const onFinish = async (values: any) => {
-    console.log("Received values of form: ", values);
     const searchData: SearchNhanVienRequest = {
       hoTen: values.hoTen,
       maNhanVien: values.maNhanVien,
@@ -36,7 +35,6 @@ const EmployeeListForm = () => {
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
     let response = await NhanVienApi.getNhanVien(searchRequest);
     if (response.statusCode === "200") {
-      console.log(response.data);
       setDepartments(response.data);
     } else {
       console.log(response.message);
@@ -49,7 +47,6 @@ const EmployeeListForm = () => {
         method: "GET", // or 'PUT'
       });
       const result = await response.json();
-      console.log("Success:", result);
       setDepartments(result.data);
     } catch (error) {
       console.error("Error:", error);

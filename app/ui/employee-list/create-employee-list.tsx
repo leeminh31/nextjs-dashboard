@@ -31,7 +31,6 @@ const CreateEmployeeList = (props: any) => {
   ) => {
     let response = await PhongBanApi.getPhongBan(searchRequest);
     if (response.statusCode === "200") {
-      console.log(response.data);
       setDepartments(response.data);
     } else {
       console.log(response.message);
@@ -43,8 +42,6 @@ const CreateEmployeeList = (props: any) => {
   };
 
   const onFinish = async (values: any) => {
-    console.log(values);
-
     const requestData: CreateNhanVienRequest = {
       maNhanVien: values.maNhanVien,
       hoTen: values.hoTen,
@@ -63,8 +60,6 @@ const CreateEmployeeList = (props: any) => {
       soDienThoai: values.soDienThoai,
       idVanTay: parseInt(values.IDVanTay),
     };
-
-    console.log(requestData);
 
     let response = await NhanVienApi.addNhanVien(requestData);
     if (response.statusCode === "200") {
@@ -92,8 +87,6 @@ const CreateEmployeeList = (props: any) => {
     } else {
       console.log(response.message);
     }
-
-    console.log(response);
   };
 
   useEffect(() => {

@@ -93,7 +93,6 @@ const UpdateDepartmentsList = (props: any) => {
 
   useEffect(() => {
     if (data != null) {
-      console.log(data);
       form.setFieldsValue({
         maPhongBan: data.maPhongBan,
         tenPhongBan: data.tenPhongBan,

@@ -139,8 +139,6 @@ const MonthlyReportTable: React.FC = () => {
   };
 
   const onFinish = (values: any) => {
-    console.log(values);
-
     if (values.maNhanVien || values.tenNhanVien) {
       setIsSearch(true);
       getEmployeeByParams({
@@ -261,7 +259,16 @@ const MonthlyReportTable: React.FC = () => {
     return cols;
   };
 
-  const handleRowClick = (dateNumber: number) => {
+  const handleRowClick = (e: React.MouseEvent, dateNumber: number) => {
+    // Xóa lớp CSS trước
+    const highlightedCells = document.querySelectorAll(".highlighted-cell");
+    highlightedCells.forEach((cell) => {
+      cell.classList.remove("highlighted-cell");
+    });
+
+    // Thêm lớp CSS mới vào ô được click
+    e.currentTarget.classList.add("highlighted-cell");
+
     setOpen(true);
     setCurrentDateClick(dateNumber);
   };
@@ -269,11 +276,7 @@ const MonthlyReportTable: React.FC = () => {
   const generateDataTable = () => {
     const getData: DataType[] = [];
 
-    // const listChildren = timekeepingData.filter((item) => item.maNhanVien);
-    // Lấy ngày hiện tại ở múi giờ của Việt Nam
     const getDate = dayjs(new Date(date)).tz();
-
-    console.log("Tim kiem de", isSearch);
 
     !isSearch
       ? departmentData?.map((x, index) => {
@@ -311,7 +314,7 @@ const MonthlyReportTable: React.FC = () => {
                 const currentDate = startDate.getDate();
                 days[startDate.getDate()] = (
                   <div
-                    onClick={() => handleRowClick(currentDate)}
+                    onClick={(e) => handleRowClick(e, currentDate)}
                     style={{
                       width: "100%",
                       padding: "0 5px",
@@ -329,7 +332,34 @@ const MonthlyReportTable: React.FC = () => {
                         ?.find((day) => day.maNhanVien === employee.maNhanVien)
                         ?.duLieuChamCongResponses?.find(
                           (dlcc) => dlcc.ngayLamViec === currentDate,
-                        )?.gioLamViec || 0}{" "}
+                        )?.gioLamViec! <
+                      monthlyData
+                        ?.find((day) => day.maNhanVien === employee.maNhanVien)
+                        ?.duLieuChamCongResponses?.find(
+                          (dlcc) => dlcc.ngayLamViec === currentDate,
+                        )?.gioLamViecTheoCa! ? (
+                        <span style={{ color: "red" }}>
+                          {" "}
+                          {monthlyData
+                            ?.find(
+                              (day) => day.maNhanVien === employee.maNhanVien,
+                            )
+                            ?.duLieuChamCongResponses?.find(
+                              (dlcc) => dlcc.ngayLamViec === currentDate,
+                            )?.gioLamViec || 0}{" "}
+                        </span>
+                      ) : (
+                        <span>
+                          {" "}
+                          {monthlyData
+                            ?.find(
+                              (day) => day.maNhanVien === employee.maNhanVien,
+                            )
+                            ?.duLieuChamCongResponses?.find(
+                              (dlcc) => dlcc.ngayLamViec === currentDate,
+                            )?.gioLamViec || 0}{" "}
+                        </span>
+                      )}{" "}
                     </span>
                   </div>
                 );
@@ -350,7 +380,7 @@ const MonthlyReportTable: React.FC = () => {
         })
       : departmentData
           ?.filter((c) =>
-            employeeData.some((e) => e.maPhongBan === c.maPhongBan),
+            employeeData?.some((e) => e.maPhongBan === c.maPhongBan),
           )
           .map((x, index) => {
             const childrenData = employeeData
@@ -387,7 +417,7 @@ const MonthlyReportTable: React.FC = () => {
                   const currentDate = startDate.getDate();
                   days[startDate.getDate()] = (
                     <div
-                      onClick={() => handleRowClick(currentDate)}
+                      onClick={(e) => handleRowClick(e, currentDate)}
                       style={{
                         width: "100%",
                         padding: "0 5px",
@@ -399,16 +429,39 @@ const MonthlyReportTable: React.FC = () => {
                       }}
                     >
                       <span> {shiftName} </span>
-                      <span>
-                        {" "}
-                        {monthlyData
-                          ?.find(
-                            (day) => day.maNhanVien === employee.maNhanVien,
-                          )
-                          ?.duLieuChamCongResponses?.find(
-                            (dlcc) => dlcc.ngayLamViec === currentDate,
-                          )?.gioLamViec || 0}{" "}
-                      </span>
+
+                      {monthlyData
+                        ?.find((day) => day.maNhanVien === employee.maNhanVien)
+                        ?.duLieuChamCongResponses?.find(
+                          (dlcc) => dlcc.ngayLamViec === currentDate,
+                        )?.gioLamViec! >
+                      monthlyData
+                        ?.find((day) => day.maNhanVien === employee.maNhanVien)
+                        ?.duLieuChamCongResponses?.find(
+                          (dlcc) => dlcc.ngayLamViec === currentDate,
+                        )?.gioLamViecTheoCa! ? (
+                        <span>
+                          {" "}
+                          {monthlyData
+                            ?.find(
+                              (day) => day.maNhanVien === employee.maNhanVien,
+                            )
+                            ?.duLieuChamCongResponses?.find(
+                              (dlcc) => dlcc.ngayLamViec === currentDate,
+                            )?.gioLamViec || 0}{" "}
+                        </span>
+                      ) : (
+                        <span>
+                          {" "}
+                          {monthlyData
+                            ?.find(
+                              (day) => day.maNhanVien === employee.maNhanVien,
+                            )
+                            ?.duLieuChamCongResponses?.find(
+                              (dlcc) => dlcc.ngayLamViec === currentDate,
+                            )?.gioLamViec || 0}{" "}
+                        </span>
+                      )}
                     </div>
                   );
                   startDate.setDate(startDate.getDate() + 1);
@@ -480,6 +533,16 @@ const MonthlyReportTable: React.FC = () => {
     generateColumns();
     generateDataTable();
   }, [date]);
+
+  // useEffect(() => {
+  //   if (!open) {
+  //     // Xóa lớp CSS trước
+  //     const highlightedCells = document.querySelectorAll(".highlighted-cell");
+  //     highlightedCells.forEach((cell) => {
+  //       cell.classList.remove("highlighted-cell");
+  //     });
+  //   }
+  // }, [open]);
 
   useEffect(() => {
     setSpinning(true);

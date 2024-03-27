@@ -15,9 +15,7 @@ const ContractForm = () => {
     padding: "24px",
   };
 
-  const onFinish = () => {
-    console.log("submit");
-  };
+  const onFinish = () => {};
 
   useEffect(() => {
     setLoading(false);

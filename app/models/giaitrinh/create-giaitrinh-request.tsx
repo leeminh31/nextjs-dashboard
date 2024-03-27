@@ -1,7 +1,9 @@
-export interface CreateGiaiTrinhRequest{
-    code: string,
-    name: string,
-    url: string,
-    status: number,
-    description: string
+export interface CreateGiaiTrinhRequest {
+  ngayTaoGiaiTrinh: Date;
+  ngayLamViec: Date;
+  loaiGiaiTrinh: string;
+  lyDo: string;
+  nguoiDuyet: string;
+  trangThai: string;
+  maNhanVien: string;
 }

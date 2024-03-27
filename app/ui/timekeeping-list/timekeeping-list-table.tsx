@@ -464,8 +464,6 @@ const TimekeepingListTable: React.FC = () => {
   };
 
   const onFinish = (values: any) => {
-    console.log("Received values of form: ", values);
-
     let searchData: SearchDuLieuChamCongRequest = {
       ngayBatDau: null,
       ngayKetThuc: null,

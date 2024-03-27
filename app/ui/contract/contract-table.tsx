@@ -62,7 +62,6 @@ const ContractTable: React.FC = () => {
   const [updateData, setUpdateData] = useState({});
 
   const onUpdate = (record: any) => {
-    console.log("Record", record);
     setUpdateData(record);
     setUpdateOpen(true);
   };
@@ -199,7 +198,6 @@ const ContractTable: React.FC = () => {
   const getEmployeeIdByName = async (hoTen: string) => {
     let response = await NhanVienApi.getAllEmployeeIdByName(hoTen);
     if (response.statusCode === "200") {
-      console.log(response.data);
       setIdList(response.data.reverse());
     } else if (response.statusCode === "545") {
       setIdList(response.data);
@@ -232,7 +230,6 @@ const ContractTable: React.FC = () => {
       let newResult = contractData.filter((item) =>
         idList.includes(item.maNhanVien),
       );
-      console.log(newResult);
       setContractData(newResult);
     }
   }, [idList]);

@@ -12,7 +12,6 @@ const ChangePassword = (props: any) => {
       matKhau: values.matKhau,
     });
     if (response.statusCode === "200") {
-      console.log(response.data);
       close();
     } else {
       console.log(response.message);

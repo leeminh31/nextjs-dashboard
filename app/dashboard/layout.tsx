@@ -56,11 +56,12 @@ const items: MenuItem[] = [
     // getItem('Điều chuyển nhân viên', '/dashboard/staff-transfer'),
   ]),
   getItem(
-    "Báo cáo chấm công",
+    "Quản lý chấm công",
     "sub2",
     <FontAwesomeIcon icon={faCreditCard} />,
     [
       getItem("Danh sách ca", "/dashboard/shift-list"),
+      getItem("Ca làm việc nhân viên", "/dashboard/register-shift"),
       getItem("Báo cáo theo tháng", "/dashboard/monthly-report"),
       getItem("Danh sách chấm công", "/dashboard/timekeeping-list"),
     ],
@@ -161,12 +162,10 @@ export default function LayoutDashboard({
       ? JSON.parse(localStorage.getItem("token"))
       : null;
 
-    console.log("Token", getTokenFromLocalStorage);
-
-    // if (!getTokenFromLocalStorage) {
-    //   router.replace("/login");
-    //   return;
-    // }
+    if (!getTokenFromLocalStorage) {
+      router.replace("/login");
+      return;
+    }
     setUsername(getTokenFromLocalStorage?.hoTen);
     setCurrent(pathname);
     setLoading(false);

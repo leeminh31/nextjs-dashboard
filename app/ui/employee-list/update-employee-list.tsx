@@ -61,8 +61,6 @@ const UpdateEmployeeList = (props: any) => {
       idVanTay: parseInt(values.idVanTay),
     };
 
-    console.log(requestData);
-
     let response = await NhanVienApi.updateNhanVien(requestData);
     if (response.statusCode === "200") {
       refresh();
@@ -123,7 +121,6 @@ const UpdateEmployeeList = (props: any) => {
 
   useEffect(() => {
     if (data != null) {
-      console.log(data);
       form.setFieldsValue({
         maNhanVien: data.maNhanVien,
         hoTen: data.hoTen,

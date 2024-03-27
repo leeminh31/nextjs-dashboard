@@ -112,6 +112,7 @@ const ManageExplanationsTable: React.FC = () => {
   };
 
   const rowSelection: TableRowSelection<DataType> = {
+    selectedRowKeys: selectedRowKeys,
     onChange: (selectedRowKeys, selectedRows) => {
       setSelectedRows(selectedRows);
       setSelectedRowKeys(selectedRowKeys);
@@ -162,15 +163,7 @@ const ManageExplanationsTable: React.FC = () => {
       key: "loaiGiaiTrinh",
       dataIndex: "loaiGiaiTrinh",
       render: (value, record, index) => {
-        return (
-          <>
-            {record.trangThai === "0"
-              ? "Chờ duyệt"
-              : record.trangThai === "1"
-                ? "Đã duyệt"
-                : "Đã hủy"}
-          </>
-        );
+        return <>{record.loaiGiaiTrinh}</>;
       },
     },
     {
@@ -182,8 +175,56 @@ const ManageExplanationsTable: React.FC = () => {
       title: "Trạng thái",
       key: "trangThai",
       dataIndex: "trangThai",
+      width: 130,
       render: (value, record, index) => {
-        return <>{record.loaiGiaiTrinh}</>;
+        return (
+          <>
+            {record.trangThai === "0" ? (
+              <div
+                style={{
+                  border: "1px solid rgb(185, 136, 104)",
+                  borderRadius: "10px",
+                  width: "90px",
+                  textAlign: "center",
+                  display: "inline-block",
+                  padding: "0 10px",
+                }}
+              >
+                Chờ duyệt
+              </div>
+            ) : record.trangThai === "1" ? (
+              <div
+                style={{
+                  border: "1px solid rgb(185, 136, 104)",
+                  borderRadius: "10px",
+                  width: "90px",
+                  textAlign: "center",
+                  display: "inline-block",
+                  padding: "0 10px",
+                  backgroundColor: "#31CD23",
+                  color: "#fff",
+                }}
+              >
+                Đã duyệt
+              </div>
+            ) : (
+              <div
+                style={{
+                  border: "1px solid rgb(185, 136, 104)",
+                  borderRadius: "10px",
+                  width: "90px",
+                  textAlign: "center",
+                  display: "inline-block",
+                  padding: "0 10px",
+                  backgroundColor: "#F95454",
+                  color: "#fff",
+                }}
+              >
+                Đã hủy
+              </div>
+            )}
+          </>
+        );
       },
     },
     {
@@ -210,6 +251,8 @@ const ManageExplanationsTable: React.FC = () => {
   ];
 
   const onApprove = async () => {
+    const getTokenFromLocalStorage = JSON.parse(localStorage.getItem("token")!);
+
     if (!selectedRowKeys.length) {
       messageApi.open({
         type: "error",
@@ -225,6 +268,7 @@ const ManageExplanationsTable: React.FC = () => {
 
     let response = await GiaiTrinhApi.approveExplantion(
       selectedRowKeys.join(","),
+      getTokenFromLocalStorage.hoTen,
     );
 
     if (response?.statusCode === "200") {
@@ -255,6 +299,8 @@ const ManageExplanationsTable: React.FC = () => {
   };
 
   const onReject = async () => {
+    const getTokenFromLocalStorage = JSON.parse(localStorage.getItem("token")!);
+
     if (!selectedRowKeys.length) {
       messageApi.open({
         type: "error",
@@ -271,6 +317,7 @@ const ManageExplanationsTable: React.FC = () => {
 
     let response = await GiaiTrinhApi.rejectExplanation(
       selectedRowKeys.join(","),
+      getTokenFromLocalStorage.hoTen,
     );
     if (response?.statusCode === "200") {
       getListExplanationByParams({
@@ -332,11 +379,6 @@ const ManageExplanationsTable: React.FC = () => {
         (e) => e.maNhanVien === giaitrinh.maNhanVien,
       )!;
 
-      console.log(
-        "GiaiTrinh:",
-        dayjs(giaitrinh.ngayLamViec).format("DD/MM/YYYY"),
-      );
-
       tableData.push({
         key: giaitrinh.maGiaiTrinh,
         hoTen: nhanVien?.hoTen,
@@ -352,9 +394,8 @@ const ManageExplanationsTable: React.FC = () => {
         trangThai: giaitrinh.trangThai,
         lyDo: giaitrinh.lyDo,
         maNhanVien: giaitrinh.maNhanVien,
-        chucVu: employeeData?.find(
-          (e) => e.maNhanVien === giaitrinh.maNhanVien,
-        )!.chucVu!,
+        chucVu: employeeData?.find((e) => e.maNhanVien === giaitrinh.maNhanVien)
+          ?.chucVu!,
         maGiaiTrinh: giaitrinh.maGiaiTrinh,
       });
     });

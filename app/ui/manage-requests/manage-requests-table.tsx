@@ -108,6 +108,8 @@ const ManageRequestsTable: React.FC = () => {
   };
 
   const onApprove = async () => {
+    const getTokenFromLocalStorage = JSON.parse(localStorage.getItem("token")!);
+
     if (!selectedRowKeys.length) {
       messageApi.open({
         type: "error",
@@ -147,6 +149,7 @@ const ManageRequestsTable: React.FC = () => {
       maDonPhep: listDonPhep,
       maDonTangCa: listDonTangCa,
       maDonConNho: listDonConNho,
+      nguoiDuyet: getTokenFromLocalStorage.hoTen,
     });
     if (response?.statusCode === "200") {
       getListRequestByParams({
@@ -176,6 +179,8 @@ const ManageRequestsTable: React.FC = () => {
   };
 
   const onReject = async () => {
+    const getTokenFromLocalStorage = JSON.parse(localStorage.getItem("token")!);
+
     if (!selectedRowKeys.length) {
       messageApi.open({
         type: "error",
@@ -215,6 +220,7 @@ const ManageRequestsTable: React.FC = () => {
       maDonPhep: listDonPhep,
       maDonTangCa: listDonTangCa,
       maDonConNho: listDonConNho,
+      nguoiDuyet: getTokenFromLocalStorage.hoTen,
     });
     if (response?.statusCode === "200") {
       getListRequestByParams({
@@ -399,6 +405,7 @@ const ManageRequestsTable: React.FC = () => {
   };
 
   const rowSelection: TableRowSelection<DataType> = {
+    selectedRowKeys: selectedRowKeys,
     onChange: (selectedRowKeys, selectedRows) => {
       console.log(
         `selectedRowKeys: ${selectedRowKeys}`,
@@ -461,11 +468,13 @@ const ManageRequestsTable: React.FC = () => {
       render: (value, record, index) => {
         return (
           <>
-            {record.trangThai === "0"
-              ? "Chờ duyệt"
-              : record.trangThai === "1"
-                ? "Đã duyệt"
-                : "Đã hủy"}
+            {record.loaiDon === 1
+              ? "Đơn bù"
+              : record.loaiDon === 2
+                ? "Đơn con nhỏ"
+                : record.loaiDon === 3
+                  ? "Đơn phép"
+                  : "Đơn tăng ca"}
           </>
         );
       },
@@ -479,16 +488,54 @@ const ManageRequestsTable: React.FC = () => {
       title: "Trạng thái",
       key: "trangThai",
       dataIndex: "trangThai",
+      width: 130,
       render: (value, record, index) => {
         return (
           <>
-            {record.loaiDon === 1
-              ? "Đơn bù"
-              : record.loaiDon === 2
-                ? "Đơn con nhỏ"
-                : record.loaiDon === 3
-                  ? "Đơn phép"
-                  : "Đơn tăng ca"}
+            {record.trangThai === "0" ? (
+              <div
+                style={{
+                  border: "1px solid rgb(185, 136, 104)",
+                  borderRadius: "10px",
+                  width: "90px",
+                  textAlign: "center",
+                  display: "inline-block",
+                  padding: "0 10px",
+                }}
+              >
+                Chờ duyệt
+              </div>
+            ) : record.trangThai === "1" ? (
+              <div
+                style={{
+                  border: "1px solid rgb(185, 136, 104)",
+                  borderRadius: "10px",
+                  width: "90px",
+                  textAlign: "center",
+                  display: "inline-block",
+                  padding: "0 10px",
+                  backgroundColor: "#31CD23",
+                  color: "#fff",
+                }}
+              >
+                Đã duyệt
+              </div>
+            ) : (
+              <div
+                style={{
+                  border: "1px solid rgb(185, 136, 104)",
+                  borderRadius: "10px",
+                  width: "90px",
+                  textAlign: "center",
+                  display: "inline-block",
+                  padding: "0 10px",
+                  backgroundColor: "#F95454",
+                  color: "#fff",
+                }}
+              >
+                Đã hủy
+              </div>
+            )}
           </>
         );
       },
@@ -517,11 +564,6 @@ const ManageRequestsTable: React.FC = () => {
   ];
 
   const onFinish = (values: any) => {
-    console.log("Received values of form: ", values);
-
-    console.log(values.ngayLamViec);
-    console.log(values.ngayTaoDon);
-
     const requestData: SearchDanhSachDonRequest = {
       tenNhanVien: values.tenNhanVien,
       loaiDon: values.loaiDon,
