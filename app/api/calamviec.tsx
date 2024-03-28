@@ -5,7 +5,7 @@ import RestConnection from "./rest";
 
 const CaLamViecApi = {
   getCaLamViec: async (maca: number | null, tenCa: string | null) => {
-    let rest = new RestConnection();
+    const rest = new RestConnection();
     return rest.getAsync(
       "CaLamViec?" +
         qs.stringify({ maCa: maca, tenCa: tenCa }, { skipNulls: true }),
@@ -13,19 +13,19 @@ const CaLamViecApi = {
   },
 
   addCaLamViec: async (data: CreateCaLamViecRequest) => {
-    let rest = new RestConnection();
-    let payload: CreateCaLamViecRequest = data;
+    const rest = new RestConnection();
+    const payload: CreateCaLamViecRequest = data;
     return rest.postAsync("CaLamViec/create", JSON.stringify(payload));
   },
 
   updateCaLamViec: async (data: UpdateCaLamViecRequest) => {
-    let rest = new RestConnection();
-    let payload: UpdateCaLamViecRequest = data;
+    const rest = new RestConnection();
+    const payload: UpdateCaLamViecRequest = data;
     return rest.postAsync("CaLamViec/update", JSON.stringify(payload));
   },
 
   deleteCaLamViec: async (data: string) => {
-    let rest = new RestConnection();
+    const rest = new RestConnection();
     return rest.deleteAsync(`CaLamViec?id=` + data);
   },
 };

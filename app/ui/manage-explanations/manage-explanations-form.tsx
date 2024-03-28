@@ -13,12 +13,10 @@ import {
 } from "antd";
 import React, { useEffect, useState } from "react";
 const { Option } = Select;
-const { RangePicker } = DatePicker;
 
 const ManageExplanationsForm = () => {
   const { token } = theme.useToken();
   const [form] = Form.useForm();
-  const [expand, setExpand] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const formStyle: React.CSSProperties = {

@@ -1,14 +1,12 @@
 "use client";
 
 import { Button, Col, DatePicker, Form, Input, Row, Select, theme } from "antd";
-import React, { useState } from "react";
+import React from "react";
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const ManageRequestsForm = () => {
   const { token } = theme.useToken();
-  const [form] = Form.useForm();
-  const [expand, setExpand] = useState(false);
 
   const formStyle: React.CSSProperties = {
     maxWidth: "none",

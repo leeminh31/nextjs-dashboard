@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import HopDongApi from "@/app/api/hopdong";
 import NhanVienApi from "@/app/api/nhanvien";
 import { UpdateHopDongRequest } from "@/app/models/hopdong/update-hopdong-request";
@@ -5,7 +6,6 @@ import { NhanVienResponse } from "@/app/models/nhanvien/nhanvien-response";
 import { SearchNhanVienRequest } from "@/app/models/nhanvien/search-nhanvien-request";
 import { FormatDate } from "@/app/utils/formatDate";
 import { monthDiff } from "@/app/utils/validateInput";
-import type { RadioChangeEvent } from "antd";
 import {
   Button,
   Col,
@@ -26,12 +26,11 @@ const UpdateContract = (props: any) => {
   const [messageApi, contextHolder] = message.useMessage();
   const { show, close, refresh, data } = props;
   const [form] = Form.useForm();
-  const [value, setValue] = useState(false);
   const [employeeData, setEmployeeData] = useState<NhanVienResponse[]>([]);
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
-    let response = await NhanVienApi.getNhanVien(searchRequest);
+    const response = await NhanVienApi.getNhanVien(searchRequest);
     if (response.statusCode === "200") {
       setEmployeeData(response.data.reverse());
     } else if (response.statusCode === "545") {
@@ -41,17 +40,9 @@ const UpdateContract = (props: any) => {
     }
   };
 
-  const closeUpdateDrawer = () => {
-    form.resetFields();
-  };
-
-  const onChange = (e: RadioChangeEvent) => {
-    setValue(e.target.value);
-  };
-
   const onFinish = async (values: any) => {
-    let dateStart = new Date(values.ngayBatDauHopDong);
-    let dateEnd = new Date(values.ngayKetThucHopDong);
+    const dateStart = new Date(values.ngayBatDauHopDong);
+    const dateEnd = new Date(values.ngayKetThucHopDong);
 
     if (dateStart.getTime() >= dateEnd.getTime()) {
       messageApi.open({
@@ -101,15 +92,14 @@ const UpdateContract = (props: any) => {
     const requestData: UpdateHopDongRequest = {
       tenHopDong: values.tenHopDong,
       maNhanVien: values.maNhanVien,
-      ngayBatDauHopDong: FormatDate(values.ngayBatDauHopDong),
-      ngayKetThucHopDong: FormatDate(values.ngayKetThucHopDong),
+      ngayBatDauHopDong: FormatDate(values.ngayBatDauHopDong)!,
+      ngayKetThucHopDong: FormatDate(values.ngayKetThucHopDong)!,
       loaiHopDong: values.loaiHopDong,
       tiLeHuongLuong: values.tyLeHuongLuong,
       gioLamViec: values.gioLamViec,
-      congChuan: values.congChuan,
     };
 
-    let response = await HopDongApi.updateHopDong(requestData);
+    const response = await HopDongApi.updateHopDong(requestData);
     if (response.statusCode === "200") {
       refresh();
       close();

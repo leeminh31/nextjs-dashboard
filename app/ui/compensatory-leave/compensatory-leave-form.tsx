@@ -13,7 +13,6 @@ import {
 } from "antd";
 import React, { useEffect, useState } from "react";
 const { Option } = Select;
-const { RangePicker } = DatePicker;
 
 const CompensatoryLeaveForm = () => {
   const { token } = theme.useToken();

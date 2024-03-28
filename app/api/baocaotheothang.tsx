@@ -5,14 +5,14 @@ import RestConnection from "./rest";
 
 const BaoCaoTheoThangApi = {
   getBaoCaoTheoThang: async (data: SearchBaoCaoTheoThangRequest) => {
-    let rest = new RestConnection();
-    let payload: SearchBaoCaoTheoThangRequest = data;
+    const rest = new RestConnection();
+    const payload: SearchBaoCaoTheoThangRequest = data;
     return rest.postAsync("BaoCaoTheoThang", JSON.stringify(payload));
   },
 
   getBaoCaoTheoThangByDay: async (data: SearchBaoCaoTheoThangByDayRequest) => {
-    let rest = new RestConnection();
-    let payload: SearchBaoCaoTheoThangByDayRequest = data;
+    const rest = new RestConnection();
+    const payload: SearchBaoCaoTheoThangByDayRequest = data;
     return rest.postAsync(
       "BaoCaoTheoThang/GetWorkHour",
       JSON.stringify(payload),
@@ -20,8 +20,8 @@ const BaoCaoTheoThangApi = {
   },
 
   getBaoCaoTheoThangAll: async (data: SearchDuLieuChamCongRequest) => {
-    let rest = new RestConnection();
-    let payload: SearchDuLieuChamCongRequest = data;
+    const rest = new RestConnection();
+    const payload: SearchDuLieuChamCongRequest = data;
     return rest.postAsync("BaoCaoTheoThang/GetAll", JSON.stringify(payload));
   },
 };

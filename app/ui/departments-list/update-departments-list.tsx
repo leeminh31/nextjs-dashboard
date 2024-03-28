@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import NhanVienApi from "@/app/api/nhanvien";
 import PhongBanApi from "@/app/api/phongban";
 import { NhanVienResponse } from "@/app/models/nhanvien/nhanvien-response";
@@ -25,7 +26,7 @@ const UpdateDepartmentsList = (props: any) => {
   const [employeeData, setEmployeeData] = useState<NhanVienResponse[]>([]);
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
-    let response = await NhanVienApi.getNhanVien(searchRequest);
+    const response = await NhanVienApi.getNhanVien(searchRequest);
     if (response.statusCode === "200") {
       setEmployeeData(response.data);
     } else if (response.statusCode === "545") {
@@ -44,7 +45,7 @@ const UpdateDepartmentsList = (props: any) => {
       soLanChamCong: values.soLanChamCong,
     };
 
-    let response = await PhongBanApi.updatePhongBan(requestData);
+    const response = await PhongBanApi.updatePhongBan(requestData);
     if (response.statusCode === "200") {
       refresh();
       close();
@@ -202,7 +203,7 @@ const UpdateDepartmentsList = (props: any) => {
               ]}
             >
               <Select showSearch optionFilterProp="value">
-                {employeeData?.map((item, index) => {
+                {employeeData?.map((item) => {
                   return <Option value={item.hoTen}>{item.hoTen}</Option>;
                 })}
               </Select>
@@ -222,7 +223,7 @@ const UpdateDepartmentsList = (props: any) => {
               ]}
             >
               <Select showSearch optionFilterProp="value">
-                {employeeData?.map((item, index) => {
+                {employeeData?.map((item) => {
                   return <Option value={item.hoTen}>{item.hoTen}</Option>;
                 })}
               </Select>

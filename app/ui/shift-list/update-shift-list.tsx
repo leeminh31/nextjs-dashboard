@@ -1,25 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import CaLamViecApi from "@/app/api/calamviec";
 import { UpdateCaLamViecRequest } from "@/app/models/calamviec/update-calamviec-request";
-import dayjs from "dayjs";
+import { specialCharactersRegex } from "@/app/utils/validateInput";
 import {
   Button,
-  Row,
   Col,
-  Space,
   Drawer,
   Form,
   Input,
-  Select,
+  Row,
+  Space,
   TimePicker,
   message,
 } from "antd";
+import dayjs from "dayjs";
 import { useEffect } from "react";
-import { specialCharactersRegex } from "@/app/utils/validateInput";
 
 const UpdateShiftList = (props: any) => {
   const { refresh, show, close, data } = props;
   const [messageApi, contextHolder] = message.useMessage();
-  const { Option } = Select;
   const [form] = Form.useForm();
 
   const onFinish = async (values: any) => {
@@ -90,7 +89,7 @@ const UpdateShiftList = (props: any) => {
       gioKetThucNghi: dayjs(values.gioKetThucNghi).format("HH:mm:ss"),
     };
 
-    let response = await CaLamViecApi.updateCaLamViec(requestData);
+    const response = await CaLamViecApi.updateCaLamViec(requestData);
     if (response.statusCode === "200") {
       refresh();
       close();

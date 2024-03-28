@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { RadioChangeEvent } from "antd";
 import {
   Button,
   Col,
@@ -227,15 +227,11 @@ const rowSelection: TableRowSelection<DataType> = {
 
 const RegisterShiftTable: React.FC = () => {
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer },
   } = theme.useToken();
-  const [importOpen, setImportOpen] = useState(false);
-  const [addOpen, setAddOpen] = useState(false);
-  const [updateOpen, setUpdateOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
   const [form] = Form.useForm();
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
-  const [value, setValue] = useState(false);
   const [ticketType, setTicketType] = useState(0);
 
   const columns: ColumnsType<DataType> = [
@@ -285,7 +281,7 @@ const RegisterShiftTable: React.FC = () => {
       key: "status",
       dataIndex: "status",
       render: (status) => {
-        let color =
+        const color =
           status === "Đã duyệt"
             ? "green"
             : status === "Chờ duyệt"
@@ -299,7 +295,7 @@ const RegisterShiftTable: React.FC = () => {
       key: "action",
       fixed: "right",
       width: 150,
-      align: "center" as "center",
+      align: "center" as const,
       render: () => (
         <>
           <Button
@@ -316,20 +312,6 @@ const RegisterShiftTable: React.FC = () => {
       ),
     },
   ];
-
-  const closeAddDrawer = () => {
-    setAddOpen(false);
-    form.resetFields();
-  };
-
-  const closeUpdateDrawer = () => {
-    setUpdateOpen(false);
-    form.resetFields();
-  };
-
-  const onChange = (e: RadioChangeEvent) => {
-    setValue(e.target.value);
-  };
 
   const onFinish = (values: any) => {
     console.log("Received values of form: ", values);
@@ -358,9 +340,7 @@ const RegisterShiftTable: React.FC = () => {
             <b>Phân ca làm việc nhân viên</b>
           </span>
           <Row>
-            <Button type="primary" onClick={() => setAddOpen(true)}>
-              Tạo mới
-            </Button>
+            <Button type="primary">Tạo mới</Button>
             <Button type="primary" style={{ marginLeft: "12px" }}>
               Xóa
             </Button>

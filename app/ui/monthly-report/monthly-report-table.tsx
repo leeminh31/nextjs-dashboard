@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import BaoCaoTheoThangApi from "@/app/api/baocaotheothang";
@@ -19,7 +20,6 @@ import {
   Form,
   Input,
   Row,
-  Select,
   Spin,
   Table,
   theme,
@@ -31,8 +31,6 @@ import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import React, { memo, useEffect, useState } from "react";
 import MonthlyReportDrawer from "./monthly-report-drawer";
-const { Option } = Select;
-
 interface DataType {
   key: React.Key;
   STT: number;
@@ -42,7 +40,7 @@ interface DataType {
 
 const MonthlyReportTable: React.FC = () => {
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer },
   } = theme.useToken();
   const { token } = theme.useToken();
   const [form] = Form.useForm();
@@ -74,7 +72,7 @@ const MonthlyReportTable: React.FC = () => {
   const getMonthlyReportByMonth = async (
     searchRequest: SearchDuLieuChamCongRequest,
   ) => {
-    let response =
+    const response =
       await BaoCaoTheoThangApi.getBaoCaoTheoThangAll(searchRequest);
     if (response?.statusCode === "200") {
       setMonthlyData(response?.data.reverse());
@@ -86,7 +84,7 @@ const MonthlyReportTable: React.FC = () => {
   };
 
   const getShiftName = async () => {
-    let response = await CaLamViecApi.getCaLamViec(null, null);
+    const response = await CaLamViecApi.getCaLamViec(null, null);
     if (response?.statusCode === "200") {
       setShiftList(response.data.reverse());
     } else if (response.statusCode === "545") {
@@ -97,7 +95,7 @@ const MonthlyReportTable: React.FC = () => {
   };
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
-    let response = await NhanVienApi.getNhanVien(searchRequest);
+    const response = await NhanVienApi.getNhanVien(searchRequest);
     if (response?.statusCode === "200") {
       setEmployeeData(response.data.reverse());
     } else if (response?.statusCode === "545") {
@@ -110,7 +108,7 @@ const MonthlyReportTable: React.FC = () => {
   const getDepartmentsByParams = async (
     searchRequest: SearchPhongBanRequest,
   ) => {
-    let response = await PhongBanApi.getPhongBan(searchRequest);
+    const response = await PhongBanApi.getPhongBan(searchRequest);
     if (response?.statusCode === "200") {
       setDepartmentData(response?.data);
     } else if (response?.statusCode === "545") {
@@ -158,7 +156,7 @@ const MonthlyReportTable: React.FC = () => {
   };
 
   const generateColumns = () => {
-    let cols: ColumnsType<DataType> = [
+    const cols: ColumnsType<DataType> = [
       {
         title: "STT",
         dataIndex: "STT",
@@ -213,11 +211,11 @@ const MonthlyReportTable: React.FC = () => {
       "Thứ 7",
     ];
 
-    let days = [];
+    const days = [];
 
     // Lấy ngày hiện tại ở múi giờ của Việt Nam
     const getDate = dayjs(new Date(date)).tz();
-    let startDate = new Date(getDate.year(), getDate.month(), 1);
+    const startDate = new Date(getDate.year(), getDate.month(), 1);
     while (startDate.getMonth() === getDate.month()) {
       days.push(new Date(startDate));
       startDate.setDate(startDate.getDate() + 1);
@@ -231,9 +229,8 @@ const MonthlyReportTable: React.FC = () => {
       const dayOfWeekVietnamese = daysOfWeekInVietnamese[dayOfWeekNumber];
 
       // Định dạng ngày theo mẫu "Thứ 2 (D/M)"
-      const formattedDate = `${dayOfWeekVietnamese} (${dateCol.format("DD/MM")})`;
 
-      let column: ColumnsType<DataType> = [
+      const column: ColumnsType<DataType> = [
         {
           title: (
             <>
@@ -244,9 +241,9 @@ const MonthlyReportTable: React.FC = () => {
           dataIndex: dateCol.date(),
           key: dateCol.date(),
           width: 70,
-          onCell: (record, rowIndex) => {
+          onCell: (record) => {
             return {
-              onClick: (ev) => {
+              onClick: () => {
                 setReportData(record);
               },
             };
@@ -306,11 +303,10 @@ const MonthlyReportTable: React.FC = () => {
                 (shift) => shift.maCa === employee.maCa,
               )?.tenCa;
 
-              let days: { [key: string]: React.JSX.Element } = {};
+              const days: { [key: string]: React.JSX.Element } = {};
 
-              let startDate = new Date(getDate.year(), getDate.month(), 1);
+              const startDate = new Date(getDate.year(), getDate.month(), 1);
               while (startDate.getMonth() === getDate.month()) {
-                const currentDay = startDate;
                 const currentDate = startDate.getDate();
                 days[startDate.getDate()] = (
                   <div
@@ -332,12 +328,12 @@ const MonthlyReportTable: React.FC = () => {
                         ?.find((day) => day.maNhanVien === employee.maNhanVien)
                         ?.duLieuChamCongResponses?.find(
                           (dlcc) => dlcc.ngayLamViec === currentDate,
-                        )?.gioLamViec! <
+                        )?.gioLamViec <
                       monthlyData
                         ?.find((day) => day.maNhanVien === employee.maNhanVien)
                         ?.duLieuChamCongResponses?.find(
                           (dlcc) => dlcc.ngayLamViec === currentDate,
-                        )?.gioLamViecTheoCa! ? (
+                        )?.gioLamViecTheoCa ? (
                         <span style={{ color: "red" }}>
                           {" "}
                           {monthlyData
@@ -409,11 +405,10 @@ const MonthlyReportTable: React.FC = () => {
                   (shift) => shift.maCa === employee.maCa,
                 )?.tenCa;
 
-                let days: { [key: string]: React.JSX.Element } = {};
+                const days: { [key: string]: React.JSX.Element } = {};
 
-                let startDate = new Date(getDate.year(), getDate.month(), 1);
+                const startDate = new Date(getDate.year(), getDate.month(), 1);
                 while (startDate.getMonth() === getDate.month()) {
-                  const currentDay = startDate;
                   const currentDate = startDate.getDate();
                   days[startDate.getDate()] = (
                     <div
@@ -434,12 +429,12 @@ const MonthlyReportTable: React.FC = () => {
                         ?.find((day) => day.maNhanVien === employee.maNhanVien)
                         ?.duLieuChamCongResponses?.find(
                           (dlcc) => dlcc.ngayLamViec === currentDate,
-                        )?.gioLamViec! >
+                        )?.gioLamViec >
                       monthlyData
                         ?.find((day) => day.maNhanVien === employee.maNhanVien)
                         ?.duLieuChamCongResponses?.find(
                           (dlcc) => dlcc.ngayLamViec === currentDate,
-                        )?.gioLamViecTheoCa! ? (
+                        )?.gioLamViecTheoCa ? (
                         <span>
                           {" "}
                           {monthlyData

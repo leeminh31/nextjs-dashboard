@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HRMSystemApi } from "@/app/constant/constant";
 import {
   DeleteOutlined,
   DownloadOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
-import { Button, Drawer, Form, message, Row, Space } from "antd";
+import { Button, Drawer, Form, Row, Space, message } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 
 const ImportTimeKeeping = (props: any) => {
@@ -12,7 +13,7 @@ const ImportTimeKeeping = (props: any) => {
   const { show, close, refresh } = props;
   const [messageApi, contextHolder] = message.useMessage();
   const [fileName, setFileName] = useState("");
-  const [form] = Form.useForm();
+  const [] = Form.useForm();
 
   const dowloadFile = async () => {
     fetch(HRMSystemApi + "DuLieuChamCong/dowload", {
@@ -24,7 +25,7 @@ const ImportTimeKeeping = (props: any) => {
     })
       .then((res) => res.blob())
       .then((response) => {
-        var objectURL = URL.createObjectURL(response);
+        const objectURL = URL.createObjectURL(response);
         const link = document.createElement("a");
         link.href = objectURL;
         link.setAttribute("download", "DuLieuChamCong.xlsx");
@@ -72,14 +73,14 @@ const ImportTimeKeeping = (props: any) => {
   };
 
   const formSubmit = () => {
-    let form = new FormData();
+    const form = new FormData();
     form.append("formFile", inputFileRef.current.files[0]);
     uploadFile(form);
   };
 
   const onFileChangeCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files != null) {
-      let form = new FormData();
+      const form = new FormData();
       form.append("formFile", e.target.files[0]);
 
       setFileName(e.target.files[0].name);

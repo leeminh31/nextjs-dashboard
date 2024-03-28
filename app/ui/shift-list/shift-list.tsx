@@ -1,13 +1,12 @@
-import ShiftListForm from "./shift-list-form"
-import ShiftListTable from "./shift-list-table"
+import ShiftListTable from "./shift-list-table";
 
 const ShiftList = () => {
-    return (
-        <>
-            {/* <ShiftListForm/> */}
-            <ShiftListTable/>
-        </>
-    )
-}
+  return (
+    <>
+      {/* <ShiftListForm/> */}
+      <ShiftListTable />
+    </>
+  );
+};
 
-export default ShiftList
+export default ShiftList;

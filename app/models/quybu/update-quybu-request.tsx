@@ -1,8 +1,8 @@
-export interface UpdateQuyBuRequest{
-    id: number,
-    code: string,
-    name: string,
-    url: string,
-    status: number,
-    description: string
+export interface UpdateQuyBuRequest {
+  id: number;
+  code: string;
+  name: string;
+  url: string;
+  status: number;
+  description: string;
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import GiaiTrinhApi from "@/app/api/giaitrinh";
@@ -34,21 +35,21 @@ const { RangePicker } = DatePicker;
 interface DataType {
   key: React.Key;
   maGiaiTrinh: number;
-  hoTen: string;
-  phongBan: string;
+  hoTen: string | undefined;
+  phongBan: string | undefined;
   ngayLamViec: string;
   ngayTaoGiaiTrinh: string;
   loaiGiaiTrinh: string;
   nguoiDuyet: string;
   trangThai: string;
-  chucVu: string;
+  chucVu: string | undefined;
   lyDo: string;
   maNhanVien: string;
 }
 
 const ManageExplanationsTable: React.FC = () => {
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer },
   } = theme.useToken();
   const [messageApi, contextHolder] = message.useMessage();
   const [totalRecords, setTotalRecords] = useState(0);
@@ -59,7 +60,6 @@ const ManageExplanationsTable: React.FC = () => {
   const [employeeData, setEmployeeData] = useState<NhanVienResponse[]>([]);
   const [departmentData, setDepartmentData] = useState<PhongBanResponse[]>([]);
   const [data, setData] = useState<DataType[]>([]);
-  const [selectedRows, setSelectedRows] = useState<DataType[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [form] = Form.useForm();
 
@@ -70,7 +70,7 @@ const ManageExplanationsTable: React.FC = () => {
   };
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
-    let response = await NhanVienApi.getNhanVien(searchRequest);
+    const response = await NhanVienApi.getNhanVien(searchRequest);
     if (response.statusCode === "200" || response.statusCode === "545") {
       setEmployeeData(response.data);
     } else {
@@ -81,7 +81,7 @@ const ManageExplanationsTable: React.FC = () => {
   const getDepartmentsByParams = async (
     searchRequest: SearchPhongBanRequest,
   ) => {
-    let response = await PhongBanApi.getPhongBan(searchRequest);
+    const response = await PhongBanApi.getPhongBan(searchRequest);
     if (response?.statusCode === "200") {
       setDepartmentData(response?.data);
     } else if (response?.statusCode === "545") {
@@ -94,7 +94,7 @@ const ManageExplanationsTable: React.FC = () => {
   const getListExplanationByParams = async (
     searchRequest: SearchGiaiTrinhRequest,
   ) => {
-    let response = await GiaiTrinhApi.getGiaiTrinh(searchRequest);
+    const response = await GiaiTrinhApi.getGiaiTrinh(searchRequest);
     if (response?.statusCode === "200") {
       setData(response?.data);
       setTotalRecords(response?.data.length);
@@ -113,8 +113,7 @@ const ManageExplanationsTable: React.FC = () => {
 
   const rowSelection: TableRowSelection<DataType> = {
     selectedRowKeys: selectedRowKeys,
-    onChange: (selectedRowKeys, selectedRows) => {
-      setSelectedRows(selectedRows);
+    onChange: (selectedRowKeys) => {
       setSelectedRowKeys(selectedRowKeys);
     },
     onSelect: (record, selected, selectedRows) => {
@@ -162,7 +161,7 @@ const ManageExplanationsTable: React.FC = () => {
       title: "Loại giải trình",
       key: "loaiGiaiTrinh",
       dataIndex: "loaiGiaiTrinh",
-      render: (value, record, index) => {
+      render: (value, record) => {
         return <>{record.loaiGiaiTrinh}</>;
       },
     },
@@ -176,7 +175,7 @@ const ManageExplanationsTable: React.FC = () => {
       key: "trangThai",
       dataIndex: "trangThai",
       width: 130,
-      render: (value, record, index) => {
+      render: (value, record) => {
         return (
           <>
             {record.trangThai === "0" ? (
@@ -232,8 +231,8 @@ const ManageExplanationsTable: React.FC = () => {
       key: "action",
       fixed: "right",
       width: 75,
-      align: "center" as "center",
-      render: (value, record, index) => (
+      align: "center" as const,
+      render: (value, record) => (
         <>
           <Button
             style={{
@@ -266,7 +265,7 @@ const ManageExplanationsTable: React.FC = () => {
       return;
     }
 
-    let response = await GiaiTrinhApi.approveExplantion(
+    const response = await GiaiTrinhApi.approveExplantion(
       selectedRowKeys.join(","),
       getTokenFromLocalStorage.hoTen,
     );
@@ -290,7 +289,6 @@ const ManageExplanationsTable: React.FC = () => {
         },
         duration: 1.5,
       });
-      setSelectedRows([]);
       setSelectedRowKeys([]);
       return;
     } else {
@@ -315,7 +313,7 @@ const ManageExplanationsTable: React.FC = () => {
       return;
     }
 
-    let response = await GiaiTrinhApi.rejectExplanation(
+    const response = await GiaiTrinhApi.rejectExplanation(
       selectedRowKeys.join(","),
       getTokenFromLocalStorage.hoTen,
     );
@@ -338,7 +336,6 @@ const ManageExplanationsTable: React.FC = () => {
         },
         duration: 1.5,
       });
-      setSelectedRows([]);
       setSelectedRowKeys([]);
       return;
     } else {
@@ -374,17 +371,17 @@ const ManageExplanationsTable: React.FC = () => {
 
   let tableData: DataType[] = [];
   if (data) {
-    data.map((giaitrinh, index) => {
+    data.map((giaitrinh) => {
       const nhanVien = employeeData?.find(
         (e) => e.maNhanVien === giaitrinh.maNhanVien,
-      )!;
+      );
 
       tableData.push({
         key: giaitrinh.maGiaiTrinh,
         hoTen: nhanVien?.hoTen,
         phongBan: departmentData?.find(
-          (d) => d.maPhongBan === nhanVien.maPhongBan,
-        )?.tenPhongBan!,
+          (d) => d.maPhongBan === nhanVien?.maPhongBan,
+        )?.tenPhongBan,
         ngayLamViec: dayjs(giaitrinh.ngayLamViec).format("DD/MM/YYYY"),
         ngayTaoGiaiTrinh: dayjs(giaitrinh.ngayTaoGiaiTrinh).format(
           "DD/MM/YYYY",
@@ -395,7 +392,7 @@ const ManageExplanationsTable: React.FC = () => {
         lyDo: giaitrinh.lyDo,
         maNhanVien: giaitrinh.maNhanVien,
         chucVu: employeeData?.find((e) => e.maNhanVien === giaitrinh.maNhanVien)
-          ?.chucVu!,
+          ?.chucVu,
         maGiaiTrinh: giaitrinh.maGiaiTrinh,
       });
     });

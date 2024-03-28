@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import PhongBanApi from "@/app/api/phongban";
 import { PhongBanResponse } from "@/app/models/phongban/phongban-response";
 import { SearchPhongBanRequest } from "@/app/models/phongban/search-phongban-request";
@@ -26,7 +27,7 @@ const ViewEmployeeList = (props: any) => {
   const getDepartmentsByParams = async (
     searchRequest: SearchPhongBanRequest,
   ) => {
-    let response = await PhongBanApi.getPhongBan(searchRequest);
+    const response = await PhongBanApi.getPhongBan(searchRequest);
     if (response.statusCode === "200") {
       setDepartments(response.data);
     } else {

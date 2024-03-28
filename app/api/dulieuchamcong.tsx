@@ -5,8 +5,8 @@ import { SearchDuLieuChamCongRequest } from "../models/dulieuchamcong/search-dul
 
 const DuLieuChamCongApi = {
   getHopDong: async (data: SearchDuLieuChamCongRequest) => {
-    let rest = new RestConnection();
-    let payload: SearchDuLieuChamCongRequest = data;
+    const rest = new RestConnection();
+    const payload: SearchDuLieuChamCongRequest = data;
     return rest.postAsync("DuLieuChamCong", JSON.stringify(payload));
   },
 };

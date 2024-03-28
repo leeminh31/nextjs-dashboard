@@ -5,7 +5,7 @@ import RestConnection from "./rest";
 
 export const LoginApi = {
   login: async (tenDangNhap: any, matKhau: any) => {
-    let login: LoginRequestModel = {
+    const login: LoginRequestModel = {
       tenDangNhap: tenDangNhap,
       matKhau: matKhau,
     };
@@ -42,12 +42,12 @@ export const LoginApi = {
   },
 
   changePassword: async (data: ChangePasswordRequest) => {
-    let rest = new RestConnection();
-    let payload: ChangePasswordRequest = data;
+    const rest = new RestConnection();
+    const payload: ChangePasswordRequest = data;
     return rest.postAsync("TaiKhoan/change-password", JSON.stringify(payload));
   },
   getEmployeeId: async () => {
-    let rest = new RestConnection();
+    const rest = new RestConnection();
     return rest.getAsync("TaiKhoan/search");
   },
 };

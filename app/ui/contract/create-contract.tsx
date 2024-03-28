@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import HopDongApi from "@/app/api/hopdong";
 import NhanVienApi from "@/app/api/nhanvien";
 import { CreateHopDongRequest } from "@/app/models/hopdong/create-hopdong-request";
@@ -25,7 +26,6 @@ const CreateContract = (props: any) => {
   const [form] = Form.useForm();
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
   const [messageApi, contextHolder] = message.useMessage();
-  const [value, setValue] = useState(false);
   const [data, setData] = useState<NhanVienResponse[]>([]);
 
   const changeSelect = (e: any) => {
@@ -33,8 +33,8 @@ const CreateContract = (props: any) => {
   };
 
   const onFinish = async (values: any) => {
-    let dateStart = new Date(values.ngayBatDauHopDong);
-    let dateEnd = new Date(values.ngayKetThucHopDong);
+    const dateStart = new Date(values.ngayBatDauHopDong);
+    const dateEnd = new Date(values.ngayKetThucHopDong);
 
     if (dateStart.getTime() >= dateEnd.getTime()) {
       messageApi.open({
@@ -88,15 +88,14 @@ const CreateContract = (props: any) => {
     const requestData: CreateHopDongRequest = {
       tenHopDong: values.tenHopDong,
       maNhanVien: values.maNhanVien,
-      ngayBatDauHopDong: FormatDate(values.ngayBatDauHopDong),
-      ngayKetThucHopDong: FormatDate(values.ngayKetThucHopDong),
+      ngayBatDauHopDong: FormatDate(values.ngayBatDauHopDong)!,
+      ngayKetThucHopDong: FormatDate(values.ngayKetThucHopDong)!,
       loaiHopDong: values.loaiHopDong,
       tiLeHuongLuong: values.tyLeHuongLuong,
       gioLamViec: values.gioLamViec,
-      congChuan: values.congChuan,
     };
 
-    let response = await HopDongApi.addHopDong(requestData);
+    const response = await HopDongApi.addHopDong(requestData);
     if (response.statusCode === "200") {
       refresh();
       close();
@@ -126,7 +125,7 @@ const CreateContract = (props: any) => {
   };
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
-    let response = await NhanVienApi.getNhanVien(searchRequest);
+    const response = await NhanVienApi.getNhanVien(searchRequest);
     if (response.statusCode === "200") {
       setData(response.data.reverse());
     } else if (response.statusCode === "545") {
@@ -215,7 +214,7 @@ const CreateContract = (props: any) => {
                 optionFilterProp="label"
                 placeholder="Vui lòng chọn"
                 onChange={(e) => changeSelect(e)}
-                options={data?.map((item, index) => ({
+                options={data?.map((item) => ({
                   value: item.maNhanVien,
                   label: item.hoTen,
                 }))}

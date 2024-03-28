@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import CaLamViecApi from "@/app/api/calamviec";
@@ -19,7 +20,6 @@ import {
   Form,
   Input,
   Row,
-  Select,
   Table,
   theme,
 } from "antd";
@@ -29,7 +29,6 @@ import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import ImportTimeKeeping from "./timekeeping-list-import";
 
-const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 interface DataType {
@@ -53,177 +52,6 @@ interface DataType {
   chamLan10: string | undefined;
 }
 
-//   {
-//     key: '1',
-//     employee: 'Bùi Thị Yên',
-//     employeeId: 'APG112233',
-//     contract: 'APG112233',
-//     department:'Develope',
-//     role:'BA',
-//     signDate: new Date(Date.now()),
-//     startDate: new Date(Date.now()),
-//     endDate: new Date(Date.now()),
-//     contractType: 'Thử việc',
-//     status: 'Đang chạy'
-//   },
-//   {
-//     key: '2',
-//     employee: 'Bùi Thị Yên',
-//     employeeId: 'APG112233',
-//     contract: 'APG112233',
-//     department:'Develope',
-//     role:'BA',
-//     signDate: new Date(Date.now()),
-//     startDate: new Date(Date.now()),
-//     endDate: new Date(Date.now()),
-//     contractType: 'Thử việc',
-//     status: 'Đang chạy'
-//   },
-//   {
-//     key: '3',
-//     employee: 'Bùi Thị Yên',
-//     employeeId: 'APG112233',
-//     contract: 'APG112233',
-//     department:'Develope',
-//     role:'BA',
-//     signDate: new Date(Date.now()),
-//     startDate: new Date(Date.now()),
-//     endDate: new Date(Date.now()),
-//     contractType: 'Thử việc',
-//     status: 'Nghỉ việc'
-//   },
-//   {
-//     key: '4',
-//     employee: 'Bùi Thị Yên',
-//     employeeId: 'APG112233',
-//     contract: 'APG112233',
-//     department:'Develope',
-//     role:'BA',
-//     signDate: new Date(Date.now()),
-//     startDate: new Date(Date.now()),
-//     endDate: new Date(Date.now()),
-//     contractType: 'Thử việc',
-//     status: 'Nghỉ việc'
-//   },
-//   {
-//     key: '5',
-//     employee: 'Bùi Thị Yên',
-//     employeeId: 'APG112233',
-//     contract: 'APG112233',
-//     department:'Develope',
-//     role:'BA',
-//     signDate: new Date(Date.now()),
-//     startDate: new Date(Date.now()),
-//     endDate: new Date(Date.now()),
-//     contractType: 'Thử việc',
-//     status: 'Đang chạy'
-//   },
-//   {
-//     key: '6',
-//     employee: 'Bùi Thị Yên',
-//     employeeId: 'APG112233',
-//     contract: 'APG112233',
-//     department:'Develope',
-//     role:'BA',
-//     signDate: new Date(Date.now()),
-//     startDate: new Date(Date.now()),
-//     endDate: new Date(Date.now()),
-//     contractType: 'Thử việc',
-//     status: 'Đang chạy'
-//   },
-//   {
-//     key: '7',
-//     employee: 'Bùi Thị Yên',
-//     employeeId: 'APG112233',
-//     contract: 'APG112233',
-//     department:'Develope',
-//     role:'BA',
-//     signDate: new Date(Date.now()),
-//     startDate: new Date(Date.now()),
-//     endDate: new Date(Date.now()),
-//     contractType: 'Thử việc',
-//     status: 'Đang chạy'
-//   },
-//   {
-//     key: '8',
-//     employee: 'Bùi Thị Yên',
-//     employeeId: 'APG112233',
-//     contract: 'APG112233',
-//     department:'Develope',
-//     role:'BA',
-//     signDate: new Date(Date.now()),
-//     startDate: new Date(Date.now()),
-//     endDate: new Date(Date.now()),
-//     contractType: 'Thử việc',
-//     status: 'Đang chạy'
-//   },
-//   {
-//     key: '9',
-//     employee: 'Bùi Thị Yên',
-//     employeeId: 'APG112233',
-//     contract: 'APG112233',
-//     department:'Develope',
-//     role:'BA',
-//     signDate: new Date(Date.now()),
-//     startDate: new Date(Date.now()),
-//     endDate: new Date(Date.now()),
-//     contractType: 'Thử việc',
-//     status: 'Đang chạy'
-//   },
-//   {
-//     key: '10',
-//     employee: 'Bùi Thị Yên',
-//     employeeId: 'APG112233',
-//     contract: 'APG112233',
-//     department:'Develope',
-//     role:'BA',
-//     signDate: new Date(Date.now()),
-//     startDate: new Date(Date.now()),
-//     endDate: new Date(Date.now()),
-//     contractType: 'Thử việc',
-//     status: 'Đang chạy'
-//   },
-//   {
-//     key: '11',
-//     employee: 'Bùi Thị Yên',
-//     employeeId: 'APG112233',
-//     contract: 'APG112233',
-//     department:'Develope',
-//     role:'BA',
-//     signDate: new Date(Date.now()),
-//     startDate: new Date(Date.now()),
-//     endDate: new Date(Date.now()),
-//     contractType: 'Thử việc',
-//     status: 'Đang chạy'
-//   },
-//   {
-//     key: '12',
-//     employee: 'Bùi Thị Yên',
-//     employeeId: 'APG112233',
-//     contract: 'APG112233',
-//     department:'Develope',
-//     role:'BA',
-//     signDate: new Date(Date.now()),
-//     startDate: new Date(Date.now()),
-//     endDate: new Date(Date.now()),
-//     contractType: 'Thử việc',
-//     status: 'Đang chạy'
-//   },
-//   {
-//     key: '13',
-//     employee: 'Bùi Thị Yên',
-//     employeeId: 'APG112233',
-//     contract: 'APG112233',
-//     department:'Develope',
-//     role:'BA',
-//     signDate: new Date(Date.now()),
-//     startDate: new Date(Date.now()),
-//     endDate: new Date(Date.now()),
-//     contractType: 'Thử việc',
-//     status: 'Đang chạy'
-//   },
-// ];
-
 const rowSelection: TableRowSelection<DataType> = {
   onChange: (selectedRowKeys, selectedRows) => {
     console.log(
@@ -242,7 +70,7 @@ const rowSelection: TableRowSelection<DataType> = {
 
 const TimekeepingListTable: React.FC = () => {
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer },
   } = theme.useToken();
   const { token } = theme.useToken();
   const [form] = Form.useForm();
@@ -278,7 +106,7 @@ const TimekeepingListTable: React.FC = () => {
       dataIndex: "idVanTay",
       key: "idVanTay",
       width: 100,
-      render: (value, record, index) => {
+      render: (value, record) => {
         return (
           <>
             {
@@ -295,7 +123,7 @@ const TimekeepingListTable: React.FC = () => {
       dataIndex: "hoTen",
       key: "hoTen",
       width: 200,
-      render: (value, record, index) => {
+      render: (value, record) => {
         return (
           <>
             {
@@ -316,7 +144,7 @@ const TimekeepingListTable: React.FC = () => {
       title: "Phòng ban",
       key: "phongBan",
       dataIndex: "phongBan",
-      render: (value, record, index) => {
+      render: (value, record) => {
         return (
           <>
             {
@@ -342,7 +170,7 @@ const TimekeepingListTable: React.FC = () => {
       key: "caLam",
       dataIndex: "caLam",
       width: 75,
-      render: (value, record, index) => {
+      render: (value, record) => {
         return (
           <>
             {
@@ -413,7 +241,7 @@ const TimekeepingListTable: React.FC = () => {
   const getDepartmentsByParams = async (
     searchRequest: SearchPhongBanRequest,
   ) => {
-    let response = await PhongBanApi.getPhongBan(searchRequest);
+    const response = await PhongBanApi.getPhongBan(searchRequest);
     if (response.statusCode === "200") {
       setDepartmentData(response.data?.reverse());
     } else if (response.statusCode === "545") {
@@ -424,7 +252,7 @@ const TimekeepingListTable: React.FC = () => {
   };
 
   const getShiftName = async () => {
-    let response = await CaLamViecApi.getCaLamViec(null, null);
+    const response = await CaLamViecApi.getCaLamViec(null, null);
     if (response?.statusCode === "200") {
       setShiftList(response.data.reverse());
     } else if (response.statusCode === "545") {
@@ -437,7 +265,7 @@ const TimekeepingListTable: React.FC = () => {
   const getTimeKeepingListByParams = async (
     searchRequest: SearchDuLieuChamCongRequest,
   ) => {
-    let response = await DuLieuChamCongApi.getHopDong(searchRequest);
+    const response = await DuLieuChamCongApi.getHopDong(searchRequest);
     if (response?.statusCode === "200") {
       setTimeKeeping(response.data.reverse());
       setData(response.data.reverse());
@@ -453,7 +281,7 @@ const TimekeepingListTable: React.FC = () => {
   };
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
-    let response = await NhanVienApi.getNhanVien(searchRequest);
+    const response = await NhanVienApi.getNhanVien(searchRequest);
     if (response?.statusCode === "200") {
       setEmployeeData(response.data.reverse());
     } else if (response?.statusCode === "545") {
@@ -464,7 +292,7 @@ const TimekeepingListTable: React.FC = () => {
   };
 
   const onFinish = (values: any) => {
-    let searchData: SearchDuLieuChamCongRequest = {
+    const searchData: SearchDuLieuChamCongRequest = {
       ngayBatDau: null,
       ngayKetThuc: null,
       maNhanVien: values.maNhanVien,

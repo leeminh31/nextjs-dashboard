@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
@@ -217,10 +218,9 @@ const OnLeaveTable: React.FC = () => {
   } = theme.useToken();
   const { token } = theme.useToken();
   const [importOpen, setImportOpen] = useState(false);
-  const [viewOpen, setViewOpen] = useState(false);
   const [form] = Form.useForm();
 
-  const onUpdate = (record: any) => {};
+  const onUpdate = () => {};
 
   const formStyle: React.CSSProperties = {
     maxWidth: "none",
@@ -405,7 +405,7 @@ const OnLeaveTable: React.FC = () => {
           align: "center",
         },
       ],
-      render: (value, record) => {
+      render: () => {
         return (
           <Space style={{ gap: "16px" }}>
             <Button
@@ -415,7 +415,7 @@ const OnLeaveTable: React.FC = () => {
                 border: "none",
                 boxShadow: "none",
               }}
-              onClick={() => onUpdate(record)}
+              onClick={() => onUpdate()}
             ></Button>
           </Space>
         );

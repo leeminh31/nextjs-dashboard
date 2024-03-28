@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { EyeTwoTone } from "@ant-design/icons";
@@ -538,7 +539,7 @@ const CompensatoryLeaveTable: React.FC = () => {
           align: "center",
         },
       ],
-      render: (value, record) => {
+      render: () => {
         return (
           <Space style={{ gap: "16px" }}>
             <Button
@@ -548,7 +549,7 @@ const CompensatoryLeaveTable: React.FC = () => {
                 border: "none",
                 boxShadow: "none",
               }}
-              onClick={() => onUpdate(record)}
+              onClick={() => onUpdate()}
             ></Button>
           </Space>
         );
@@ -556,7 +557,7 @@ const CompensatoryLeaveTable: React.FC = () => {
     },
   ];
 
-  const onUpdate = (record: any) => {};
+  const onUpdate = () => {};
 
   const formStyle: React.CSSProperties = {
     maxWidth: "none",

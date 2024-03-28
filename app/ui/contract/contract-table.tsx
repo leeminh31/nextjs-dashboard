@@ -20,32 +20,15 @@ import {
   theme,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import type { TableRowSelection } from "antd/es/table/interface";
 import React, { useEffect, useState } from "react";
 import CreateContract from "./create-contract";
 import ImportContract from "./import-contract";
 import UpdateContract from "./update-contract";
 const { Option } = Select;
 
-const rowSelection: TableRowSelection<HopDongResponse> = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(
-      `selectedRowKeys: ${selectedRowKeys}`,
-      "selectedRows: ",
-      selectedRows,
-    );
-  },
-  onSelect: (record, selected, selectedRows) => {
-    console.log(record, selected, selectedRows);
-  },
-  onSelectAll: (selected, selectedRows, changeRows) => {
-    console.log(selected, selectedRows, changeRows);
-  },
-};
-
 const ContractTable: React.FC = () => {
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer },
   } = theme.useToken();
   const { token } = theme.useToken();
   const [page, setPage] = useState(1);
@@ -128,8 +111,8 @@ const ContractTable: React.FC = () => {
       dataIndex: "trangThaiHopDong",
       width: 150,
       render: (value, record, index) => {
-        let dateEnd = new Date(record.ngayKetThucHopDong);
-        let color = dateEnd.getTime() < Date.now() ? "volcano" : "green";
+        const dateEnd = new Date(record.ngayKetThucHopDong);
+        const color = dateEnd.getTime() < Date.now() ? "volcano" : "green";
 
         return (
           <Tag color={color} key={index}>
@@ -143,7 +126,7 @@ const ContractTable: React.FC = () => {
       key: "action",
       fixed: "right",
       width: 100,
-      align: "center" as "center",
+      align: "center" as const,
       render: (value, record) => (
         <>
           <Button
@@ -167,7 +150,7 @@ const ContractTable: React.FC = () => {
   };
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
-    let response = await NhanVienApi.getNhanVien(searchRequest);
+    const response = await NhanVienApi.getNhanVien(searchRequest);
     if (response.statusCode === "200") {
       setEmployeeData(response.data.reverse());
     } else if (response.statusCode === "545") {
@@ -183,7 +166,7 @@ const ContractTable: React.FC = () => {
   ) => {
     let tenHopDongParam = null;
     if (tenHopDong !== "") tenHopDongParam = tenHopDong;
-    let response = await HopDongApi.getHopDong(tenHopDongParam, loaiHopDong);
+    const response = await HopDongApi.getHopDong(tenHopDongParam, loaiHopDong);
     if (response.statusCode === "200") {
       setContractData(response.data.reverse());
       setTotalRecords(response.data.length);
@@ -196,7 +179,7 @@ const ContractTable: React.FC = () => {
   };
 
   const getEmployeeIdByName = async (hoTen: string) => {
-    let response = await NhanVienApi.getAllEmployeeIdByName(hoTen);
+    const response = await NhanVienApi.getAllEmployeeIdByName(hoTen);
     if (response.statusCode === "200") {
       setIdList(response.data.reverse());
     } else if (response.statusCode === "545") {
@@ -227,7 +210,7 @@ const ContractTable: React.FC = () => {
 
   useEffect(() => {
     if (idList != []) {
-      let newResult = contractData.filter((item) =>
+      const newResult = contractData.filter((item) =>
         idList.includes(item.maNhanVien),
       );
       setContractData(newResult);

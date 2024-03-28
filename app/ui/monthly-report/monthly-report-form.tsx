@@ -1,13 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { Button, Col, DatePicker, Form, Input, Row, Select, theme } from "antd";
-import React, { useState } from "react";
-const { Option } = Select;
+import { Button, Col, DatePicker, Form, Input, Row, theme } from "antd";
+import React from "react";
 
 const MonthlyReportForm = ({ onChangeDate }: any) => {
   const { token } = theme.useToken();
-  const [form] = Form.useForm();
-  const [expand, setExpand] = useState(false);
 
   const formStyle: React.CSSProperties = {
     maxWidth: "none",

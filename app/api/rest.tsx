@@ -1,4 +1,3 @@
-import { url } from "inspector";
 import { HRMSystemApi } from "../constant/constant";
 
 class RestConnection {
@@ -10,7 +9,7 @@ class RestConnection {
     body: any,
     hasAuth: boolean,
   ) => {
-    var strToken = localStorage.getItem("token");
+    const strToken = localStorage.getItem("token");
     try {
       let token: any;
       if (strToken) token = JSON.parse(strToken);

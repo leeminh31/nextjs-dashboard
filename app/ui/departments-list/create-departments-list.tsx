@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import NhanVienApi from "@/app/api/nhanvien";
 import PhongBanApi from "@/app/api/phongban";
 import { NhanVienResponse } from "@/app/models/nhanvien/nhanvien-response";
@@ -26,7 +27,7 @@ const CreateDepartmentsList = (props: any) => {
   const [form] = Form.useForm();
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
-    let response = await NhanVienApi.getNhanVien(searchRequest);
+    const response = await NhanVienApi.getNhanVien(searchRequest);
     if (response.statusCode === "200") {
       setData(response.data);
     } else if (response.statusCode === "545") {
@@ -44,7 +45,7 @@ const CreateDepartmentsList = (props: any) => {
       soLanChamCong: values.soLanChamCong,
     };
 
-    let response = await PhongBanApi.addPhongBan(requestData);
+    const response = await PhongBanApi.addPhongBan(requestData);
     if (response.statusCode === "200") {
       refresh();
       close();
@@ -159,7 +160,7 @@ const CreateDepartmentsList = (props: any) => {
               wrapperCol={{ span: 24 }}
             >
               <Select showSearch optionFilterProp="value">
-                {data?.map((item, index) => {
+                {data?.map((item) => {
                   return <Option value={item.hoTen}>{item.hoTen}</Option>;
                 })}
               </Select>
@@ -173,7 +174,7 @@ const CreateDepartmentsList = (props: any) => {
               wrapperCol={{ span: 24 }}
             >
               <Select showSearch optionFilterProp="value">
-                {data?.map((item, index) => {
+                {data?.map((item) => {
                   return <Option value={item.hoTen}>{item.hoTen}</Option>;
                 })}
               </Select>

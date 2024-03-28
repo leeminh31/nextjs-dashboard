@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import NhanVienApi from "@/app/api/nhanvien";
 import PhongBanApi from "@/app/api/phongban";
 import { UpdateNhanVienRequest } from "@/app/models/nhanvien/update-nhanvien-request";
@@ -19,7 +20,6 @@ import {
 } from "antd";
 import dayjs from "dayjs";
 import { memo, useEffect, useState } from "react";
-const { Option } = Select;
 
 const UpdateEmployeeList = (props: any) => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -30,7 +30,7 @@ const UpdateEmployeeList = (props: any) => {
   const getDepartmentsByParams = async (
     searchRequest: SearchPhongBanRequest,
   ) => {
-    let response = await PhongBanApi.getPhongBan(searchRequest);
+    const response = await PhongBanApi.getPhongBan(searchRequest);
     if (response.statusCode === "200") setDepartments(response.data);
     else {
       console.log(response.message);
@@ -47,21 +47,21 @@ const UpdateEmployeeList = (props: any) => {
       hoTen: values.hoTen,
       chucVu: values.chucVu,
       mail: values.mail,
-      ngaySinh: FormatDate(values.ngaySinh),
+      ngaySinh: FormatDate(values.ngaySinh)!,
       soCCCD: values.soCCCD,
-      ngayCap: FormatDate(values.ngayCap),
+      ngayCap: FormatDate(values.ngayCap)!,
       queQuan: values.queQuan,
       noiOHienTai: values.noiOHienTai,
       nguoiThanLienHe: values.nguoiThanLienHe,
       soDienThoaiNguoiLienHe: values.soDienThoaiNguoiLienHe,
-      STKNganHang: values.stkNganHang,
+      stkNganHang: values.stkNganHang,
       nganHang: values.nganHang,
       maPhongBan: parseInt(values.maPhongBan),
       soDienThoai: values.soDienThoai,
       idVanTay: parseInt(values.idVanTay),
     };
 
-    let response = await NhanVienApi.updateNhanVien(requestData);
+    const response = await NhanVienApi.updateNhanVien(requestData);
     if (response.statusCode === "200") {
       refresh();
       close();
@@ -250,7 +250,7 @@ const UpdateEmployeeList = (props: any) => {
                 optionFilterProp="label"
                 placeholder="Vui lòng chọn"
                 onChange={(e) => changeSelect(e)}
-                options={departments?.map((item, index) => ({
+                options={departments?.map((item) => ({
                   value: item.maPhongBan,
                   label: item.tenPhongBan,
                 }))}

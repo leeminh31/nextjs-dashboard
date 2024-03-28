@@ -1,28 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import CaLamViecApi from "@/app/api/calamviec";
 import { CreateCaLamViecRequest } from "@/app/models/calamviec/create-calamviec-request";
-import dayjs from "dayjs";
-import { CreateDuLieuChamCongRequest } from "@/app/models/dulieuchamcong/create-dulieuchamcong-request";
+import { specialCharactersRegex } from "@/app/utils/validateInput";
 import {
   Button,
-  Table,
-  Row,
   Col,
-  Space,
   Drawer,
-  Upload,
   Form,
   Input,
-  Select,
+  Row,
+  Space,
   TimePicker,
-  Radio,
   message,
 } from "antd";
-import { specialCharactersRegex } from "@/app/utils/validateInput";
+import dayjs from "dayjs";
 
 const CreateShiftList = (props: any) => {
   const { refresh, show, close } = props;
   const [messageApi, contextHolder] = message.useMessage();
-  const { Option } = Select;
   const [form] = Form.useForm();
 
   const onFinish = async (values: any) => {
@@ -92,7 +87,7 @@ const CreateShiftList = (props: any) => {
       gioKetThucNghi: dayjs(values.gioKetThucNghi).format("HH:mm:ss"),
     };
 
-    let response = await CaLamViecApi.addCaLamViec(requestData);
+    const response = await CaLamViecApi.addCaLamViec(requestData);
     if (response.statusCode === "200") {
       refresh();
       close();

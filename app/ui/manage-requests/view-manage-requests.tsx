@@ -1,29 +1,14 @@
-import PhongBanApi from "@/app/api/phongban";
-import { PhongBanResponse } from "@/app/models/phongban/phongban-response";
-import { SearchPhongBanRequest } from "@/app/models/phongban/search-phongban-request";
-import { Button, Form, Modal, Select, Space } from "antd";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Button, Form, Modal, Space } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-const { Option } = Select;
+import { useEffect } from "react";
 
 const ViewManageRequest = (props: any) => {
   const { show, close, data } = props;
   const [form] = Form.useForm();
-  const [departments, setDepartments] = useState<PhongBanResponse[]>([]);
 
   const onFinish = () => {};
-
-  const getDepartmentsByParams = async (
-    searchRequest: SearchPhongBanRequest,
-  ) => {
-    let response = await PhongBanApi.getPhongBan(searchRequest);
-    if (response.statusCode === "200") {
-      setDepartments(response.data);
-    } else {
-      console.log(response.message);
-    }
-  };
 
   const timeDiff = (tangCaTu: string, tangCaDen: string) => {
     const tangCaTuDate = tangCaTu.split(":").map(Number);
@@ -273,13 +258,7 @@ const ViewManageRequest = (props: any) => {
     }
   }, [data]);
 
-  useEffect(() => {
-    getDepartmentsByParams({
-      tenPhongBan: null,
-      truongPhongBan: null,
-      thuKyPhongBan: null,
-    });
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <Modal

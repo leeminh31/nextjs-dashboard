@@ -1,5 +1,5 @@
-export interface SearchHopDongsRequest{
-    tenHopDong:string ,
-    maNhanVien: string ,
-    loaiHopDong:string ,
+export interface SearchHopDongsRequest {
+  tenHopDong: string;
+  maNhanVien: string;
+  loaiHopDong: string;
 }

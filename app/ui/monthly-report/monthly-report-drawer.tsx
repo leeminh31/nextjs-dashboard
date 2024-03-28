@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import BaoCaoTheoThangApi from "@/app/api/baocaotheothang";
 import CaLamViecApi from "@/app/api/calamviec";
 import DanhSachDonApi from "@/app/api/danhsachdon";
@@ -57,7 +58,8 @@ const MonthlyReportDrawer = (props: any) => {
   >([]);
 
   const getListRequestByParams = async (maNhanVien: string | null) => {
-    let response = await DanhSachDonApi.getDanhSachDonByEmployeeId(maNhanVien);
+    const response =
+      await DanhSachDonApi.getDanhSachDonByEmployeeId(maNhanVien);
     if (response?.statusCode === "200") {
       setListRequestData(response?.data);
     } else if (response?.statusCode === "545") {
@@ -68,7 +70,7 @@ const MonthlyReportDrawer = (props: any) => {
   };
 
   const getListExplanationByParams = async (maNhanVien: string | null) => {
-    let response =
+    const response =
       await GiaiTrinhApi.getDanhSachGiaiTrinhByEmployeeId(maNhanVien);
     if (response?.statusCode === "200") {
       setListExplanationData(response?.data);
@@ -82,7 +84,7 @@ const MonthlyReportDrawer = (props: any) => {
   const getTimekeepingByDay = async (
     searchRequest: SearchBaoCaoTheoThangByDayRequest,
   ) => {
-    let response =
+    const response =
       await BaoCaoTheoThangApi.getBaoCaoTheoThangByDay(searchRequest);
     if (response?.statusCode === "200") {
       setListTimekeeping(response?.data);
@@ -94,7 +96,7 @@ const MonthlyReportDrawer = (props: any) => {
   };
 
   const getShiftName = async () => {
-    let response = await CaLamViecApi.getCaLamViec(null, null);
+    const response = await CaLamViecApi.getCaLamViec(null, null);
     if (response?.statusCode === "200") {
       setShiftList(response?.data.reverse());
     } else if (response?.statusCode === "545") {
@@ -105,7 +107,7 @@ const MonthlyReportDrawer = (props: any) => {
   };
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
-    let response = await NhanVienApi.getNhanVien(searchRequest);
+    const response = await NhanVienApi.getNhanVien(searchRequest);
     if (response?.statusCode === "200") {
       setEmployeeData(response?.data.reverse());
     } else if (response?.statusCode === "545") {
@@ -127,10 +129,10 @@ const MonthlyReportDrawer = (props: any) => {
     getShiftName();
   };
 
-  const onChange = (key: string) => {};
+  const onChange = () => {};
 
   const onCreateExplanation = async (values: any) => {
-    let ngayLamViec = currentDate;
+    const ngayLamViec = currentDate;
     ngayLamViec.setDate(ngayLamViec.getDate() + 1);
 
     const requestData: CreateGiaiTrinhRequest = {
@@ -143,7 +145,7 @@ const MonthlyReportDrawer = (props: any) => {
       trangThai: "0",
     };
 
-    let response = await GiaiTrinhApi.createGiaiTrinh(requestData);
+    const response = await GiaiTrinhApi.createGiaiTrinh(requestData);
     if (response.statusCode === "200") {
       refresh();
       close();
@@ -165,7 +167,7 @@ const MonthlyReportDrawer = (props: any) => {
   };
 
   const onFinish = async (values: any) => {
-    let ngayLamViec = currentDate;
+    const ngayLamViec = currentDate;
     ngayLamViec.setDate(ngayLamViec.getDate() + 1);
 
     if (requestType === 1) {
@@ -179,7 +181,7 @@ const MonthlyReportDrawer = (props: any) => {
         trangThai: "0",
       };
 
-      let response = await DanhSachDonApi.createDonBu(requestData);
+      const response = await DanhSachDonApi.createDonBu(requestData);
       if (response.statusCode === "200") {
         refresh();
         close();
@@ -210,7 +212,7 @@ const MonthlyReportDrawer = (props: any) => {
         trangThai: "0",
       };
 
-      let response = await DanhSachDonApi.createDonConNho(requestData);
+      const response = await DanhSachDonApi.createDonConNho(requestData);
       if (response.statusCode === "200") {
         refresh();
         close();
@@ -240,7 +242,7 @@ const MonthlyReportDrawer = (props: any) => {
         trangThai: "0",
       };
 
-      let response = await DanhSachDonApi.createDonPhep(requestData);
+      const response = await DanhSachDonApi.createDonPhep(requestData);
       if (response.statusCode === "200") {
         refresh();
         close();
@@ -272,7 +274,7 @@ const MonthlyReportDrawer = (props: any) => {
         trangThai: "0",
       };
 
-      let response = await DanhSachDonApi.createDonTangCa(requestData);
+      const response = await DanhSachDonApi.createDonTangCa(requestData);
       if (response.statusCode === "200") {
         refresh();
         close();
@@ -559,7 +561,7 @@ const MonthlyReportDrawer = (props: any) => {
 
   useEffect(() => {
     const getDate = dayjs(new Date(dateFull));
-    let startDate = new Date(getDate.year(), getDate.month(), date + 1);
+    const startDate = new Date(getDate.year(), getDate.month(), date + 1);
     const currently = new Date(getDate.year(), getDate.month(), date);
     setCurrentDate(currently);
     if (data) {
@@ -576,7 +578,7 @@ const MonthlyReportDrawer = (props: any) => {
 
   useEffect(() => {
     const getDate = dayjs(new Date(dateFull));
-    let startDate = new Date(getDate.year(), getDate.month(), date + 1);
+    const startDate = new Date(getDate.year(), getDate.month(), date + 1);
     if (data) {
       getTimekeepingByDay({
         maNhanVien: data?.maNhanVien,

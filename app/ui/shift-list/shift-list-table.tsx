@@ -1,41 +1,28 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { use, useEffect, useState } from "react";
-import {
-  Button,
-  Table,
-  Row,
-  Col,
-  Space,
-  Drawer,
-  Upload,
-  Form,
-  Input,
-  Select,
-  TimePicker,
-  Radio,
-  theme,
-  message,
-} from "antd";
-import {
-  EditTwoTone,
-  EyeTwoTone,
-  HistoryOutlined,
-  ExportOutlined,
-  UploadOutlined,
-  DownloadOutlined,
-} from "@ant-design/icons";
-import type { ColumnsType } from "antd/es/table";
-import CreateShiftList from "./create-shift-list";
-import UpdateShiftList from "./update-shift-list";
 import CaLamViecApi from "@/app/api/calamviec";
+import NhanVienApi from "@/app/api/nhanvien";
 import { CaLamViecResponse } from "@/app/models/calamviec/calamviec-response";
 import { NhanVienResponse } from "@/app/models/nhanvien/nhanvien-response";
-import NhanVienApi from "@/app/api/nhanvien";
 import { SearchNhanVienRequest } from "@/app/models/nhanvien/search-nhanvien-request";
+import { EditTwoTone } from "@ant-design/icons";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  Row,
+  Space,
+  Table,
+  message,
+  theme,
+} from "antd";
+import type { ColumnsType } from "antd/es/table";
 import { TableRowSelection } from "antd/es/table/interface";
-const { Option } = Select;
-
+import React, { useEffect, useState } from "react";
+import CreateShiftList from "./create-shift-list";
+import UpdateShiftList from "./update-shift-list";
 interface DataType {
   key: React.Key;
   maCa: number;
@@ -152,7 +139,7 @@ const ShiftListTable: React.FC = () => {
   };
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
-    let response = await NhanVienApi.getNhanVien(searchRequest);
+    const response = await NhanVienApi.getNhanVien(searchRequest);
     if (response.statusCode === "200" || response.statusCode === "545") {
       setEmployeeData(response.data);
     } else {
@@ -161,7 +148,7 @@ const ShiftListTable: React.FC = () => {
   };
 
   const getShiftName = async (maCa: number | null, tenCa: string | null) => {
-    let response = await CaLamViecApi.getCaLamViec(maCa, tenCa);
+    const response = await CaLamViecApi.getCaLamViec(maCa, tenCa);
     if (response?.statusCode === "200") {
       setShiftList(response.data.reverse());
       setTotalRecords(response.data?.length);
@@ -178,7 +165,7 @@ const ShiftListTable: React.FC = () => {
   };
 
   const deleteShiftLists = async (selectedRowKeys: any) => {
-    let response = await CaLamViecApi.deleteCaLamViec(selectedRowKeys);
+    const response = await CaLamViecApi.deleteCaLamViec(selectedRowKeys);
     if (response.statusCode === "200") {
       refresh();
       messageApi.open({
@@ -320,6 +307,10 @@ const ShiftListTable: React.FC = () => {
               jump_to: "Đến",
               page: "Trang",
               items_per_page: "/ trang",
+            },
+            onChange: (page, pageSize) => {
+              setPage(page);
+              setPageSize(pageSize);
             },
             showTotal: (total) => `Tổng ${total} bản ghi`,
           }}

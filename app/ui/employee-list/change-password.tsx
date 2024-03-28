@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { LoginApi } from "@/app/api/taikhoan";
 import { Button, Col, Drawer, Form, Input, Row, Space } from "antd";
 import { useEffect } from "react";
@@ -7,7 +8,7 @@ const ChangePassword = (props: any) => {
   const [form] = Form.useForm();
 
   const onFinish = async (values: any) => {
-    let response = await LoginApi.changePassword({
+    const response = await LoginApi.changePassword({
       maNhanVien: values.maNhanVien,
       matKhau: values.matKhau,
     });

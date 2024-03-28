@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import NhanVienApi from "@/app/api/nhanvien";
 import PhongBanApi from "@/app/api/phongban";
 import { NhanVienResponse } from "@/app/models/nhanvien/nhanvien-response";
@@ -12,7 +13,6 @@ import {
   Input,
   message,
   Row,
-  Select,
   Skeleton,
   Space,
   Table,
@@ -23,7 +23,6 @@ import { TableRowSelection } from "antd/es/table/interface";
 import React, { useEffect, useState } from "react";
 import CreateDepartmentsList from "./create-departments-list";
 import UpdateDepartmentsList from "./update-departments-list";
-const { Option } = Select;
 
 const DepartmentsListTable: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -62,7 +61,7 @@ const DepartmentsListTable: React.FC = () => {
   }
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
-    let response = await NhanVienApi.getNhanVien(searchRequest);
+    const response = await NhanVienApi.getNhanVien(searchRequest);
     if (response.statusCode === "200" || response.statusCode === "545") {
       setEmployeeData(response.data);
     } else {
@@ -73,7 +72,7 @@ const DepartmentsListTable: React.FC = () => {
   const getDepartmentsByParams = async (
     searchRequest: SearchPhongBanRequest,
   ) => {
-    let response = await PhongBanApi.getPhongBan(searchRequest);
+    const response = await PhongBanApi.getPhongBan(searchRequest);
     if (response.statusCode === "200") {
       setData(response.data?.reverse());
       setTotalRecords(response.data?.length);
@@ -94,7 +93,7 @@ const DepartmentsListTable: React.FC = () => {
   };
 
   const deleteDepartments = async (selectedRowKeys: any) => {
-    let response = await PhongBanApi.deletePhongBan(selectedRowKeys);
+    const response = await PhongBanApi.deletePhongBan(selectedRowKeys);
     if (response.statusCode === "200") {
       refresh();
       messageApi.open({
@@ -239,11 +238,6 @@ const DepartmentsListTable: React.FC = () => {
     background: token.colorBgContainer,
     marginBottom: "24px",
     padding: "24px",
-  };
-
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
-    setSelectedRowKeys(newSelectedRowKeys);
   };
 
   const onFinish = (values: any) => {

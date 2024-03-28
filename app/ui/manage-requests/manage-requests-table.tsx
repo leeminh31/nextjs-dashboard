@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import DanhSachDonApi from "@/app/api/danhsachdon";
@@ -34,7 +35,7 @@ const { RangePicker } = DatePicker;
 
 const ManageRequestsTable: React.FC = () => {
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer },
   } = theme.useToken();
   const [messageApi, contextHolder] = message.useMessage();
   const [viewOpen, setViewOpen] = useState(false);
@@ -53,8 +54,8 @@ const ManageRequestsTable: React.FC = () => {
   interface DataType {
     key: React.Key;
     maDon: number;
-    hoTen: string;
-    phongBan: string;
+    hoTen: string | undefined;
+    phongBan: string | undefined;
     ngayLamViec: string;
     ngayTaoDon: string;
     loaiDon: number;
@@ -71,7 +72,7 @@ const ManageRequestsTable: React.FC = () => {
   }
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
-    let response = await NhanVienApi.getNhanVien(searchRequest);
+    const response = await NhanVienApi.getNhanVien(searchRequest);
     if (response.statusCode === "200" || response.statusCode === "545") {
       setEmployeeData(response.data);
     } else {
@@ -82,7 +83,7 @@ const ManageRequestsTable: React.FC = () => {
   const getDepartmentsByParams = async (
     searchRequest: SearchPhongBanRequest,
   ) => {
-    let response = await PhongBanApi.getPhongBan(searchRequest);
+    const response = await PhongBanApi.getPhongBan(searchRequest);
     if (response?.statusCode === "200") {
       setDepartmentData(response?.data);
     } else if (response?.statusCode === "545") {
@@ -95,7 +96,7 @@ const ManageRequestsTable: React.FC = () => {
   const getListRequestByParams = async (
     searchRequest: SearchDanhSachDonRequest,
   ) => {
-    let response = await DanhSachDonApi.getDanhSachDon(searchRequest);
+    const response = await DanhSachDonApi.getDanhSachDon(searchRequest);
     if (response?.statusCode === "200") {
       setData(response?.data);
       setTotalRecords(response?.data?.length);
@@ -144,7 +145,7 @@ const ManageRequestsTable: React.FC = () => {
       .map((row) => row.maDon)
       .join(",");
 
-    let response = await DanhSachDonApi.approveRequest({
+    const response = await DanhSachDonApi.approveRequest({
       maDonBu: listDonBu,
       maDonPhep: listDonPhep,
       maDonTangCa: listDonTangCa,
@@ -215,7 +216,7 @@ const ManageRequestsTable: React.FC = () => {
       .map((row) => row.maDon)
       .join(",");
 
-    let response = await DanhSachDonApi.rejectRequest({
+    const response = await DanhSachDonApi.rejectRequest({
       maDonBu: listDonBu,
       maDonPhep: listDonPhep,
       maDonTangCa: listDonTangCa,
@@ -280,14 +281,14 @@ const ManageRequestsTable: React.FC = () => {
     data.listDonBu?.map((donbu, index) => {
       const nhanVien = employeeData?.find(
         (e) => e.maNhanVien === donbu.maNhanVien,
-      )!;
+      );
 
       tableData.push({
         key: index,
         hoTen: nhanVien?.hoTen,
         phongBan: departmentData?.find(
-          (d) => d.maPhongBan === nhanVien.maPhongBan,
-        )?.tenPhongBan!,
+          (d) => d.maPhongBan === nhanVien?.maPhongBan,
+        )?.tenPhongBan,
         ngayLamViec: dayjs(donbu.ngayLamViec).format("DD/MM/YYYY"),
         ngayTaoDon: dayjs(donbu.ngayTaoDon).format("DD/MM/YYYY"),
         loaiDon: donbu.loaiDon,
@@ -309,14 +310,14 @@ const ManageRequestsTable: React.FC = () => {
     data.listDonPhep?.map((donphep, index) => {
       const nhanVien = employeeData?.find(
         (e) => e.maNhanVien === donphep.maNhanVien,
-      )!;
+      );
 
       tableData.push({
         key: index + 1000,
-        hoTen: nhanVien.hoTen,
+        hoTen: nhanVien?.hoTen,
         phongBan: departmentData?.find(
-          (d) => d.maPhongBan === nhanVien.maPhongBan,
-        )?.tenPhongBan!,
+          (d) => d.maPhongBan === nhanVien?.maPhongBan,
+        )?.tenPhongBan,
         ngayLamViec: dayjs(donphep.ngayLamViec).format("DD/MM/YYYY"),
         ngayTaoDon: dayjs(donphep.ngayTaoDon).format("DD/MM/YYYY"),
         loaiDon: donphep.loaiDon,
@@ -330,7 +331,7 @@ const ManageRequestsTable: React.FC = () => {
         tangCaTu: "",
         tangCaDen: "",
         chucVu: employeeData?.find((e) => e.maNhanVien === donphep.maNhanVien)!
-          .chucVu!,
+          .chucVu,
         maDon: donphep.maDonPhep,
       });
     });
@@ -338,14 +339,14 @@ const ManageRequestsTable: React.FC = () => {
     data.listDonTangCa?.map((dontangca, index) => {
       const nhanVien = employeeData?.find(
         (e) => e.maNhanVien === dontangca.maNhanVien,
-      )!;
+      );
 
       tableData.push({
         key: index + 2000,
-        hoTen: nhanVien.hoTen,
+        hoTen: nhanVien?.hoTen,
         phongBan: departmentData?.find(
-          (d) => d.maPhongBan === nhanVien.maPhongBan,
-        )?.tenPhongBan!,
+          (d) => d.maPhongBan === nhanVien?.maPhongBan,
+        )?.tenPhongBan,
         ngayLamViec: dayjs(dontangca.ngayLamViec).format("DD/MM/YYYY"),
         ngayTaoDon: dayjs(dontangca.ngayTaoDon).format("DD/MM/YYYY"),
         loaiDon: dontangca.loaiDon,
@@ -360,7 +361,7 @@ const ManageRequestsTable: React.FC = () => {
         tangCaDen: dontangca.tangCaDen,
         chucVu: employeeData?.find(
           (e) => e.maNhanVien === dontangca.maNhanVien,
-        )!.chucVu!,
+        )!.chucVu,
         maDon: dontangca.maDonTangCa,
       });
     });
@@ -368,14 +369,14 @@ const ManageRequestsTable: React.FC = () => {
     data.listDonConNho?.map((donconnho, index) => {
       const nhanVien = employeeData?.find(
         (e) => e.maNhanVien === donconnho.maNhanVien,
-      )!;
+      );
 
       tableData.push({
         key: index + 3000,
-        hoTen: nhanVien.hoTen,
+        hoTen: nhanVien?.hoTen,
         phongBan: departmentData?.find(
-          (d) => d.maPhongBan === nhanVien.maPhongBan,
-        )?.tenPhongBan!,
+          (d) => d.maPhongBan === nhanVien?.maPhongBan,
+        )?.tenPhongBan,
         ngayLamViec: "",
         ngayTaoDon: dayjs(donconnho.ngayTaoDon).format("DD/MM/YYYY"),
         loaiDon: donconnho.loaiDon,
@@ -390,7 +391,7 @@ const ManageRequestsTable: React.FC = () => {
         tangCaDen: "",
         chucVu: employeeData?.find(
           (e) => e.maNhanVien === donconnho.maNhanVien,
-        )!.chucVu!,
+        )!.chucVu,
         maDon: donconnho.maDonConNho,
       });
     });
@@ -465,7 +466,7 @@ const ManageRequestsTable: React.FC = () => {
       title: "Loại đơn",
       key: "loaiDon",
       dataIndex: "loaiDon",
-      render: (value, record, index) => {
+      render: (value, record) => {
         return (
           <>
             {record.loaiDon === 1
@@ -489,7 +490,7 @@ const ManageRequestsTable: React.FC = () => {
       key: "trangThai",
       dataIndex: "trangThai",
       width: 130,
-      render: (value, record, index) => {
+      render: (value, record) => {
         return (
           <>
             {record.trangThai === "0" ? (
@@ -545,8 +546,8 @@ const ManageRequestsTable: React.FC = () => {
       key: "action",
       fixed: "right",
       width: 75,
-      align: "center" as "center",
-      render: (value, record, index) => (
+      align: "center" as const,
+      render: (value, record) => (
         <>
           <Button
             style={{

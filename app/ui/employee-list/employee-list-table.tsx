@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import NhanVienApi from "@/app/api/nhanvien";
@@ -28,8 +29,6 @@ import ChangePassword from "./change-password";
 import CreateEmployeeList from "./create-employee-list";
 import UpdateEmployeeList from "./update-employee-list";
 import ViewEmployeeList from "./view-employee-list";
-
-const { Option } = Select;
 
 const EmployeeListTable: React.FC = () => {
   const { token } = theme.useToken();
@@ -101,7 +100,7 @@ const EmployeeListTable: React.FC = () => {
   };
 
   const getEmployeeId = async () => {
-    let response = await LoginApi.getEmployeeId();
+    const response = await LoginApi.getEmployeeId();
     if (response.statusCode === "200") {
       setListId(response.data);
     } else {
@@ -110,7 +109,7 @@ const EmployeeListTable: React.FC = () => {
   };
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
-    let response = await NhanVienApi.getNhanVien(searchRequest);
+    const response = await NhanVienApi.getNhanVien(searchRequest);
     if (response.statusCode === "200") {
       setData(response.data.reverse());
       setTotalRecords(response.data?.length);
@@ -125,7 +124,7 @@ const EmployeeListTable: React.FC = () => {
   const getDepartmentsByParams = async (
     searchRequest: SearchPhongBanRequest,
   ) => {
-    let response = await PhongBanApi.getPhongBan(searchRequest);
+    const response = await PhongBanApi.getPhongBan(searchRequest);
     if (response.statusCode === "200") setDepartments(response.data);
     else {
       console.log(response.message);
@@ -341,7 +340,7 @@ const EmployeeListTable: React.FC = () => {
                   optionFilterProp="label"
                   placeholder="Vui lòng chọn"
                   onChange={(e) => changeSelect(e)}
-                  options={departments?.map((item, index) => ({
+                  options={departments?.map((item) => ({
                     value: item.maPhongBan,
                     label: item.tenPhongBan,
                   }))}

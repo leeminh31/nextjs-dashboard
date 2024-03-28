@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Button, Form, Input } from "antd";
@@ -12,7 +13,7 @@ type FieldType = {
 export default function LoginForm() {
   const router = useRouter();
   const onFinish = async (values: any) => {
-    let response = await LoginApi.login(values.username, values.password);
+    const response = await LoginApi.login(values.username, values.password);
     if (response.data !== null) {
       router.push("/dashboard/employee-list");
     } else {
