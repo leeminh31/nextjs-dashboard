@@ -1,26 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import GiaiTrinhApi from "@/app/api/giaitrinh";
 import { CreateGiaiTrinhRequest } from "@/app/models/giaitrinh/create-giaitrinh-request";
-import { Button, Form, Modal, Select, Space, message } from "antd";
+import { Button, Form, message, Modal, Select, Space } from "antd";
 import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
-import { memo, useState } from "react";
+import { memo, useEffect } from "react";
 const { Option } = Select;
 
-const CreateMonthlyReportExplanationModal: React.FC = (props: any) => {
+const CreateMonthlyReportExplanationModal = (props: any) => {
   const [form] = useForm();
-  const { data } = props;
+  const { show, refresh, generalData, close } = props;
   const [messageApi, contextHolder] = message.useMessage();
-  const [createExplanationShow, setCreateExplanationShow] = useState(false);
-  const [requestType, setRequestType] = useState(0);
 
   const onCreateExplanation = async (values: any) => {
     const ngayLamViec = currentDate;
     ngayLamViec.setDate(ngayLamViec.getDate() + 1);
 
     const requestData: CreateGiaiTrinhRequest = {
-      maNhanVien: data?.maNhanVien,
+      maNhanVien: generalData?.maNhanVien,
       ngayLamViec: new Date(ngayLamViec),
       ngayTaoGiaiTrinh: new Date(),
       lyDo: values.lyDo,
@@ -47,8 +45,12 @@ const CreateMonthlyReportExplanationModal: React.FC = (props: any) => {
       console.log(response.message);
     }
 
-    setCreateExplanationShow(false);
+    close();
   };
+
+  useEffect(() => {
+    console.log(generalData);
+  }, [show]);
 
   return (
     <Modal
@@ -68,9 +70,8 @@ const CreateMonthlyReportExplanationModal: React.FC = (props: any) => {
           </Button>
           <Button
             onClick={() => {
-              setCreateExplanationShow(false);
+              close();
               form.resetFields();
-              setRequestType(0);
             }}
           >
             {" "}
@@ -78,7 +79,7 @@ const CreateMonthlyReportExplanationModal: React.FC = (props: any) => {
           </Button>
         </>
       }
-      open={createExplanationShow}
+      open={show}
       width={500}
     >
       {contextHolder}
@@ -110,7 +111,7 @@ const CreateMonthlyReportExplanationModal: React.FC = (props: any) => {
               padding: "0 16px",
             }}
           >
-            <span>Họ tên nhân viên: {data?.hoTen} </span>
+            <span>Họ tên nhân viên: {generalData?.hoTen} </span>
             <span>Ngày tạo: {dayjs(new Date()).format("DD/MM/YYYY")}</span>
           </Space>
           <Space
@@ -121,9 +122,10 @@ const CreateMonthlyReportExplanationModal: React.FC = (props: any) => {
               padding: "0 16px",
             }}
           >
-            <span>Mã nhân viên: {data?.maNhanVien} </span>
+            <span>Mã nhân viên: {generalData?.maNhanVien} </span>
             <span>
-              Ngày làm việc: {dayjs(currentDate).format("DD/MM/YYYY")}
+              Ngày làm việc:{" "}
+              {dayjs(generalData?.ngayLamViec).format("DD/MM/YYYY")}
             </span>
           </Space>
           <Space
@@ -134,7 +136,7 @@ const CreateMonthlyReportExplanationModal: React.FC = (props: any) => {
               padding: "0 16px",
             }}
           >
-            <span>Phòng ban: {data?.phongBan} </span>
+            <span>Phòng ban: {generalData?.phongBan} </span>
           </Space>
           <Space
             style={{
@@ -146,10 +148,10 @@ const CreateMonthlyReportExplanationModal: React.FC = (props: any) => {
           >
             <span>
               Chức vụ:{" "}
-              {
+              {/* {
                 employeeData?.find((e) => e.maNhanVien === data?.maNhanVien)
                   ?.chucVu
-              }{" "}
+              }{" "} */}
             </span>
           </Space>
           <Space

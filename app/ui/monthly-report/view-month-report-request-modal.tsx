@@ -12,13 +12,12 @@ import {
 import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 const { Option } = Select;
 
-const ViewMonthlyReportRequestModal: React.FC = (props: any) => {
+const ViewMonthlyReportRequestModal = (props: any) => {
   const [form] = useForm();
-  const { data } = props;
-  const [createRequestShow, setCreateRequestShow] = useState(false);
+  const { data, refresh, generalData, show, close, employeeData } = props;
   const [requestType, setRequestType] = useState(0);
 
   const onFinish = () => {};
@@ -26,6 +25,42 @@ const ViewMonthlyReportRequestModal: React.FC = (props: any) => {
   const handleRequestType = (e: any) => {
     setRequestType(e);
   };
+
+  useEffect(() => {
+    console.log(data);
+    if (data && data.loaiDon === 1) {
+      form.setFieldsValue({
+        loaiDon: data.loaiDon,
+        soPhutXinBu: data.soPhutXinBu,
+        lyDo: data.lyDo,
+      });
+    }
+
+    if (data && data.loaiDon === 2) {
+      form.setFieldsValue({
+        loaiDon: data.loaiDon,
+        tuNgay: dayjs(data.tuNgay),
+        denNgay: dayjs(data.denNgay),
+        lyDo: data.lyDo,
+      });
+    }
+
+    if (data && data.loaiDon === 3) {
+      form.setFieldsValue({
+        loaiDon: data.loaiDon,
+        lyDo: data.lyDo,
+      });
+    }
+
+    if (data && data.loaiDon === 4) {
+      form.setFieldsValue({
+        loaiDon: data.loaiDon,
+        tangCaTu: dayjs(data.tangCaTu, "HH:mm:ss"),
+        tangCaDen: dayjs(data.tangCaDen, "HH:mm:ss"),
+        lyDo: data.lyDo,
+      });
+    }
+  }, [show]);
 
   const renderManageView = (loaiDon: number) => {
     switch (loaiDon) {
@@ -69,7 +104,7 @@ const ViewMonthlyReportRequestModal: React.FC = (props: any) => {
                   style: { width: 180 },
                 }}
               >
-                <Input style={{ width: "70px" }} type={"number"} />
+                <Input disabled style={{ width: "70px" }} type={"number"} />
               </Form.Item>
             </Space>
             <Space
@@ -82,7 +117,7 @@ const ViewMonthlyReportRequestModal: React.FC = (props: any) => {
             >
               <span>Lý do: </span>
               <Form.Item name="lyDo">
-                <TextArea style={{ width: "420px" }} rows={4} />
+                <TextArea disabled style={{ width: "420px" }} rows={4} />
               </Form.Item>
             </Space>
           </>
@@ -125,7 +160,7 @@ const ViewMonthlyReportRequestModal: React.FC = (props: any) => {
             >
               <span>Lý do: </span>
               <Form.Item name="lyDo">
-                <TextArea style={{ width: "420px" }} rows={4} />
+                <TextArea disabled style={{ width: "420px" }} rows={4} />
               </Form.Item>
             </Space>
           </>
@@ -142,6 +177,7 @@ const ViewMonthlyReportRequestModal: React.FC = (props: any) => {
             >
               <Form.Item label="Từ ngày: " name="tuNgay">
                 <DatePicker
+                  disabled
                   style={{ width: "120px" }}
                   placeholder="Chọn ngày"
                   format={"DD/MM/YYYY"}
@@ -149,6 +185,7 @@ const ViewMonthlyReportRequestModal: React.FC = (props: any) => {
               </Form.Item>
               <Form.Item label="Đến ngày: " name="denNgay">
                 <DatePicker
+                  disabled
                   style={{ width: "120px" }}
                   placeholder="Chọn ngày"
                   format={"DD/MM/YYYY"}
@@ -165,7 +202,7 @@ const ViewMonthlyReportRequestModal: React.FC = (props: any) => {
             >
               <span>Lý do: </span>
               <Form.Item name="lyDo">
-                <TextArea style={{ width: "420px" }} rows={4} />
+                <TextArea disabled style={{ width: "420px" }} rows={4} />
               </Form.Item>
             </Space>
           </>
@@ -182,12 +219,14 @@ const ViewMonthlyReportRequestModal: React.FC = (props: any) => {
             >
               <Form.Item label="Tăng ca từ" name="tangCaTu">
                 <TimePicker
+                  disabled
                   style={{ width: "100px" }}
                   placeholder="Vui lòng chọn"
                 />
               </Form.Item>
               <Form.Item label="đến: " name="tangCaDen">
                 <TimePicker
+                  disabled
                   style={{ width: "100px" }}
                   placeholder="Vui lòng chọn"
                 />
@@ -213,7 +252,7 @@ const ViewMonthlyReportRequestModal: React.FC = (props: any) => {
             >
               <span>Lý do: </span>
               <Form.Item name="lyDo">
-                <TextArea style={{ width: "420px" }} rows={4} />
+                <TextArea disabled style={{ width: "420px" }} rows={4} />
               </Form.Item>
             </Space>
           </>
@@ -241,7 +280,7 @@ const ViewMonthlyReportRequestModal: React.FC = (props: any) => {
           </Button>
           <Button
             onClick={() => {
-              setCreateRequestShow(false);
+              close();
               form.resetFields();
               setRequestType(0);
             }}
@@ -251,7 +290,7 @@ const ViewMonthlyReportRequestModal: React.FC = (props: any) => {
           </Button>
         </>
       }
-      open={createRequestShow}
+      open={show}
       width={500}
     >
       <Form
@@ -282,20 +321,9 @@ const ViewMonthlyReportRequestModal: React.FC = (props: any) => {
               padding: "0 16px",
             }}
           >
-            <span>Họ tên nhân viên: {data?.hoTen} </span>
-            <span>Ngày tạo: {dayjs(new Date()).format("DD/MM/YYYY")}</span>
-          </Space>
-          <Space
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              color: "#996B4D",
-              padding: "0 16px",
-            }}
-          >
-            <span>Mã nhân viên: {data?.maNhanVien} </span>
+            <span>Họ tên nhân viên: {generalData?.hoTen} </span>
             <span>
-              Ngày làm việc: {dayjs(currentDate).format("DD/MM/YYYY")}
+              Ngày tạo: {dayjs(data?.ngayTaoDon).format("DD/MM/YYYY")}
             </span>
           </Space>
           <Space
@@ -306,7 +334,20 @@ const ViewMonthlyReportRequestModal: React.FC = (props: any) => {
               padding: "0 16px",
             }}
           >
-            <span>Phòng ban: {data?.phongBan} </span>
+            <span>Mã nhân viên: {generalData?.maNhanVien} </span>
+            <span>
+              Ngày làm việc: {dayjs(data?.ngayLamViec).format("DD/MM/YYYY")}
+            </span>
+          </Space>
+          <Space
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              color: "#996B4D",
+              padding: "0 16px",
+            }}
+          >
+            <span>Phòng ban: {generalData?.phongBan} </span>
           </Space>
           <Space
             style={{
@@ -347,7 +388,7 @@ const ViewMonthlyReportRequestModal: React.FC = (props: any) => {
               label="Loại đơn"
               name="loaiDon"
             >
-              <Select value={requestType} onChange={handleRequestType}>
+              <Select disabled onChange={handleRequestType}>
                 <Option value={1}>Đơn bù</Option>
                 <Option value={2}>Đơn con nhỏ</Option>
                 <Option value={3}>Đơn phép</Option>
@@ -355,7 +396,7 @@ const ViewMonthlyReportRequestModal: React.FC = (props: any) => {
               </Select>
             </Form.Item>
           </Space>
-          {renderManageView(requestType)}
+          {renderManageView(data?.loaiDon)}
         </Space>
       </Form>
     </Modal>

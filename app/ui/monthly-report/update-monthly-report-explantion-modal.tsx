@@ -1,54 +1,51 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import GiaiTrinhApi from "@/app/api/giaitrinh";
-import { CreateGiaiTrinhRequest } from "@/app/models/giaitrinh/create-giaitrinh-request";
-import { Button, Form, Modal, Select, Space, message } from "antd";
+import { Button, Form, message, Modal, Select, Space } from "antd";
 import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
 import { memo, useState } from "react";
 const { Option } = Select;
 
-const UpdateMonthlyReportExplanationModal: React.FC = (props: any) => {
+const UpdateMonthlyReportExplanationModal = (props: any) => {
   const [form] = useForm();
-  const { data } = props;
+  const { data, refresh, generalData, show, close } = props;
   const [messageApi, contextHolder] = message.useMessage();
-  const [createExplanationShow, setCreateExplanationShow] = useState(false);
   const [requestType, setRequestType] = useState(0);
 
-  const onCreateExplanation = async (values: any) => {
-    const ngayLamViec = currentDate;
-    ngayLamViec.setDate(ngayLamViec.getDate() + 1);
+  // const onCreateExplanation = async (values: any) => {
+  //   const ngayLamViec = currentDate;
+  //   ngayLamViec.setDate(ngayLamViec.getDate() + 1);
 
-    const requestData: CreateGiaiTrinhRequest = {
-      maNhanVien: data?.maNhanVien,
-      ngayLamViec: new Date(ngayLamViec),
-      ngayTaoGiaiTrinh: new Date(),
-      lyDo: values.lyDo,
-      nguoiDuyet: "",
-      loaiGiaiTrinh: values.loaiGiaiTrinh,
-      trangThai: "0",
-    };
+  //   const requestData: CreateGiaiTrinhRequest = {
+  //     maNhanVien: data?.maNhanVien,
+  //     ngayLamViec: new Date(ngayLamViec),
+  //     ngayTaoGiaiTrinh: new Date(),
+  //     lyDo: values.lyDo,
+  //     nguoiDuyet: "",
+  //     loaiGiaiTrinh: values.loaiGiaiTrinh,
+  //     trangThai: "0",
+  //   };
 
-    const response = await GiaiTrinhApi.createGiaiTrinh(requestData);
-    if (response.statusCode === "200") {
-      refresh();
-      close();
-      messageApi.open({
-        type: "success",
-        content: "Thêm mới giải trình thành công",
-        className: "custom-class",
-        style: {
-          fontSize: "16px",
-        },
-        duration: 1.5,
-      });
-      form.resetFields();
-    } else {
-      console.log(response.message);
-    }
+  //   const response = await GiaiTrinhApi.createGiaiTrinh(requestData);
+  //   if (response.statusCode === "200") {
+  //     refresh();
+  //     close();
+  //     messageApi.open({
+  //       type: "success",
+  //       content: "Thêm mới giải trình thành công",
+  //       className: "custom-class",
+  //       style: {
+  //         fontSize: "16px",
+  //       },
+  //       duration: 1.5,
+  //     });
+  //     form.resetFields();
+  //   } else {
+  //     console.log(response.message);
+  //   }
 
-    setCreateExplanationShow(false);
-  };
+  //   setCreateExplanationShow(false);
+  // };
 
   return (
     <Modal
@@ -68,7 +65,7 @@ const UpdateMonthlyReportExplanationModal: React.FC = (props: any) => {
           </Button>
           <Button
             onClick={() => {
-              setCreateExplanationShow(false);
+              close();
               form.resetFields();
               setRequestType(0);
             }}
@@ -78,7 +75,7 @@ const UpdateMonthlyReportExplanationModal: React.FC = (props: any) => {
           </Button>
         </>
       }
-      open={createExplanationShow}
+      open={show}
       width={500}
     >
       {contextHolder}
@@ -86,7 +83,7 @@ const UpdateMonthlyReportExplanationModal: React.FC = (props: any) => {
         className="view-request"
         form={form}
         name="createExplanationModal"
-        onFinish={onCreateExplanation}
+        // onFinish={onCreateExplanation}
       >
         <Space direction="vertical" style={{ width: "100%" }}>
           <Space style={{ display: "flex", justifyContent: "center" }}>
@@ -123,7 +120,7 @@ const UpdateMonthlyReportExplanationModal: React.FC = (props: any) => {
           >
             <span>Mã nhân viên: {data?.maNhanVien} </span>
             <span>
-              Ngày làm việc: {dayjs(currentDate).format("DD/MM/YYYY")}
+              {/* Ngày làm việc: {dayjs(currentDate).format("DD/MM/YYYY")} */}
             </span>
           </Space>
           <Space
@@ -146,10 +143,10 @@ const UpdateMonthlyReportExplanationModal: React.FC = (props: any) => {
           >
             <span>
               Chức vụ:{" "}
-              {
+              {/* {
                 employeeData?.find((e) => e.maNhanVien === data?.maNhanVien)
                   ?.chucVu
-              }{" "}
+              }{" "} */}
             </span>
           </Space>
           <Space

@@ -263,6 +263,8 @@ const MonthlyReportTable: React.FC = () => {
       cell.classList.remove("highlighted-cell");
     });
 
+    console.log(e.currentTarget.closest("td"));
+
     // Thêm lớp CSS mới vào ô được click
     e.currentTarget.classList.add("highlighted-cell");
 

@@ -15,10 +15,9 @@ import dayjs from "dayjs";
 import { memo, useState } from "react";
 const { Option } = Select;
 
-const UpdateMonthlyReportRequestModal: React.FC = (props: any) => {
+const UpdateMonthlyReportRequestModal = (props: any) => {
   const [form] = useForm();
-  const { data } = props;
-  const [createRequestShow, setCreateRequestShow] = useState(false);
+  const { data, refresh, generalData, show, close } = props;
   const [requestType, setRequestType] = useState(0);
 
   const onFinish = () => {};
@@ -241,7 +240,7 @@ const UpdateMonthlyReportRequestModal: React.FC = (props: any) => {
           </Button>
           <Button
             onClick={() => {
-              setCreateRequestShow(false);
+              close();
               form.resetFields();
               setRequestType(0);
             }}
@@ -251,7 +250,7 @@ const UpdateMonthlyReportRequestModal: React.FC = (props: any) => {
           </Button>
         </>
       }
-      open={createRequestShow}
+      open={show}
       width={500}
     >
       <Form
@@ -295,7 +294,7 @@ const UpdateMonthlyReportRequestModal: React.FC = (props: any) => {
           >
             <span>Mã nhân viên: {data?.maNhanVien} </span>
             <span>
-              Ngày làm việc: {dayjs(currentDate).format("DD/MM/YYYY")}
+              {/* Ngày làm việc: {dayjs(currentDate).format("DD/MM/YYYY")} */}
             </span>
           </Space>
           <Space
@@ -318,10 +317,10 @@ const UpdateMonthlyReportRequestModal: React.FC = (props: any) => {
           >
             <span>
               Chức vụ:{" "}
-              {
+              {/* {
                 employeeData?.find((e) => e.maNhanVien === data?.maNhanVien)
                   ?.chucVu
-              }{" "}
+              }{" "} */}
             </span>
           </Space>
           <Space

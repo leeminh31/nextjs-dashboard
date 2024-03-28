@@ -1,19 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import DanhSachDonApi from "@/app/api/danhsachdon";
-import { CreateDonBuRequest } from "@/app/models/donbu/create-donbu-request";
-import { CreateDonConNhoRequest } from "@/app/models/donconnho/create-donconnho-request";
-import { CreateDonPhepRequest } from "@/app/models/donphep/create-donphep-request";
-import { CreateDonTangCaRequest } from "@/app/models/dontangca/create-dontangca-request";
 import {
   Button,
   DatePicker,
   Form,
   Input,
+  message,
   Modal,
   Select,
   Space,
   TimePicker,
-  message,
 } from "antd";
 import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
@@ -21,10 +16,9 @@ import dayjs from "dayjs";
 import { memo, useState } from "react";
 const { Option } = Select;
 
-const CreateMonthlyReportRequestModal: React.FC = (props: any) => {
+const CreateMonthlyReportRequestModal = (props: any) => {
   const [form] = useForm();
-  const { data } = props;
-  const [createRequestShow, setCreateRequestShow] = useState(false);
+  const { show, refresh, generalData, close } = props;
   const [messageApi, contextHolder] = message.useMessage();
   const [requestType, setRequestType] = useState(0);
 
@@ -55,136 +49,136 @@ const CreateMonthlyReportRequestModal: React.FC = (props: any) => {
     }
   };
 
-  const onFinish = async (values: any) => {
-    const ngayLamViec = currentDate;
-    ngayLamViec.setDate(ngayLamViec.getDate() + 1);
+  // const onFinish = async (values: any) => {
+  //   const ngayLamViec = currentDate;
+  //   ngayLamViec.setDate(ngayLamViec.getDate() + 1);
 
-    if (requestType === 1) {
-      const requestData: CreateDonBuRequest = {
-        maNhanVien: data?.maNhanVien,
-        ngayLamViec: new Date(ngayLamViec),
-        ngayTaoDon: new Date(),
-        lyDo: values.lyDo,
-        nguoiDuyet: "",
-        soPhutXinBu: values.soPhutXinBu,
-        trangThai: "0",
-      };
+  //   if (requestType === 1) {
+  //     const requestData: CreateDonBuRequest = {
+  //       maNhanVien: data?.maNhanVien,
+  //       ngayLamViec: new Date(ngayLamViec),
+  //       ngayTaoDon: new Date(),
+  //       lyDo: values.lyDo,
+  //       nguoiDuyet: "",
+  //       soPhutXinBu: values.soPhutXinBu,
+  //       trangThai: "0",
+  //     };
 
-      const response = await DanhSachDonApi.createDonBu(requestData);
-      if (response.statusCode === "200") {
-        refresh();
-        close();
-        messageApi.open({
-          type: "success",
-          content: "Thêm mới đơn bù thành công",
-          className: "custom-class",
-          style: {
-            fontSize: "16px",
-          },
-          duration: 1.5,
-        });
-        form.resetFields();
-        setRequestType(0);
-      } else {
-        console.log(response.message);
-      }
-    }
+  //     const response = await DanhSachDonApi.createDonBu(requestData);
+  //     if (response.statusCode === "200") {
+  //       refresh();
+  //       close();
+  //       messageApi.open({
+  //         type: "success",
+  //         content: "Thêm mới đơn bù thành công",
+  //         className: "custom-class",
+  //         style: {
+  //           fontSize: "16px",
+  //         },
+  //         duration: 1.5,
+  //       });
+  //       form.resetFields();
+  //       setRequestType(0);
+  //     } else {
+  //       console.log(response.message);
+  //     }
+  //   }
 
-    if (requestType === 2) {
-      const requestData: CreateDonConNhoRequest = {
-        maNhanVien: data?.maNhanVien,
-        ngayTaoDon: new Date(),
-        lyDo: values.lyDo,
-        nguoiDuyet: "",
-        tuNgay: values.tuNgay,
-        denNgay: values.denNgay,
-        trangThai: "0",
-      };
+  //   if (requestType === 2) {
+  //     const requestData: CreateDonConNhoRequest = {
+  //       maNhanVien: data?.maNhanVien,
+  //       ngayTaoDon: new Date(),
+  //       lyDo: values.lyDo,
+  //       nguoiDuyet: "",
+  //       tuNgay: values.tuNgay,
+  //       denNgay: values.denNgay,
+  //       trangThai: "0",
+  //     };
 
-      const response = await DanhSachDonApi.createDonConNho(requestData);
-      if (response.statusCode === "200") {
-        refresh();
-        close();
-        messageApi.open({
-          type: "success",
-          content: "Thêm mới đơn con nhỏ thành công",
-          className: "custom-class",
-          style: {
-            fontSize: "16px",
-          },
-          duration: 1.5,
-        });
-        form.resetFields();
-        setRequestType(0);
-      } else {
-        console.log(response.message);
-      }
-    }
+  //     const response = await DanhSachDonApi.createDonConNho(requestData);
+  //     if (response.statusCode === "200") {
+  //       refresh();
+  //       close();
+  //       messageApi.open({
+  //         type: "success",
+  //         content: "Thêm mới đơn con nhỏ thành công",
+  //         className: "custom-class",
+  //         style: {
+  //           fontSize: "16px",
+  //         },
+  //         duration: 1.5,
+  //       });
+  //       form.resetFields();
+  //       setRequestType(0);
+  //     } else {
+  //       console.log(response.message);
+  //     }
+  //   }
 
-    if (requestType === 3) {
-      const requestData: CreateDonPhepRequest = {
-        maNhanVien: data?.maNhanVien,
-        ngayTaoDon: new Date(),
-        ngayLamViec: new Date(ngayLamViec),
-        lyDo: values.lyDo,
-        nguoiDuyet: "",
-        trangThai: "0",
-      };
+  //   if (requestType === 3) {
+  //     const requestData: CreateDonPhepRequest = {
+  //       maNhanVien: data?.maNhanVien,
+  //       ngayTaoDon: new Date(),
+  //       ngayLamViec: new Date(ngayLamViec),
+  //       lyDo: values.lyDo,
+  //       nguoiDuyet: "",
+  //       trangThai: "0",
+  //     };
 
-      const response = await DanhSachDonApi.createDonPhep(requestData);
-      if (response.statusCode === "200") {
-        refresh();
-        close();
-        messageApi.open({
-          type: "success",
-          content: "Thêm mới đơn phép thành công",
-          className: "custom-class",
-          style: {
-            fontSize: "16px",
-          },
-          duration: 1.5,
-        });
-        form.resetFields();
-        setRequestType(0);
-      } else {
-        console.log(response.message);
-      }
-    }
+  //     const response = await DanhSachDonApi.createDonPhep(requestData);
+  //     if (response.statusCode === "200") {
+  //       refresh();
+  //       close();
+  //       messageApi.open({
+  //         type: "success",
+  //         content: "Thêm mới đơn phép thành công",
+  //         className: "custom-class",
+  //         style: {
+  //           fontSize: "16px",
+  //         },
+  //         duration: 1.5,
+  //       });
+  //       form.resetFields();
+  //       setRequestType(0);
+  //     } else {
+  //       console.log(response.message);
+  //     }
+  //   }
 
-    if (requestType === 4) {
-      const requestData: CreateDonTangCaRequest = {
-        maNhanVien: data?.maNhanVien,
-        ngayTaoDon: new Date(),
-        ngayLamViec: new Date(ngayLamViec),
-        lyDo: values.lyDo,
-        nguoiDuyet: "",
-        tangCaTu: values.tangCaTu,
-        tangCaDen: values.tangCaDen,
-        trangThai: "0",
-      };
+  //   if (requestType === 4) {
+  //     const requestData: CreateDonTangCaRequest = {
+  //       maNhanVien: data?.maNhanVien,
+  //       ngayTaoDon: new Date(),
+  //       ngayLamViec: new Date(ngayLamViec),
+  //       lyDo: values.lyDo,
+  //       nguoiDuyet: "",
+  //       tangCaTu: values.tangCaTu,
+  //       tangCaDen: values.tangCaDen,
+  //       trangThai: "0",
+  //     };
 
-      const response = await DanhSachDonApi.createDonTangCa(requestData);
-      if (response.statusCode === "200") {
-        refresh();
-        close();
-        messageApi.open({
-          type: "success",
-          content: "Thêm mới đơn tăng ca thành công",
-          className: "custom-class",
-          style: {
-            fontSize: "16px",
-          },
-          duration: 1.5,
-        });
-        form.resetFields();
-        setRequestType(0);
-      } else {
-        console.log(response.message);
-      }
-    }
+  //     const response = await DanhSachDonApi.createDonTangCa(requestData);
+  //     if (response.statusCode === "200") {
+  //       refresh();
+  //       close();
+  //       messageApi.open({
+  //         type: "success",
+  //         content: "Thêm mới đơn tăng ca thành công",
+  //         className: "custom-class",
+  //         style: {
+  //           fontSize: "16px",
+  //         },
+  //         duration: 1.5,
+  //       });
+  //       form.resetFields();
+  //       setRequestType(0);
+  //     } else {
+  //       console.log(response.message);
+  //     }
+  //   }
 
-    setCreateRequestShow(false);
-  };
+  //   setCreateRequestShow(false);
+  // };
 
   const handleRequestType = (e: any) => {
     setRequestType(e);
@@ -404,7 +398,7 @@ const CreateMonthlyReportRequestModal: React.FC = (props: any) => {
           </Button>
           <Button
             onClick={() => {
-              setCreateRequestShow(false);
+              close();
               form.resetFields();
               setRequestType(0);
             }}
@@ -414,7 +408,7 @@ const CreateMonthlyReportRequestModal: React.FC = (props: any) => {
           </Button>
         </>
       }
-      open={createRequestShow}
+      open={show}
       width={500}
     >
       {contextHolder}
@@ -422,7 +416,7 @@ const CreateMonthlyReportRequestModal: React.FC = (props: any) => {
         className="view-request"
         form={form}
         name="viewApplication"
-        onFinish={onFinish}
+        // onFinish={onFinish}
       >
         <Space direction="vertical" style={{ width: "100%" }}>
           <Space style={{ display: "flex", justifyContent: "center" }}>
@@ -446,7 +440,7 @@ const CreateMonthlyReportRequestModal: React.FC = (props: any) => {
               padding: "0 16px",
             }}
           >
-            <span>Họ tên nhân viên: {data?.hoTen} </span>
+            <span>Họ tên nhân viên: {generalData?.hoTen} </span>
             <span>Ngày tạo: {dayjs(new Date()).format("DD/MM/YYYY")}</span>
           </Space>
           <Space
@@ -457,9 +451,9 @@ const CreateMonthlyReportRequestModal: React.FC = (props: any) => {
               padding: "0 16px",
             }}
           >
-            <span>Mã nhân viên: {data?.maNhanVien} </span>
+            <span>Mã nhân viên: {generalData?.maNhanVien} </span>
             <span>
-              Ngày làm việc: {dayjs(currentDate).format("DD/MM/YYYY")}
+              {/* Ngày làm việc: {dayjs(currentDate).format("DD/MM/YYYY")} */}
             </span>
           </Space>
           <Space
@@ -470,7 +464,7 @@ const CreateMonthlyReportRequestModal: React.FC = (props: any) => {
               padding: "0 16px",
             }}
           >
-            <span>Phòng ban: {data?.phongBan} </span>
+            <span>Phòng ban: {generalData?.phongBan} </span>
           </Space>
           <Space
             style={{
@@ -482,10 +476,10 @@ const CreateMonthlyReportRequestModal: React.FC = (props: any) => {
           >
             <span>
               Chức vụ:{" "}
-              {
+              {/* {
                 employeeData?.find((e) => e.maNhanVien === data?.maNhanVien)
                   ?.chucVu
-              }{" "}
+              }{" "} */}
             </span>
           </Space>
           <Space

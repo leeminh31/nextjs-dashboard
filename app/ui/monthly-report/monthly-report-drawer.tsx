@@ -6,6 +6,7 @@ import GiaiTrinhApi from "@/app/api/giaitrinh";
 import NhanVienApi from "@/app/api/nhanvien";
 import { SearchBaoCaoTheoThangByDayRequest } from "@/app/models/baocaotheothang/search-baocaotheothangbyday-request";
 import { CaLamViecResponse } from "@/app/models/calamviec/calamviec-response";
+import { DanhSachDonGeneralData } from "@/app/models/danhsachdon/danhsachdon-general-data";
 import { DanhSachDonResponse } from "@/app/models/danhsachdon/danhsachdon-response";
 import { DuLieuChamCongResponse } from "@/app/models/dulieuchamcong/dulieuchamcong-response";
 import { GiaiTrinhResponse } from "@/app/models/giaitrinh/giaitrinh-response";
@@ -28,6 +29,15 @@ const MonthlyReportDrawer = (props: any) => {
   const [listExplanationData, setListExplanationData] = useState<
     GiaiTrinhResponse[]
   >([]);
+  const [createRequestShow, setCreateRequestShow] = useState(false);
+  const [updateRequestShow, setUpdateRequestShow] = useState(false);
+  const [viewRequestShow, setViewRequestShow] = useState(false);
+  const [createExplanationShow, setCreateExplanationShow] = useState(false);
+  const [updateExplanationShow, setUpdateExplanationShow] = useState(false);
+  const [viewExplanationShow, setViewExplanationShow] = useState(false);
+  const [requestData, setRequestData] = useState<any>();
+  const [explanationData, setExplanationData] = useState<any>();
+  const [generalData, setGeneralData] = useState<DanhSachDonGeneralData>();
   const [employeeData, setEmployeeData] = useState<NhanVienResponse[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [listTimekeeping, setListTimekeeping] = useState<
@@ -94,6 +104,24 @@ const MonthlyReportDrawer = (props: any) => {
     }
   };
 
+  const handleUpdateAndViewRequest = (data: any) => {
+    setRequestData(data);
+    if (data.trangThai === "0") {
+      setUpdateRequestShow(true);
+    } else {
+      setViewRequestShow(true);
+    }
+  };
+
+  const handleUpdateAndViewExplanation = (data: any) => {
+    setExplanationData(data);
+    if (data.trangThai === "0") {
+      setUpdateExplanationShow(true);
+    } else {
+      setViewExplanationShow(true);
+    }
+  };
+
   const refresh = () => {
     getEmployeeByParams({
       hoTen: null,
@@ -138,6 +166,7 @@ const MonthlyReportDrawer = (props: any) => {
 
       getListExplanationByParams(data?.maNhanVien);
     }
+    setGeneralData(data);
   }, [data]);
 
   useEffect(() => {
@@ -409,7 +438,7 @@ const MonthlyReportDrawer = (props: any) => {
                     </h2>
                     {listRequestData?.listDonBu.map((item, index) => (
                       <Card
-                        bodyStyle={{ padding: "0 10px" }}
+                        bodyStyle={{ padding: "0 10px", cursor: "pointer" }}
                         key={index}
                         size="small"
                         onClick={() => handleUpdateAndViewRequest(item)}
@@ -491,7 +520,7 @@ const MonthlyReportDrawer = (props: any) => {
                     ))}
                     {listRequestData?.listDonConNho.map((item, index) => (
                       <Card
-                        bodyStyle={{ padding: "0 10px" }}
+                        bodyStyle={{ padding: "0 10px", cursor: "pointer" }}
                         key={index + 1000}
                         size="small"
                         onClick={() => handleUpdateAndViewRequest(item)}
@@ -573,7 +602,7 @@ const MonthlyReportDrawer = (props: any) => {
                     ))}
                     {listRequestData?.listDonTangCa.map((item, index) => (
                       <Card
-                        bodyStyle={{ padding: "0 10px" }}
+                        bodyStyle={{ padding: "0 10px", cursor: "pointer" }}
                         key={index + 2000}
                         size="small"
                         onClick={() => handleUpdateAndViewRequest(item)}
@@ -655,7 +684,7 @@ const MonthlyReportDrawer = (props: any) => {
                     ))}
                     {listRequestData?.listDonPhep.map((item, index) => (
                       <Card
-                        bodyStyle={{ padding: "0 10px" }}
+                        bodyStyle={{ padding: "0 10px", cursor: "pointer" }}
                         key={index + 3000}
                         size="small"
                         onClick={() => handleUpdateAndViewRequest(item)}
@@ -778,9 +807,10 @@ const MonthlyReportDrawer = (props: any) => {
                     </h2>
                     {listExplanationData?.map((item, index) => (
                       <Card
-                        bodyStyle={{ padding: "0 10px" }}
+                        bodyStyle={{ padding: "0 10px", cursor: "pointer" }}
                         key={index}
                         size="small"
+                        onClick={() => handleUpdateAndViewExplanation(item)}
                       >
                         <p
                           style={{
@@ -882,12 +912,52 @@ const MonthlyReportDrawer = (props: any) => {
           ]}
         />
       </Drawer>
-      <CreateMonthlyReportRequestModal />
-      <ViewMonthReportRequestModal />
-      <UpdateMonthlyReportRequestModal />
-      <CreateMonthlyReportExplanationModal />
-      <ViewMonthlyReportExplanationModal />
-      <UpdateMonthlyReportExplantionModal />
+      <CreateMonthlyReportRequestModal
+        show={createRequestShow}
+        generalData={generalData}
+        close={() => setCreateRequestShow(false)}
+        employeeData={employeeData}
+        refresh={refresh}
+      />
+      <ViewMonthReportRequestModal
+        show={viewRequestShow}
+        generalData={generalData}
+        data={requestData}
+        employeeData={employeeData}
+        close={() => setViewRequestShow(false)}
+        refresh={refresh}
+      />
+      <UpdateMonthlyReportRequestModal
+        show={updateRequestShow}
+        generalData={generalData}
+        data={requestData}
+        employeeData={employeeData}
+        close={() => setUpdateRequestShow(false)}
+        refresh={refresh}
+      />
+      <CreateMonthlyReportExplanationModal
+        show={createExplanationShow}
+        generalData={generalData}
+        employeeData={employeeData}
+        close={() => setCreateExplanationShow(false)}
+        refresh={refresh}
+      />
+      <ViewMonthlyReportExplanationModal
+        show={viewExplanationShow}
+        generalData={generalData}
+        employeeData={employeeData}
+        data={explanationData}
+        close={() => setViewExplanationShow(false)}
+        refresh={refresh}
+      />
+      <UpdateMonthlyReportExplantionModal
+        show={updateExplanationShow}
+        generalData={generalData}
+        employeeData={employeeData}
+        data={explanationData}
+        close={() => setUpdateExplanationShow(false)}
+        refresh={refresh}
+      />
     </>
   );
 };

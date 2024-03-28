@@ -1,54 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import GiaiTrinhApi from "@/app/api/giaitrinh";
-import { CreateGiaiTrinhRequest } from "@/app/models/giaitrinh/create-giaitrinh-request";
-import { Button, Form, Modal, Select, Space, message } from "antd";
+import { Button, Form, message, Modal, Select, Space } from "antd";
 import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 const { Option } = Select;
 
-const ViewMonthlyReportExplanationModal: React.FC = (props: any) => {
+const ViewMonthlyReportExplanationModal = (props: any) => {
   const [form] = useForm();
-  const { data } = props;
+  const { data, refresh, generalData, show, close, employeeData } = props;
   const [messageApi, contextHolder] = message.useMessage();
-  const [createExplanationShow, setCreateExplanationShow] = useState(false);
   const [requestType, setRequestType] = useState(0);
 
-  const onCreateExplanation = async (values: any) => {
-    const ngayLamViec = currentDate;
-    ngayLamViec.setDate(ngayLamViec.getDate() + 1);
-
-    const requestData: CreateGiaiTrinhRequest = {
-      maNhanVien: data?.maNhanVien,
-      ngayLamViec: new Date(ngayLamViec),
-      ngayTaoGiaiTrinh: new Date(),
-      lyDo: values.lyDo,
-      nguoiDuyet: "",
-      loaiGiaiTrinh: values.loaiGiaiTrinh,
-      trangThai: "0",
-    };
-
-    const response = await GiaiTrinhApi.createGiaiTrinh(requestData);
-    if (response.statusCode === "200") {
-      refresh();
-      close();
-      messageApi.open({
-        type: "success",
-        content: "Thêm mới giải trình thành công",
-        className: "custom-class",
-        style: {
-          fontSize: "16px",
-        },
-        duration: 1.5,
+  useEffect(() => {
+    console.log(data);
+    if (data) {
+      form.setFieldsValue({
+        loaiGiaiTrinh: data.loaiGiaiTrinh,
+        lyDo: data.lyDo,
       });
-      form.resetFields();
-    } else {
-      console.log(response.message);
     }
-
-    setCreateExplanationShow(false);
-  };
+  }, [show]);
 
   return (
     <Modal
@@ -68,7 +40,7 @@ const ViewMonthlyReportExplanationModal: React.FC = (props: any) => {
           </Button>
           <Button
             onClick={() => {
-              setCreateExplanationShow(false);
+              close();
               form.resetFields();
               setRequestType(0);
             }}
@@ -78,16 +50,11 @@ const ViewMonthlyReportExplanationModal: React.FC = (props: any) => {
           </Button>
         </>
       }
-      open={createExplanationShow}
+      open={show}
       width={500}
     >
       {contextHolder}
-      <Form
-        className="view-request"
-        form={form}
-        name="createExplanationModal"
-        onFinish={onCreateExplanation}
-      >
+      <Form className="view-request" form={form} name="createExplanationModal">
         <Space direction="vertical" style={{ width: "100%" }}>
           <Space style={{ display: "flex", justifyContent: "center" }}>
             <h3 style={{ color: "#b98868" }}>Giải trình nhân viên</h3>
@@ -110,20 +77,9 @@ const ViewMonthlyReportExplanationModal: React.FC = (props: any) => {
               padding: "0 16px",
             }}
           >
-            <span>Họ tên nhân viên: {data?.hoTen} </span>
-            <span>Ngày tạo: {dayjs(new Date()).format("DD/MM/YYYY")}</span>
-          </Space>
-          <Space
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              color: "#996B4D",
-              padding: "0 16px",
-            }}
-          >
-            <span>Mã nhân viên: {data?.maNhanVien} </span>
+            <span>Họ tên nhân viên: {generalData?.hoTen} </span>
             <span>
-              Ngày làm việc: {dayjs(currentDate).format("DD/MM/YYYY")}
+              Ngày tạo: {dayjs(data?.ngayTaoGiaiTrinh).format("DD/MM/YYYY")}
             </span>
           </Space>
           <Space
@@ -134,7 +90,20 @@ const ViewMonthlyReportExplanationModal: React.FC = (props: any) => {
               padding: "0 16px",
             }}
           >
-            <span>Phòng ban: {data?.phongBan} </span>
+            <span>Mã nhân viên: {generalData?.maNhanVien} </span>
+            <span>
+              Ngày làm việc: {dayjs(data?.ngayLamViec).format("DD/MM/YYYY")}
+            </span>
+          </Space>
+          <Space
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              color: "#996B4D",
+              padding: "0 16px",
+            }}
+          >
+            <span>Phòng ban: {generalData?.phongBan} </span>
           </Space>
           <Space
             style={{
@@ -158,10 +127,21 @@ const ViewMonthlyReportExplanationModal: React.FC = (props: any) => {
               justifyContent: "space-between",
               color: "#996B4D",
               padding: "0 16px",
+              marginTop: "24px",
+            }}
+          >
+            <b>Nội dung chi tiết giải trình: </b>
+          </Space>
+          <Space
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              color: "#996B4D",
+              padding: "0 16px",
             }}
           >
             <Form.Item label="Loại giải trình" name="loaiGiaiTrinh">
-              <Select>
+              <Select disabled>
                 <Option value="Đi muộn">Đi muộn</Option>
                 <Option value="Về sớm">Về sớm</Option>
               </Select>
@@ -177,7 +157,7 @@ const ViewMonthlyReportExplanationModal: React.FC = (props: any) => {
           >
             <span>Lý do: </span>
             <Form.Item name="lyDo">
-              <TextArea style={{ width: "420px" }} rows={4} />
+              <TextArea disabled style={{ width: "420px" }} rows={4} />
             </Form.Item>
           </Space>
         </Space>
