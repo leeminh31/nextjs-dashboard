@@ -1,3 +1,4 @@
+import RegisterShiftTable from "@/app/ui/register-shift/register-shift-table";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

@@ -69,12 +69,12 @@ const ImportTimeKeeping = (props: any) => {
       .catch((err) => {
         console.log(err);
       });
-    inputFileRef.current.value = "";
+    inputFileRef.current!.value = "";
   };
 
   const formSubmit = () => {
     const form = new FormData();
-    form.append("formFile", inputFileRef.current.files[0]);
+    form.append("formFile", inputFileRef.current!.files![0]);
     uploadFile(form);
   };
 
@@ -91,7 +91,7 @@ const ImportTimeKeeping = (props: any) => {
   useEffect(() => {
     if (show) {
       setFileName("");
-      inputFileRef.current.value = "";
+      inputFileRef.current!.value = "";
     }
   }, [show]);
 
@@ -144,7 +144,7 @@ const ImportTimeKeeping = (props: any) => {
           <Button
             onClick={() => {
               setFileName("");
-              inputFileRef.current.value = "";
+              inputFileRef.current!.value = "";
             }}
           >
             <DeleteOutlined size={8} />

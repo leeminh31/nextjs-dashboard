@@ -24,4 +24,5 @@ export const subTime = (
 
     return differenceMinutes;
   }
+  return 0;
 };

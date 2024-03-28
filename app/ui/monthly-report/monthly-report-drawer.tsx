@@ -707,7 +707,7 @@ const MonthlyReportDrawer = (props: any) => {
                               shiftList.find(
                                 (shift) => shift.maCa === data?.maCa,
                               )?.gioKetThucNghi,
-                            ) || undefined}
+                            )}
                         </>
                       }
                     </span>

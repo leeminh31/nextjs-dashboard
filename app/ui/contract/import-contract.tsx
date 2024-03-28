@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HRMSystemApi } from "@/app/constant/constant";
 import {
   DeleteOutlined,
   DownloadOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
-import { Button, Drawer, Form, message, Row, Space } from "antd";
+import { Button, Drawer, Form, Row, Space, message } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 
 const ImportContract = (props: any) => {
@@ -12,7 +13,7 @@ const ImportContract = (props: any) => {
   const { show, close, refresh } = props;
   const [messageApi, contextHolder] = message.useMessage();
   const [fileName, setFileName] = useState("");
-  const [form] = Form.useForm();
+  const [] = Form.useForm();
 
   const dowloadFile = async () => {
     fetch(HRMSystemApi + "HopDong/dowload", {
@@ -24,7 +25,7 @@ const ImportContract = (props: any) => {
     })
       .then((res) => res.blob())
       .then((response) => {
-        var objectURL = URL.createObjectURL(response);
+        const objectURL = URL.createObjectURL(response);
         const link = document.createElement("a");
         link.href = objectURL;
         link.setAttribute("download", "MasterFile.xlsx");
@@ -68,18 +69,26 @@ const ImportContract = (props: any) => {
       .catch((err) => {
         console.log(err);
       });
-    inputFileRefContract.current.value = "";
+    inputFileRefContract.current!.value = "";
   };
 
   const formSubmit = () => {
-    let form = new FormData();
-    form.append("formFile", inputFileRefContract.current.files[0]);
-    uploadFile(form);
+    const form = new FormData();
+    if (inputFileRefContract && inputFileRefContract.current) {
+      const file = inputFileRefContract.current.files![0]!;
+
+      if (file) {
+        form.append("formFile", file);
+      } else {
+        console.error("No file selected.");
+      }
+      uploadFile(form);
+    }
   };
 
   const onFileChangeCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files != null) {
-      let form = new FormData();
+      const form = new FormData();
       form.append("formFile", e.target.files[0]);
       setFileName(e.target.files[0].name);
     }
@@ -88,7 +97,7 @@ const ImportContract = (props: any) => {
   useEffect(() => {
     if (show) {
       setFileName("");
-      inputFileRefContract.current.value = "";
+      inputFileRefContract.current!.value = "";
     }
   }, [show]);
 
@@ -140,7 +149,7 @@ const ImportContract = (props: any) => {
           <Button
             onClick={() => {
               setFileName("");
-              inputFileRefContract.current.value = "";
+              inputFileRefContract.current!.value = "";
             }}
           >
             <DeleteOutlined size={8} />

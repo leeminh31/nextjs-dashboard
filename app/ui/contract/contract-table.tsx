@@ -209,7 +209,7 @@ const ContractTable: React.FC = () => {
   };
 
   useEffect(() => {
-    if (idList != []) {
+    if (JSON.stringify(idList) !== JSON.stringify([])) {
       const newResult = contractData.filter((item) =>
         idList.includes(item.maNhanVien),
       );

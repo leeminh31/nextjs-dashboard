@@ -159,7 +159,7 @@ export default function LayoutDashboard({
 
   useEffect(() => {
     const getTokenFromLocalStorage = localStorage?.getItem("token")
-      ? JSON.parse(localStorage.getItem("token"))
+      ? JSON.parse(localStorage.getItem("token")!)
       : null;
 
     if (!getTokenFromLocalStorage) {

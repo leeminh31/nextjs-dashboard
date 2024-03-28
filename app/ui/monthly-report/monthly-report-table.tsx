@@ -324,16 +324,16 @@ const MonthlyReportTable: React.FC = () => {
                     <span> {shiftName} </span>
                     <span>
                       {" "}
-                      {monthlyData
+                      {(monthlyData
                         ?.find((day) => day.maNhanVien === employee.maNhanVien)
                         ?.duLieuChamCongResponses?.find(
                           (dlcc) => dlcc.ngayLamViec === currentDate,
-                        )?.gioLamViec <
-                      monthlyData
+                        )?.gioLamViec ?? 0) <
+                      (monthlyData
                         ?.find((day) => day.maNhanVien === employee.maNhanVien)
                         ?.duLieuChamCongResponses?.find(
                           (dlcc) => dlcc.ngayLamViec === currentDate,
-                        )?.gioLamViecTheoCa ? (
+                        )?.gioLamViecTheoCa ?? 0) ? (
                         <span style={{ color: "red" }}>
                           {" "}
                           {monthlyData
@@ -425,16 +425,16 @@ const MonthlyReportTable: React.FC = () => {
                     >
                       <span> {shiftName} </span>
 
-                      {monthlyData
+                      {(monthlyData
                         ?.find((day) => day.maNhanVien === employee.maNhanVien)
                         ?.duLieuChamCongResponses?.find(
                           (dlcc) => dlcc.ngayLamViec === currentDate,
-                        )?.gioLamViec >
-                      monthlyData
+                        )?.gioLamViec ?? 0) <
+                      (monthlyData
                         ?.find((day) => day.maNhanVien === employee.maNhanVien)
                         ?.duLieuChamCongResponses?.find(
                           (dlcc) => dlcc.ngayLamViec === currentDate,
-                        )?.gioLamViecTheoCa ? (
+                        )?.gioLamViecTheoCa ?? 0) ? (
                         <span>
                           {" "}
                           {monthlyData
