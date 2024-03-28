@@ -1,4 +1,4 @@
-export interface LoginRequestModel{
-    tenDangNhap: string,
-    matKhau: string,
+export interface LoginRequestModel {
+  tenDangNhap: string;
+  matKhau: string;
 }

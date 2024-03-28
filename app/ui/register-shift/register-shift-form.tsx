@@ -6,7 +6,7 @@ const { Option } = Select;
 
 const RegisterShiftForm = () => {
   const { token } = theme.useToken();
-  const [form] = Form.useForm();
+  const [] = Form.useForm();
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
   const formStyle: React.CSSProperties = {

@@ -1,7 +1,7 @@
-export interface CreateChiTietQuyPhepRequest{
-    code: string,
-    name: string,
-    url: string,
-    status: number,
-    description: string
+export interface CreateChiTietQuyPhepRequest {
+  code: string;
+  name: string;
+  url: string;
+  status: number;
+  description: string;
 }

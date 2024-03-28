@@ -6,7 +6,7 @@ const { Option } = Select;
 
 const OnLeaveForm = () => {
   const { token } = theme.useToken();
-  const [form] = Form.useForm();
+  const [] = Form.useForm();
 
   const formStyle: React.CSSProperties = {
     maxWidth: "none",

@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import CaLamViecApi from "@/app/api/calamviec";
+import { CaLamViecResponse } from "@/app/models/calamviec/calamviec-response";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,7 +22,7 @@ import {
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { TableRowSelection } from "antd/es/table/interface";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 const { Option } = Select;
 
 interface DataType {
@@ -36,178 +38,6 @@ interface DataType {
   contractType: string;
   status: string;
 }
-
-const data: DataType[] = [
-  {
-    key: "1",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "2",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "3",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Nghỉ việc",
-  },
-  {
-    key: "4",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Nghỉ việc",
-  },
-  {
-    key: "5",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "6",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "7",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "8",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "9",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "10",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "11",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "12",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "13",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-];
 
 const rowSelection: TableRowSelection<DataType> = {
   onChange: (selectedRowKeys, selectedRows) => {
@@ -229,10 +59,29 @@ const RegisterShiftTable: React.FC = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+  const { token } = theme.useToken();
   const [viewOpen, setViewOpen] = useState(false);
   const [form] = Form.useForm();
+  const [shiftList, setShiftList] = useState<CaLamViecResponse[]>([]);
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
   const [ticketType, setTicketType] = useState(0);
+
+  const formStyle: React.CSSProperties = {
+    maxWidth: "none",
+    background: token.colorBgContainer,
+    padding: "24px",
+  };
+
+  const getShiftName = async (maCa: number | null, tenCa: string | null) => {
+    const response = await CaLamViecApi.getCaLamViec(maCa, tenCa);
+    if (response?.statusCode === "200") {
+      setShiftList(response.data.reverse());
+    } else if (response.statusCode === "545") {
+      setShiftList(response.data);
+    } else {
+      console.log(response.message);
+    }
+  };
 
   const columns: ColumnsType<DataType> = [
     {
@@ -270,6 +119,7 @@ const RegisterShiftTable: React.FC = () => {
       title: "Ngày bắt đầu ca mới",
       key: "ngayBatDauCaMoi",
       dataIndex: "ngayBatDauCaMoi",
+      width: 200,
     },
     {
       title: "Người duyệt",
@@ -294,7 +144,7 @@ const RegisterShiftTable: React.FC = () => {
       title: "Hoạt động",
       key: "action",
       fixed: "right",
-      width: 150,
+      width: 75,
       align: "center" as const,
       render: () => (
         <>
@@ -317,8 +167,84 @@ const RegisterShiftTable: React.FC = () => {
     console.log("Received values of form: ", values);
   };
 
+  useEffect(() => {
+    getShiftName(null, null);
+  }, []);
+
   return (
     <>
+      <Form style={formStyle} name="advanced_search">
+        <Row gutter={24}>
+          <Col span={7}>
+            <Form.Item
+              label="Tên nhân viên"
+              name="tenNhanVien"
+              labelCol={{ style: { width: 110, textAlign: "left" } }}
+            >
+              <Input
+                placeholder="Tên nhân viên"
+                style={{ borderRadius: "0px" }}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={7}>
+            <Form.Item
+              label="Mã NV"
+              name="maNhanVien"
+              labelCol={{ style: { width: 110, textAlign: "left" } }}
+            >
+              <Input
+                placeholder="Mã nhân viên"
+                style={{ borderRadius: "0px" }}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={7}>
+            <Form.Item
+              label="Ngày tạo"
+              name="ngayTao"
+              labelCol={{ style: { width: 110, textAlign: "left" } }}
+            >
+              <DatePicker placeholder="Ngày tạo" format={dateFormatList} />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col span={7}>
+            <Form.Item
+              label="Ca làm việc mới"
+              name="caLamViecMoi"
+              labelCol={{ style: { width: 110, textAlign: "left" } }}
+            >
+              <Select placeholder="Vui lòng chọn">
+                {shiftList.map((item) => (
+                  <Option key={item.maCa} value={item.maCa}>
+                    {item.tenCa}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={7}>
+            <Form.Item
+              label="Trạng thái"
+              labelCol={{ style: { width: 110, textAlign: "left" } }}
+            >
+              <Select placeholder="Trạng thái">
+                <Option value={0}>Chờ duyệt</Option>
+                <Option value={1}>Đã duyệt</Option>
+                <Option value={2}>Đã hủy</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row justify="end">
+          <Button type="primary" htmlType="submit">
+            Tìm kiếm
+          </Button>
+          <Button>Tạo lại</Button>
+        </Row>
+      </Form>
       <div
         style={{
           paddingLeft: "24px",
@@ -332,12 +258,11 @@ const RegisterShiftTable: React.FC = () => {
           align="center"
           style={{
             height: "50px",
-            borderBottom: "1px solid #bbbfc1",
             marginBottom: "10px",
           }}
         >
           <span>
-            <b>Phân ca làm việc nhân viên</b>
+            <b>Danh sách đăng ký ca làm việc mới</b>
           </span>
           <Row>
             <Button type="primary">Tạo mới</Button>
@@ -347,10 +272,10 @@ const RegisterShiftTable: React.FC = () => {
           </Row>
         </Flex>
         <Table
-          scroll={{ x: 1800, y: 350 }}
+          scroll={{ x: 1200, y: 350 }}
           rowSelection={rowSelection}
           columns={columns}
-          dataSource={data}
+          // dataSource={data}
           pagination={{
             showQuickJumper: true,
             total: 50,
