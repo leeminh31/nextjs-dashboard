@@ -12,19 +12,12 @@ import {
 import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect } from "react";
 const { Option } = Select;
 
 const ViewMonthlyReportRequestModal = (props: any) => {
   const [form] = useForm();
-  const { data, refresh, generalData, show, close, employeeData } = props;
-  const [requestType, setRequestType] = useState(0);
-
-  const onFinish = () => {};
-
-  const handleRequestType = (e: any) => {
-    setRequestType(e);
-  };
+  const { data, generalData, show, close, employeeData } = props;
 
   useEffect(() => {
     console.log(data);
@@ -282,7 +275,6 @@ const ViewMonthlyReportRequestModal = (props: any) => {
             onClick={() => {
               close();
               form.resetFields();
-              setRequestType(0);
             }}
           >
             {" "}
@@ -293,12 +285,7 @@ const ViewMonthlyReportRequestModal = (props: any) => {
       open={show}
       width={500}
     >
-      <Form
-        className="view-request"
-        form={form}
-        name="viewApplication"
-        onFinish={onFinish}
-      >
+      <Form className="view-request" form={form} name="viewApplication">
         <Space direction="vertical" style={{ width: "100%" }}>
           <Space style={{ display: "flex", justifyContent: "center" }}>
             <h3 style={{ color: "#b98868" }}>Đơn nhân viên</h3>
@@ -360,8 +347,9 @@ const ViewMonthlyReportRequestModal = (props: any) => {
             <span>
               Chức vụ:{" "}
               {
-                employeeData?.find((e) => e.maNhanVien === data?.maNhanVien)
-                  ?.chucVu
+                employeeData?.find(
+                  (e: { maNhanVien: any }) => e.maNhanVien === data?.maNhanVien,
+                )?.chucVu
               }{" "}
             </span>
           </Space>
@@ -388,7 +376,7 @@ const ViewMonthlyReportRequestModal = (props: any) => {
               label="Loại đơn"
               name="loaiDon"
             >
-              <Select disabled onChange={handleRequestType}>
+              <Select disabled>
                 <Option value={1}>Đơn bù</Option>
                 <Option value={2}>Đơn con nhỏ</Option>
                 <Option value={3}>Đơn phép</Option>
