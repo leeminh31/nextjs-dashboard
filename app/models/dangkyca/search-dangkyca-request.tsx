@@ -1,7 +1,7 @@
 export interface SearchDangKyCaRequest {
-  page: number;
-  pageSize: number;
-  code: string;
-  name: string;
-  orderby: string;
+  tenNhanVien: string | null;
+  maNhanVien: string | null;
+  ngayTao: Date | null;
+  caLamViecMoi: string | null;
+  trangThai: string | null;
 }

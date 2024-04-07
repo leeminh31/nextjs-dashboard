@@ -1,9 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import DanhSachDonApi from "@/app/api/danhsachdon";
+import { UpdateDonBuRequest } from "@/app/models/donbu/update-donbu-request";
+import { UpdateDonConNhoRequest } from "@/app/models/donconnho/update-donconnho-request";
+import { UpdateDonPhepRequest } from "@/app/models/donphep/update-donphep-request";
+import { UpdateDonTangCaRequest } from "@/app/models/dontangca/update-dontangca-request";
 import {
   Button,
   DatePicker,
   Form,
   Input,
+  message,
   Modal,
   Select,
   Space,
@@ -12,15 +18,180 @@ import {
 import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 const { Option } = Select;
 
 const UpdateMonthlyReportRequestModal = (props: any) => {
   const [form] = useForm();
-  const { data, refresh, generalData, show, close } = props;
+  const { data, refresh, generalData, show, close, employeeData, ngayLamViec } =
+    props;
   const [requestType, setRequestType] = useState(0);
+  const [messageApi, contextHolder] = message.useMessage();
+  const [quyBu, setQuyBu] = useState(0);
 
-  const onFinish = () => {};
+  const getQuyBuHienCo = async (maNhanVien: string) => {
+    const response = await DanhSachDonApi.getQuyBuHienCo(maNhanVien);
+    if (response?.statusCode === "200") {
+      setQuyBu(response?.data);
+    } else {
+      console.log(response?.message);
+    }
+  };
+
+  const timeDiff = (tangCaTu: string, tangCaDen: string) => {
+    const tangCaTuDate = tangCaTu.split(":").map(Number);
+    const time1 = new Date(0, 0, 0, tangCaTuDate[0], tangCaTuDate[1]).getTime();
+    const tangCaDenDate = tangCaDen.split(":").map(Number);
+    const time2 = new Date(
+      0,
+      0,
+      0,
+      tangCaDenDate[0],
+      tangCaDenDate[1],
+    ).getTime();
+
+    const diffms = Math.abs(time2 - time1);
+
+    const minutes = Math.floor(diffms / (1000 * 60));
+
+    return minutes;
+  };
+
+  const onFinish = async (values: any) => {
+    const ngaylamViecInsert = dayjs(ngayLamViec)
+      .add(1, "day")
+      .format("DD/MM/YYYY");
+
+    if (data?.loaiDon === 1) {
+      const requestData: UpdateDonBuRequest = {
+        maNhanVien: generalData?.maNhanVien,
+        ngayLamViec: new Date(ngaylamViecInsert),
+        ngayTaoDon: new Date(),
+        lyDo: values.lyDo,
+        nguoiDuyet: "",
+        soPhutXinBu: values.soPhutXinBu,
+        trangThai: "0",
+        maDonBu: data?.maDonBu,
+      };
+
+      const response = await DanhSachDonApi.updateDonBu(requestData);
+      if (response.statusCode === "200") {
+        refresh(generalData?.maNhanVien);
+        close();
+        messageApi.open({
+          type: "success",
+          content: "Sửa đơn bù thành công",
+          className: "custom-class",
+          style: {
+            fontSize: "16px",
+          },
+          duration: 1.5,
+        });
+        form.resetFields();
+        setRequestType(0);
+      } else {
+        console.log(response.message);
+      }
+    }
+
+    if (data?.loaiDon === 2) {
+      const requestData: UpdateDonConNhoRequest = {
+        maNhanVien: generalData?.maNhanVien,
+        ngayTaoDon: new Date(),
+        lyDo: values.lyDo,
+        nguoiDuyet: "",
+        tuNgay: values.tuNgay,
+        denNgay: values.denNgay,
+        trangThai: "0",
+        maDonConNho: data?.maDonConNho,
+      };
+
+      const response = await DanhSachDonApi.updateDonConNho(requestData);
+      if (response.statusCode === "200") {
+        refresh(generalData?.maNhanVien);
+        close();
+        messageApi.open({
+          type: "success",
+          content: "Sửa đơn con nhỏ thành công",
+          className: "custom-class",
+          style: {
+            fontSize: "16px",
+          },
+          duration: 1.5,
+        });
+        form.resetFields();
+        setRequestType(0);
+      } else {
+        console.log(response.message);
+      }
+    }
+
+    if (data?.loaiDon === 3) {
+      const requestData: UpdateDonPhepRequest = {
+        maNhanVien: generalData?.maNhanVien,
+        ngayTaoDon: new Date(),
+        ngayLamViec: new Date(ngaylamViecInsert),
+        lyDo: values.lyDo,
+        nguoiDuyet: "",
+        trangThai: "0",
+        maDonPhep: data?.maDonPhep,
+      };
+
+      const response = await DanhSachDonApi.updateDonPhep(requestData);
+      if (response.statusCode === "200") {
+        refresh(generalData?.maNhanVien);
+        close();
+        messageApi.open({
+          type: "success",
+          content: "Sửa đơn phép thành công",
+          className: "custom-class",
+          style: {
+            fontSize: "16px",
+          },
+          duration: 1.5,
+        });
+        form.resetFields();
+        setRequestType(0);
+      } else {
+        console.log(response.message);
+      }
+    }
+
+    if (data?.loaiDon === 4) {
+      const requestData: UpdateDonTangCaRequest = {
+        maNhanVien: generalData?.maNhanVien,
+        ngayTaoDon: new Date(),
+        ngayLamViec: new Date(ngaylamViecInsert),
+        lyDo: values.lyDo,
+        nguoiDuyet: "",
+        tangCaTu: dayjs(values.tangCaTu).format("HH:mm:ss"),
+        tangCaDen: dayjs(values.tangCaDen).format("HH:mm:ss"),
+        trangThai: "0",
+        maDonTangCa: data?.maDonTangCa,
+      };
+
+      const response = await DanhSachDonApi.updateDonTangCa(requestData);
+      if (response.statusCode === "200") {
+        refresh(generalData?.maNhanVien);
+        close();
+        messageApi.open({
+          type: "success",
+          content: "Sửa đơn tăng ca thành công",
+          className: "custom-class",
+          style: {
+            fontSize: "16px",
+          },
+          duration: 1.5,
+        });
+        form.resetFields();
+        setRequestType(0);
+      } else {
+        console.log(response.message);
+      }
+    }
+
+    close();
+  };
 
   const handleRequestType = (e: any) => {
     setRequestType(e);
@@ -48,7 +219,7 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
                   style: { width: 180 },
                 }}
               >
-                <b style={{ width: "70px", color: "#996B4D" }}>960</b>
+                <b style={{ width: "70px", color: "#996B4D" }}>{quyBu}</b>
               </Form.Item>
             </Space>
             <Space
@@ -200,7 +371,9 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
                 padding: "0 16px",
               }}
             >
-              <span>Quy đổi số phút: </span>
+              <span>
+                Quy đổi số phút: {timeDiff(data?.tangCaTu, data?.tangCaDen)}
+              </span>
             </Space>
             <Space
               direction="vertical"
@@ -222,6 +395,43 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
     }
   };
 
+  useEffect(() => {
+    console.log(data);
+    if (data && data.loaiDon === 1) {
+      getQuyBuHienCo(generalData?.maNhanVien);
+      form.setFieldsValue({
+        loaiDon: data.loaiDon,
+        soPhutXinBu: data.soPhutXinBu,
+        lyDo: data.lyDo,
+      });
+    }
+
+    if (data && data.loaiDon === 2) {
+      form.setFieldsValue({
+        loaiDon: data.loaiDon,
+        tuNgay: dayjs(data.tuNgay),
+        denNgay: dayjs(data.denNgay),
+        lyDo: data.lyDo,
+      });
+    }
+
+    if (data && data.loaiDon === 3) {
+      form.setFieldsValue({
+        loaiDon: data.loaiDon,
+        lyDo: data.lyDo,
+      });
+    }
+
+    if (data && data.loaiDon === 4) {
+      form.setFieldsValue({
+        loaiDon: data.loaiDon,
+        tangCaTu: dayjs(data.tangCaTu, "HH:mm:ss"),
+        tangCaDen: dayjs(data.tangCaDen, "HH:mm:ss"),
+        lyDo: data.lyDo,
+      });
+    }
+  }, [show]);
+
   return (
     <Modal
       className="manage-request-drawer"
@@ -236,7 +446,7 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
             }}
           >
             {" "}
-            Tạo đơn{" "}
+            Sửa đơn{" "}
           </Button>
           <Button
             onClick={() => {
@@ -253,6 +463,7 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
       open={show}
       width={500}
     >
+      {contextHolder}
       <Form
         className="view-request"
         form={form}
@@ -281,20 +492,9 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
               padding: "0 16px",
             }}
           >
-            <span>Họ tên nhân viên: {data?.hoTen} </span>
-            <span>Ngày tạo: {dayjs(new Date()).format("DD/MM/YYYY")}</span>
-          </Space>
-          <Space
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              color: "#996B4D",
-              padding: "0 16px",
-            }}
-          >
-            <span>Mã nhân viên: {data?.maNhanVien} </span>
+            <span>Họ tên nhân viên: {generalData?.hoTen} </span>
             <span>
-              {/* Ngày làm việc: {dayjs(currentDate).format("DD/MM/YYYY")} */}
+              Ngày tạo: {dayjs(data?.ngayTaoDon).format("DD/MM/YYYY")}
             </span>
           </Space>
           <Space
@@ -305,7 +505,20 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
               padding: "0 16px",
             }}
           >
-            <span>Phòng ban: {data?.phongBan} </span>
+            <span>Mã nhân viên: {generalData?.maNhanVien} </span>
+            <span>
+              Ngày làm việc: {dayjs(data?.ngayLamViec).format("DD/MM/YYYY")}
+            </span>
+          </Space>
+          <Space
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              color: "#996B4D",
+              padding: "0 16px",
+            }}
+          >
+            <span>Phòng ban: {generalData?.phongBan} </span>
           </Space>
           <Space
             style={{
@@ -317,10 +530,10 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
           >
             <span>
               Chức vụ:{" "}
-              {/* {
+              {
                 employeeData?.find((e) => e.maNhanVien === data?.maNhanVien)
                   ?.chucVu
-              }{" "} */}
+              }{" "}
             </span>
           </Space>
           <Space
@@ -346,7 +559,7 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
               label="Loại đơn"
               name="loaiDon"
             >
-              <Select value={requestType} onChange={handleRequestType}>
+              <Select disabled onChange={handleRequestType}>
                 <Option value={1}>Đơn bù</Option>
                 <Option value={2}>Đơn con nhỏ</Option>
                 <Option value={3}>Đơn phép</Option>
@@ -354,7 +567,7 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
               </Select>
             </Form.Item>
           </Space>
-          {renderManageView(requestType)}
+          {renderManageView(data?.loaiDon)}
         </Space>
       </Form>
     </Modal>

@@ -27,15 +27,6 @@ const ViewMonthlyReportExplanationModal = (props: any) => {
       footer={
         <>
           <Button
-            type="primary"
-            onClick={() => {
-              form.submit();
-            }}
-          >
-            {" "}
-            Tạo giải trình{" "}
-          </Button>
-          <Button
             onClick={() => {
               close();
               form.resetFields();

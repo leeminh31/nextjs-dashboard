@@ -1,8 +1,10 @@
 export interface UpdateDonBuRequest {
-  id: number;
-  code: string;
-  name: string;
-  url: string;
-  status: number;
-  description: string;
+  ngayTaoDon: Date;
+  ngayLamViec: Date;
+  soPhutXinBu: number;
+  lyDo: string;
+  nguoiDuyet: string;
+  trangThai: string;
+  maNhanVien: string;
+  maDonBu: number;
 }

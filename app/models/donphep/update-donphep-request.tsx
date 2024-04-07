@@ -1,8 +1,9 @@
 export interface UpdateDonPhepRequest {
-  id: number;
-  code: string;
-  name: string;
-  url: string;
-  status: number;
-  description: string;
+  ngayTaoDon: Date;
+  ngayLamViec: Date;
+  lyDo: string;
+  nguoiDuyet: string;
+  trangThai: string;
+  maNhanVien: string;
+  maDonPhep: number;
 }

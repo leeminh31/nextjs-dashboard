@@ -2,69 +2,72 @@
 "use client";
 
 import CaLamViecApi from "@/app/api/calamviec";
+import DangKyCaApi from "@/app/api/dangkyca";
+import NhanVienApi from "@/app/api/nhanvien";
+import PhongBanApi from "@/app/api/phongban";
 import { CaLamViecResponse } from "@/app/models/calamviec/calamviec-response";
+import { DangKyCaResponse } from "@/app/models/dangkyca/dangkyca-response";
+import { SearchDangKyCaRequest } from "@/app/models/dangkyca/search-dangkyca-request";
+import { NhanVienResponse } from "@/app/models/nhanvien/nhanvien-response";
+import { SearchNhanVienRequest } from "@/app/models/nhanvien/search-nhanvien-request";
+import { PhongBanResponse } from "@/app/models/phongban/phongban-response";
+import { SearchPhongBanRequest } from "@/app/models/phongban/search-phongban-request";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Button,
   Col,
   DatePicker,
-  Drawer,
   Flex,
   Form,
   Input,
+  message,
   Row,
   Select,
-  Space,
   Table,
-  Tag,
   theme,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { TableRowSelection } from "antd/es/table/interface";
+import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
+import CreateRegisterShift from "./create-register-shift";
+import ViewRegisterShift from "./view-register-shift";
 const { Option } = Select;
 
 interface DataType {
-  key: string;
-  employee: string;
-  employeeId: string;
-  contract: string;
-  department: string;
-  role: string;
-  signDate: Date;
-  startDate: Date;
-  endDate: Date;
-  contractType: string;
-  status: string;
+  key: React.Key;
+  hoTen: string;
+  ngayTao: string;
+  caHienTai: string;
+  caMoi: string;
+  ngayBatDauCaMoi: string;
+  nguoiDuyet: string;
+  phongBan: string;
+  chucVu: string;
+  trangThai: string;
+  maNhanVien: string;
 }
-
-const rowSelection: TableRowSelection<DataType> = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(
-      `selectedRowKeys: ${selectedRowKeys}`,
-      "selectedRows: ",
-      selectedRows,
-    );
-  },
-  onSelect: (record, selected, selectedRows) => {
-    console.log(record, selected, selectedRows);
-  },
-  onSelectAll: (selected, selectedRows, changeRows) => {
-    console.log(selected, selectedRows, changeRows);
-  },
-};
 
 const RegisterShiftTable: React.FC = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
   const { token } = theme.useToken();
+  const [messageApi, contextHolder] = message.useMessage();
   const [viewOpen, setViewOpen] = useState(false);
   const [form] = Form.useForm();
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [addOpen, setAddOpen] = useState(false);
   const [shiftList, setShiftList] = useState<CaLamViecResponse[]>([]);
+  const [data, setData] = useState<DangKyCaResponse[]>([]);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [employeeData, setEmployeeData] = useState<NhanVienResponse[]>([]);
+  const [departmentData, setDepartmentData] = useState<PhongBanResponse[]>([]);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [rowData, setRowData] = useState<DataType>();
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
-  const [ticketType, setTicketType] = useState(0);
 
   const formStyle: React.CSSProperties = {
     maxWidth: "none",
@@ -72,15 +75,185 @@ const RegisterShiftTable: React.FC = () => {
     padding: "24px",
   };
 
+  const tableData: DataType[] = [];
+  for (let i = 0; i < data.length; i++) {
+    tableData.push({
+      key: data[i].maDangKyCa,
+      ngayTao: dayjs(data[i].ngayTao).format("DD/MM/YYYY"),
+      caHienTai: data[i].caLamViecHienTai,
+      caMoi: data[i].caLamViecMoi,
+      ngayBatDauCaMoi: dayjs(data[i].ngayBatDauCaMoi).format("DD/MM/YYYY"),
+      nguoiDuyet: data[i].nguoiDuyet,
+      trangThai: data[i].trangThai,
+      hoTen: employeeData?.find((e) => e.maNhanVien === data[i].maNhanVien)
+        ?.hoTen!,
+      maNhanVien: data[i].maNhanVien,
+      phongBan: departmentData?.find(
+        (d) =>
+          d.maPhongBan ===
+          employeeData?.find((e) => e.maNhanVien === data[i].maNhanVien)
+            ?.maPhongBan!,
+      )?.tenPhongBan!,
+      chucVu: employeeData?.find((e) => e.maNhanVien === data[i].maNhanVien)
+        ?.chucVu!,
+    });
+  }
+
+  const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
+    const response = await NhanVienApi.getNhanVien(searchRequest);
+    if (response.statusCode === "200" || response.statusCode === "545") {
+      setEmployeeData(response.data);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  const getDepartmentsByParams = async (
+    searchRequest: SearchPhongBanRequest,
+  ) => {
+    const response = await PhongBanApi.getPhongBan(searchRequest);
+    if (response.statusCode === "200") {
+      setDepartmentData(response.data);
+    } else if (response.statusCode === "545") {
+      setDepartmentData([]);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  const getDangKyCaByParams = async (searchRequest: SearchDangKyCaRequest) => {
+    const response = await DangKyCaApi.getDangKyCa(searchRequest);
+    if (response.statusCode === "200") {
+      setData(response.data?.reverse());
+      setTotalRecords(response.data?.length);
+    } else if (response.statusCode === "545") {
+      setData([]);
+      setTotalRecords(0);
+    } else {
+      console.log(response.message);
+    }
+  };
+
   const getShiftName = async (maCa: number | null, tenCa: string | null) => {
     const response = await CaLamViecApi.getCaLamViec(maCa, tenCa);
     if (response?.statusCode === "200") {
-      setShiftList(response.data.reverse());
+      setShiftList(response.data);
     } else if (response.statusCode === "545") {
       setShiftList(response.data);
     } else {
       console.log(response.message);
     }
+  };
+
+  const onView = (record: any) => {
+    setRowData(record);
+    setViewOpen(true);
+  };
+
+  const onApprove = async () => {
+    const getTokenFromLocalStorage = JSON.parse(localStorage.getItem("token")!);
+
+    if (!selectedRowKeys.length) {
+      messageApi.open({
+        type: "error",
+        content: "Vui lòng chọn ít nhất một đơn đăng ký ca!",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
+      return;
+    }
+
+    const response = await DangKyCaApi.approve(
+      selectedRowKeys.join(","),
+      getTokenFromLocalStorage.hoTen,
+    );
+
+    if (response?.statusCode === "200") {
+      getDangKyCaByParams({
+        tenNhanVien: null,
+        maNhanVien: null,
+        ngayTao: null,
+        caLamViecMoi: null,
+        trangThai: null,
+      });
+      messageApi.open({
+        type: "success",
+        content: "Duyệt đơn đăng ký ca thành công!",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
+      setSelectedRowKeys([]);
+      return;
+    } else {
+      console.log(response?.message);
+    }
+  };
+
+  const onReject = async () => {
+    const getTokenFromLocalStorage = JSON.parse(localStorage.getItem("token")!);
+
+    if (!selectedRowKeys.length) {
+      messageApi.open({
+        type: "error",
+        content: "Vui lòng chọn ít nhất một đơn đăng ký ca!",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
+
+      return;
+    }
+
+    const response = await DangKyCaApi.reject(
+      selectedRowKeys.join(","),
+      getTokenFromLocalStorage.hoTen,
+    );
+    if (response?.statusCode === "200") {
+      getDangKyCaByParams({
+        tenNhanVien: null,
+        maNhanVien: null,
+        ngayTao: null,
+        caLamViecMoi: null,
+        trangThai: null,
+      });
+      messageApi.open({
+        type: "success",
+        content: "Hủy đơn đăng ký ca thành công!",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
+      setSelectedRowKeys([]);
+      return;
+    } else {
+      console.log(response?.message);
+    }
+  };
+
+  const rowSelection: TableRowSelection<DataType> = {
+    selectedRowKeys: selectedRowKeys,
+    onChange: (selectedRowKeys, selectedRows) => {
+      setSelectedRowKeys(selectedRowKeys);
+    },
+    onSelect: (record, selected, selectedRows) => {
+      console.log(record, selected, selectedRows);
+    },
+    onSelectAll: (selected, selectedRows, changeRows) => {
+      console.log(selected, selectedRows, changeRows);
+    },
+    getCheckboxProps: (record) => ({
+      disabled: record.trangThai !== "0",
+    }),
   };
 
   const columns: ColumnsType<DataType> = [
@@ -89,6 +262,9 @@ const RegisterShiftTable: React.FC = () => {
       dataIndex: "key",
       key: "key",
       width: 50,
+      render: (value, record, index) => {
+        return <>{(page - 1) * pageSize + index + 1}</>;
+      },
     },
     {
       title: "Họ tên",
@@ -130,14 +306,55 @@ const RegisterShiftTable: React.FC = () => {
       title: "Trạng thái",
       key: "status",
       dataIndex: "status",
-      render: (status) => {
-        const color =
-          status === "Đã duyệt"
-            ? "green"
-            : status === "Chờ duyệt"
-              ? "transparent"
-              : "red";
-        return <Tag color={color}>{status.toUpperCase()}</Tag>;
+      render: (value, record) => {
+        return (
+          <>
+            {record.trangThai === "0" ? (
+              <div
+                style={{
+                  border: "1px solid rgb(185, 136, 104)",
+                  borderRadius: "10px",
+                  width: "90px",
+                  textAlign: "center",
+                  display: "inline-block",
+                  padding: "0 10px",
+                }}
+              >
+                Chờ duyệt
+              </div>
+            ) : record.trangThai === "1" ? (
+              <div
+                style={{
+                  border: "1px solid rgb(185, 136, 104)",
+                  borderRadius: "10px",
+                  width: "90px",
+                  textAlign: "center",
+                  display: "inline-block",
+                  padding: "0 10px",
+                  backgroundColor: "#31CD23",
+                  color: "#fff",
+                }}
+              >
+                Đã duyệt
+              </div>
+            ) : (
+              <div
+                style={{
+                  border: "1px solid rgb(185, 136, 104)",
+                  borderRadius: "10px",
+                  width: "90px",
+                  textAlign: "center",
+                  display: "inline-block",
+                  padding: "0 10px",
+                  backgroundColor: "#F95454",
+                  color: "#fff",
+                }}
+              >
+                Đã hủy
+              </div>
+            )}
+          </>
+        );
       },
     },
     {
@@ -146,7 +363,7 @@ const RegisterShiftTable: React.FC = () => {
       fixed: "right",
       width: 75,
       align: "center" as const,
-      render: () => (
+      render: (value, record) => (
         <>
           <Button
             style={{
@@ -154,7 +371,7 @@ const RegisterShiftTable: React.FC = () => {
               color: "#6c8cad",
               border: "none",
             }}
-            onClick={() => setViewOpen(true)}
+            onClick={() => onView(record)}
           >
             <FontAwesomeIcon icon={faEye} />
           </Button>
@@ -165,15 +382,56 @@ const RegisterShiftTable: React.FC = () => {
 
   const onFinish = (values: any) => {
     console.log("Received values of form: ", values);
+
+    const requestData: SearchDangKyCaRequest = {
+      tenNhanVien: values.tenNhanVien,
+      maNhanVien: values.maNhanVien,
+      ngayTao: values.ngayTao,
+      caLamViecMoi: values.caLamViecMoi,
+      trangThai: values.trangThai,
+    };
+
+    getDangKyCaByParams(requestData);
+  };
+
+  const refresh = () => {
+    getDangKyCaByParams({
+      tenNhanVien: null,
+      maNhanVien: null,
+      ngayTao: null,
+      caLamViecMoi: null,
+      trangThai: null,
+    });
+
+    getDepartmentsByParams({
+      tenPhongBan: null,
+      truongPhongBan: null,
+      thuKyPhongBan: null,
+    });
+
+    getEmployeeByParams({
+      maNhanVien: null,
+      hoTen: null,
+      chucVu: null,
+      maPhongBan: null,
+      idVanTay: null,
+    });
+    getShiftName(null, null);
   };
 
   useEffect(() => {
-    getShiftName(null, null);
+    refresh();
   }, []);
 
   return (
     <>
-      <Form style={formStyle} name="advanced_search">
+      {contextHolder}
+      <Form
+        form={form}
+        onFinish={onFinish}
+        style={formStyle}
+        name="advanced_search"
+      >
         <Row gutter={24}>
           <Col span={7}>
             <Form.Item
@@ -218,7 +476,7 @@ const RegisterShiftTable: React.FC = () => {
             >
               <Select placeholder="Vui lòng chọn">
                 {shiftList.map((item) => (
-                  <Option key={item.maCa} value={item.maCa}>
+                  <Option key={item.maCa} value={item.tenCa}>
                     {item.tenCa}
                   </Option>
                 ))}
@@ -228,12 +486,13 @@ const RegisterShiftTable: React.FC = () => {
           <Col span={7}>
             <Form.Item
               label="Trạng thái"
+              name="trangThai"
               labelCol={{ style: { width: 110, textAlign: "left" } }}
             >
               <Select placeholder="Trạng thái">
-                <Option value={0}>Chờ duyệt</Option>
-                <Option value={1}>Đã duyệt</Option>
-                <Option value={2}>Đã hủy</Option>
+                <Option value={"0"}>Chờ duyệt</Option>
+                <Option value={"1"}>Đã duyệt</Option>
+                <Option value={"2"}>Đã hủy</Option>
               </Select>
             </Form.Item>
           </Col>
@@ -242,7 +501,7 @@ const RegisterShiftTable: React.FC = () => {
           <Button type="primary" htmlType="submit">
             Tìm kiếm
           </Button>
-          <Button>Tạo lại</Button>
+          <Button onClick={() => form.resetFields()}>Tạo lại</Button>
         </Row>
       </Form>
       <div
@@ -265,9 +524,22 @@ const RegisterShiftTable: React.FC = () => {
             <b>Danh sách đăng ký ca làm việc mới</b>
           </span>
           <Row>
-            <Button type="primary">Tạo mới</Button>
-            <Button type="primary" style={{ marginLeft: "12px" }}>
-              Xóa
+            <Button type="primary" onClick={() => setAddOpen(true)}>
+              Tạo mới
+            </Button>
+            <Button
+              onClick={onApprove}
+              type="primary"
+              style={{ marginLeft: "12px" }}
+            >
+              Duyệt đơn
+            </Button>
+            <Button
+              onClick={onReject}
+              type="primary"
+              style={{ marginLeft: "12px" }}
+            >
+              Hủy đơn
             </Button>
           </Row>
         </Flex>
@@ -275,13 +547,17 @@ const RegisterShiftTable: React.FC = () => {
           scroll={{ x: 1200, y: 350 }}
           rowSelection={rowSelection}
           columns={columns}
-          // dataSource={data}
+          dataSource={tableData}
           pagination={{
             showQuickJumper: true,
-            total: 50,
+            total: totalRecords,
             defaultPageSize: 10,
             showSizeChanger: true,
             pageSizeOptions: ["10", "20", "30"],
+            onChange: (page, pageSize) => {
+              setPage(page);
+              setPageSize(pageSize);
+            },
             locale: {
               jump_to: "Đến",
               page: "Trang",
@@ -291,317 +567,17 @@ const RegisterShiftTable: React.FC = () => {
           }}
         />
       </div>
-      <Drawer
-        size="large"
-        title="Thông tin chi tiết"
-        placement="right"
-        onClose={() => setViewOpen(false)}
-        open={viewOpen}
-        footer={
-          <Row justify={"end"}>
-            <Space>
-              <Button onClick={() => setViewOpen(false)}>Hủy</Button>
-              <Button onClick={() => form.submit()} type="primary">
-                Lưu
-              </Button>
-            </Space>
-          </Row>
-        }
-      >
-        <Form form={form} name="viewStaffTransfer" onFinish={onFinish}>
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                name={"ticketType"}
-                label={"Loại phiếu"}
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng chọn Loại phiếu!",
-                  },
-                ]}
-                labelCol={{ span: 24 }}
-                wrapperCol={{ span: 24 }}
-              >
-                <Select
-                  placeholder="Loại phiếu"
-                  onChange={(e) => setTicketType(e)}
-                  allowClear
-                >
-                  <Option value={1}>Công ty</Option>
-                  <Option value={2}>Phòng ban</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name={"ticketName"}
-                label={"Tên Phiếu"}
-                labelCol={{ span: 24 }}
-                wrapperCol={{ span: 24 }}
-              >
-                <Input placeholder="Vui lòng nhập Tên phiếu " />
-              </Form.Item>
-            </Col>
-            {ticketType === 1 ? (
-              <>
-                <Col span={12}>
-                  <Form.Item
-                    name={"currentCompany"}
-                    label={"Công ty hiện tại"}
-                    labelCol={{ span: 24 }}
-                    wrapperCol={{ span: 24 }}
-                  >
-                    <Select placeholder="Vui lòng chọn">
-                      <Option value={1}>Bùi Thị Yên</Option>
-                      <Option value={2}>Bùi Thị Yên</Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name={"employee"}
-                    label={"Nhân viên"}
-                    labelCol={{ span: 24 }}
-                    wrapperCol={{ span: 24 }}
-                  >
-                    <Select placeholder="Vui lòng chọn nhân viên">
-                      <Option value={1}>Bùi Thị Yên</Option>
-                      <Option value={2}>Bùi Thị Yên</Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name={"deliverDepartment"}
-                    label={"Phòng ban"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng chọn Phòng ban!",
-                      },
-                    ]}
-                    labelCol={{ span: 24 }}
-                    wrapperCol={{ span: 24 }}
-                  >
-                    <Select placeholder="Vui lòng chọn công ty ">
-                      <Option value={1}>Bùi Thị Yên</Option>
-                      <Option value={2}>Bùi Thị Yên</Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name={"department"}
-                    label={"Phòng ban"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng chọn phòng ban!",
-                      },
-                    ]}
-                    labelCol={{ span: 24 }}
-                    wrapperCol={{ span: 24 }}
-                  >
-                    <Select placeholder="Vui lòng chọn phòng ban ">
-                      <Option value={1}>Bùi Thị Yên</Option>
-                      <Option value={2}>Bùi Thị Yên</Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name={"endDateOfCurrentCompany"}
-                    label={"Ngày kết thúc công việc công ty cũ"}
-                    rules={[
-                      {
-                        required: true,
-                        message:
-                          "Vui lòng nhập Ngày kết thúc công việc công ty cũ!",
-                      },
-                    ]}
-                    labelCol={{ span: 24 }}
-                    wrapperCol={{ span: 24 }}
-                  >
-                    <DatePicker
-                      placeholder="Vui lòng nhập Ngày kết thúc công việc công ty cũ"
-                      format={dateFormatList}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name={"startDateOfNewCompany"}
-                    label={"Ngày vào làm công ty mới"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng chọn phòng ban chuyển đến!",
-                      },
-                    ]}
-                    labelCol={{ span: 24 }}
-                    wrapperCol={{ span: 24 }}
-                  >
-                    <DatePicker
-                      placeholder="Vui lòng nhập Ngày vào làm công ty mới"
-                      format={dateFormatList}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name={"contractName"}
-                    label={"Tên hợp đồng"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng nhập Tên hợp đồng!",
-                      },
-                    ]}
-                    labelCol={{ span: 24 }}
-                    wrapperCol={{ span: 24 }}
-                  >
-                    <Input placeholder="Vui lòng nhập Tên hợp đồng " />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name={"contracType"}
-                    label={"Loại hợp đồng"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng chọn Loại hợp đồng!",
-                      },
-                    ]}
-                    labelCol={{ span: 24 }}
-                    wrapperCol={{ span: 24 }}
-                  >
-                    <Select placeholder="Vui lòng chọn">
-                      <Option value={1}>Bùi Thị Yên</Option>
-                      <Option value={2}>Bùi Thị Yên</Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name={"signDate"}
-                    label={"Ngày ký hợp đồng"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng chọn phòng ban chuyển đến!",
-                      },
-                    ]}
-                    labelCol={{ span: 24 }}
-                    wrapperCol={{ span: 24 }}
-                  >
-                    <DatePicker
-                      placeholder="Vui lòng nhập Ngày ký hợp đồng"
-                      format={dateFormatList}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name={"endContractDate"}
-                    label={"Ngày kết thúc hợp đồng mới"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng chọn phòng ban chuyển đến!",
-                      },
-                    ]}
-                    labelCol={{ span: 24 }}
-                    wrapperCol={{ span: 24 }}
-                  >
-                    <DatePicker
-                      placeholder="Vui lòng nhập Ngày kết thúc hợp đồng mới"
-                      format={dateFormatList}
-                    />
-                  </Form.Item>
-                </Col>
-              </>
-            ) : ticketType === 2 ? (
-              <>
-                <Col span={12}>
-                  <Form.Item
-                    name={"currentDepartment"}
-                    label={"Phòng ban hiện tại"}
-                    labelCol={{ span: 24 }}
-                    wrapperCol={{ span: 24 }}
-                  >
-                    <Select placeholder="Vui lòng chọn">
-                      <Option value={1}>Bùi Thị Yên</Option>
-                      <Option value={2}>Bùi Thị Yên</Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name={"employee"}
-                    label={"Nhân viên"}
-                    labelCol={{ span: 24 }}
-                    wrapperCol={{ span: 24 }}
-                  >
-                    <Select placeholder="Vui lòng chọn nhân viên">
-                      <Option value={1}>Bùi Thị Yên</Option>
-                      <Option value={2}>Bùi Thị Yên</Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name={"deliverDepartment"}
-                    label={"Phòng ban"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng chọn phòng ban chuyển đến!",
-                      },
-                    ]}
-                    labelCol={{ span: 24 }}
-                    wrapperCol={{ span: 24 }}
-                  >
-                    <Select placeholder="Vui lòng chọn">
-                      <Option value={1}>Bùi Thị Yên</Option>
-                      <Option value={2}>Bùi Thị Yên</Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name={"startDateDeliverDepartment"}
-                    label={"Ngày vào làm phòng ban mới"}
-                    labelCol={{ span: 24 }}
-                    wrapperCol={{ span: 24 }}
-                  >
-                    <DatePicker
-                      placeholder="Vui lòng nhập Ngày vào làm phòng mới"
-                      format={dateFormatList}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name={"endDateCurrentDepartment"}
-                    label={"Ngày kết thúc công việc phòng ban cũ"}
-                    labelCol={{ span: 24 }}
-                    wrapperCol={{ span: 24 }}
-                  >
-                    <DatePicker
-                      placeholder="Vui lòng nhập Ngày kết thúc công việc phòng ban cũ"
-                      format={dateFormatList}
-                    />
-                  </Form.Item>
-                </Col>
-              </>
-            ) : (
-              <></>
-            )}
-          </Row>
-        </Form>
-      </Drawer>
+      <CreateRegisterShift
+        refresh={refresh}
+        show={addOpen}
+        close={() => setAddOpen(false)}
+      />
+
+      <ViewRegisterShift
+        data={rowData}
+        show={viewOpen}
+        close={() => setViewOpen(false)}
+      />
     </>
   );
 };

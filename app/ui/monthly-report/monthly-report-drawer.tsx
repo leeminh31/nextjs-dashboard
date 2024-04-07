@@ -154,6 +154,7 @@ const MonthlyReportDrawer = (props: any) => {
   }, [dateFull]);
 
   useEffect(() => {
+    console.log("Du lieu can xem: ", data);
     const getDate = dayjs(new Date(dateFull));
     const startDate = new Date(getDate.year(), getDate.month(), date + 1);
     if (data) {
@@ -165,8 +166,8 @@ const MonthlyReportDrawer = (props: any) => {
       getListRequestByParams(data?.maNhanVien);
 
       getListExplanationByParams(data?.maNhanVien);
+      setGeneralData(data);
     }
-    setGeneralData(data);
   }, [data]);
 
   useEffect(() => {
@@ -202,28 +203,6 @@ const MonthlyReportDrawer = (props: any) => {
                 <Space direction="vertical" style={{ width: "100%" }}>
                   <Space style={{ display: "flex", justifyContent: "center" }}>
                     <h2 style={{ color: "#b98868" }}>Ca Làm Việc</h2>
-                  </Space>
-                  <Space
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      color: "#996B4D",
-                      padding: "8px",
-                    }}
-                  >
-                    <span>Tên nhân viên: </span>
-                    <span>{data?.hoTen}</span>
-                  </Space>
-                  <Space
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      color: "#996B4D",
-                      padding: "8px",
-                    }}
-                  >
-                    <span>Ngày: </span>
-                    <span>{dayjs(currentDate).format("DD/MM/YYYY")}</span>
                   </Space>
                   <Space
                     style={{
@@ -916,8 +895,9 @@ const MonthlyReportDrawer = (props: any) => {
         show={createRequestShow}
         generalData={generalData}
         close={() => setCreateRequestShow(false)}
+        ngayLamViec={currentDate}
         employeeData={employeeData}
-        refresh={refresh}
+        refresh={getListRequestByParams}
       />
       <ViewMonthReportRequestModal
         show={viewRequestShow}
@@ -925,22 +905,23 @@ const MonthlyReportDrawer = (props: any) => {
         data={requestData}
         employeeData={employeeData}
         close={() => setViewRequestShow(false)}
-        refresh={refresh}
       />
       <UpdateMonthlyReportRequestModal
         show={updateRequestShow}
         generalData={generalData}
         data={requestData}
         employeeData={employeeData}
+        ngayLamViec={currentDate}
         close={() => setUpdateRequestShow(false)}
-        refresh={refresh}
+        refresh={getListRequestByParams}
       />
       <CreateMonthlyReportExplanationModal
         show={createExplanationShow}
         generalData={generalData}
         employeeData={employeeData}
+        ngayLamViec={currentDate}
         close={() => setCreateExplanationShow(false)}
-        refresh={refresh}
+        refresh={getListExplanationByParams}
       />
       <ViewMonthlyReportExplanationModal
         show={viewExplanationShow}
@@ -954,9 +935,10 @@ const MonthlyReportDrawer = (props: any) => {
         show={updateExplanationShow}
         generalData={generalData}
         employeeData={employeeData}
+        ngayLamViec={currentDate}
         data={explanationData}
         close={() => setUpdateExplanationShow(false)}
-        refresh={refresh}
+        refresh={getListExplanationByParams}
       />
     </>
   );

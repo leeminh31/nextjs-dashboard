@@ -1,16 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import {
-  DownloadOutlined,
-  EyeTwoTone,
-  UploadOutlined,
-} from "@ant-design/icons";
+import QuyPhepApi from "@/app/api/quyphep";
+import { QuyPhepResponse } from "@/app/models/quyphep/quyphep-response";
+import { SearchQuyPhepRequest } from "@/app/models/quyphep/search-quyphep-request";
+import { EyeTwoTone } from "@ant-design/icons";
 import {
   Button,
   Col,
   DatePicker,
-  Drawer,
   Flex,
   Form,
   Input,
@@ -18,199 +16,12 @@ import {
   Select,
   Space,
   Table,
-  Upload,
   theme,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { TableRowSelection } from "antd/es/table/interface";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 const { Option } = Select;
-
-interface DataType {
-  key: string;
-  employee: string;
-  employeeId: string;
-  contract: string;
-  department: string;
-  role: string;
-  signDate: Date;
-  startDate: Date;
-  endDate: Date;
-  contractType: string;
-  status: string;
-}
-
-const data: DataType[] = [
-  {
-    key: "1",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "2",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "3",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Nghỉ việc",
-  },
-  {
-    key: "4",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Nghỉ việc",
-  },
-  {
-    key: "5",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "6",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "7",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "8",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "9",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "10",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "11",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "12",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "13",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-];
 
 const OnLeaveTable: React.FC = () => {
   const {
@@ -219,6 +30,23 @@ const OnLeaveTable: React.FC = () => {
   const { token } = theme.useToken();
   const [importOpen, setImportOpen] = useState(false);
   const [form] = Form.useForm();
+  const [data, setData] = useState<QuyPhepResponse[]>([]);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalRecords, setTotalRecords] = useState(0);
+
+  const getQuyPhepByParams = async (searchRequest: SearchQuyPhepRequest) => {
+    const response = await QuyPhepApi.getQuyPhep(searchRequest);
+    if (response.statusCode === "200") {
+      setData(response.data?.reverse());
+      setTotalRecords(response.data?.length);
+    } else if (response.statusCode === "545") {
+      setData([]);
+      setTotalRecords(0);
+    } else {
+      console.log(response.message);
+    }
+  };
 
   const onUpdate = () => {};
 
@@ -232,7 +60,7 @@ const OnLeaveTable: React.FC = () => {
     console.log("Received values of form: ", values);
   };
 
-  const rowSelection: TableRowSelection<DataType> = {
+  const rowSelection: TableRowSelection<QuyPhepResponse> = {
     onChange: (selectedRowKeys, selectedRows) => {
       console.log(
         `selectedRowKeys: ${selectedRowKeys}`,
@@ -248,12 +76,24 @@ const OnLeaveTable: React.FC = () => {
     },
   };
 
-  const columns: ColumnsType<DataType> = [
+  useEffect(() => {
+    getQuyPhepByParams({
+      tenNhanVien: null,
+      maNhanVien: null,
+      maPhongBan: null,
+      nam: new Date().getUTCFullYear(),
+    });
+  }, []);
+
+  const columns: ColumnsType<QuyPhepResponse> = [
     {
       title: "#",
       dataIndex: "key",
       key: "key",
       width: 50,
+      render: (value, record, index) => {
+        return <>{(page - 1) * pageSize + index + 1}</>;
+      },
     },
     {
       title: "Thông tin nhân viên",
@@ -302,72 +142,108 @@ const OnLeaveTable: React.FC = () => {
           dataIndex: "thang1",
           key: "thang1",
           width: 80,
+          render: (value, record, index) => {
+            return <>{record.thang1 !== 0 ? record.thang1 : ""}</>;
+          },
         },
         {
           title: "Tháng 2",
           dataIndex: "thang2",
           key: "thang2",
           width: 80,
+          render: (value, record, index) => {
+            return <>{record.thang2 !== 0 ? record.thang2 : ""}</>;
+          },
         },
         {
           title: "Tháng 3",
           dataIndex: "thang3",
           key: "thang3",
           width: 80,
+          render: (value, record, index) => {
+            return <>{record.thang3 !== 0 ? record.thang3 : ""}</>;
+          },
         },
         {
           title: "Tháng 4",
           dataIndex: "thang4",
           key: "thang4",
           width: 80,
+          render: (value, record, index) => {
+            return <>{record.thang4 !== 0 ? record.thang4 : ""}</>;
+          },
         },
         {
           title: "Tháng 5",
           dataIndex: "thang5",
           key: "thang5",
           width: 80,
+          render: (value, record, index) => {
+            return <>{record.thang5 !== 0 ? record.thang5 : ""}</>;
+          },
         },
         {
           title: "Tháng 6",
           dataIndex: "thang6",
           key: "thang6",
           width: 80,
+          render: (value, record, index) => {
+            return <>{record.thang6 !== 0 ? record.thang6 : ""}</>;
+          },
         },
         {
           title: "Tháng 7",
           dataIndex: "thang7",
           key: "thang7",
           width: 80,
+          render: (value, record, index) => {
+            return <>{record.thang7 !== 0 ? record.thang7 : ""}</>;
+          },
         },
         {
           title: "Tháng 8",
           dataIndex: "thang8",
           key: "thang8",
           width: 80,
+          render: (value, record, index) => {
+            return <>{record.thang8 !== 0 ? record.thang8 : ""}</>;
+          },
         },
         {
           title: "Tháng 9",
           dataIndex: "thang9",
           key: "thang9",
           width: 80,
+          render: (value, record, index) => {
+            return <>{record.thang9 !== 0 ? record.thang9 : ""}</>;
+          },
         },
         {
           title: "Tháng 10",
           dataIndex: "thang10",
           key: "thang10",
           width: 80,
+          render: (value, record, index) => {
+            return <>{record.thang10 !== 0 ? record.thang10 : ""}</>;
+          },
         },
         {
           title: "Tháng 11",
           dataIndex: "thang11",
           key: "thang11",
           width: 80,
+          render: (value, record, index) => {
+            return <>{record.thang11 !== 0 ? record.thang11 : ""}</>;
+          },
         },
         {
           title: "Tháng 12",
           dataIndex: "thang12",
           key: "thang12",
           width: 80,
+          render: (value, record, index) => {
+            return <>{record.thang12 !== 0 ? record.thang12 : ""}</>;
+          },
         },
       ],
     },
@@ -403,23 +279,23 @@ const OnLeaveTable: React.FC = () => {
           key: "xem",
           width: 75,
           align: "center",
+          render: () => {
+            return (
+              <Space style={{ gap: "16px" }}>
+                <Button
+                  icon={<EyeTwoTone />}
+                  style={{
+                    backgroundColor: "transparent",
+                    border: "none",
+                    boxShadow: "none",
+                  }}
+                  onClick={() => onUpdate()}
+                ></Button>
+              </Space>
+            );
+          },
         },
       ],
-      render: () => {
-        return (
-          <Space style={{ gap: "16px" }}>
-            <Button
-              icon={<EyeTwoTone />}
-              style={{
-                backgroundColor: "transparent",
-                border: "none",
-                boxShadow: "none",
-              }}
-              onClick={() => onUpdate()}
-            ></Button>
-          </Space>
-        );
-      },
     },
   ];
 
@@ -511,10 +387,14 @@ const OnLeaveTable: React.FC = () => {
           dataSource={data}
           pagination={{
             showQuickJumper: true,
-            total: 50,
+            total: totalRecords,
             defaultPageSize: 10,
             showSizeChanger: true,
             pageSizeOptions: ["10", "20", "30"],
+            onChange: (page, pageSize) => {
+              setPage(page);
+              setPageSize(pageSize);
+            },
             locale: {
               jump_to: "Đến",
               page: "Trang",
@@ -524,33 +404,6 @@ const OnLeaveTable: React.FC = () => {
           }}
         />
       </div>
-      <Drawer
-        title="Import phép và bù"
-        placement="right"
-        onClose={() => setImportOpen(false)}
-        open={importOpen}
-        footer={
-          <Row justify={"end"}>
-            <Space>
-              <Button onClick={() => setImportOpen(false)}>Hủy</Button>
-              <Button onClick={() => form.submit()} type="primary">
-                Lưu
-              </Button>
-            </Space>
-          </Row>
-        }
-      >
-        <Upload>
-          <p>File upload</p>
-          <Button icon={<UploadOutlined />}>Click to Upload</Button>
-        </Upload>
-        <Space direction="vertical">
-          <p>Template file</p>
-          <Button type="primary" icon={<DownloadOutlined />}>
-            Tải xuống template
-          </Button>
-        </Space>
-      </Drawer>
     </>
   );
 };

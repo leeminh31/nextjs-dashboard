@@ -118,6 +118,22 @@ const MonthlyReportTable: React.FC = () => {
     }
   };
 
+  const assignShift = async () => {
+    const response = await BaoCaoTheoThangApi.assignShiftToEmployee();
+    if (response?.statusCode === "200") {
+      getMonthlyReportByMonth({
+        maNhanVien: null,
+        ngayBatDau: null,
+        ngayKetThuc: null,
+        tenNhanVien: null,
+        idVanTay: null,
+      });
+      refresh();
+    } else {
+      console.log(response.message);
+    }
+  };
+
   const refresh = () => {
     getEmployeeByParams({
       hoTen: null,
@@ -137,6 +153,8 @@ const MonthlyReportTable: React.FC = () => {
   };
 
   const onFinish = (values: any) => {
+    console.log(values);
+
     if (values.maNhanVien || values.tenNhanVien) {
       setIsSearch(true);
       getEmployeeByParams({
@@ -301,10 +319,6 @@ const MonthlyReportTable: React.FC = () => {
                   : 0,
               };
 
-              const shiftName = shiftList.find(
-                (shift) => shift.maCa === employee.maCa,
-              )?.tenCa;
-
               const days: { [key: string]: React.JSX.Element } = {};
 
               const startDate = new Date(getDate.year(), getDate.month(), 1);
@@ -323,19 +337,55 @@ const MonthlyReportTable: React.FC = () => {
                       alignItems: "center",
                     }}
                   >
-                    <span> {shiftName} </span>
+                    {monthlyData
+                      ?.find((day) => day.maNhanVien === employee.maNhanVien)
+                      ?.duLieuChamCongResponses?.find(
+                        (dlcc) => dlcc.ngayLamViec === currentDate,
+                      )?.nghiPhep ? (
+                      <span style={{ color: "#31cd23" }}>AL</span>
+                    ) : (
+                      <span>
+                        {monthlyData
+                          ?.find(
+                            (day) => day.maNhanVien === employee.maNhanVien,
+                          )
+                          ?.duLieuChamCongResponses?.find(
+                            (dlcc) => dlcc.ngayLamViec === currentDate,
+                          )?.tenCa ?? ""}
+                      </span>
+                    )}
                     <span>
                       {" "}
-                      {(monthlyData
+                      {monthlyData
                         ?.find((day) => day.maNhanVien === employee.maNhanVien)
                         ?.duLieuChamCongResponses?.find(
                           (dlcc) => dlcc.ngayLamViec === currentDate,
-                        )?.gioLamViec ?? 0) <
-                      (monthlyData
-                        ?.find((day) => day.maNhanVien === employee.maNhanVien)
-                        ?.duLieuChamCongResponses?.find(
-                          (dlcc) => dlcc.ngayLamViec === currentDate,
-                        )?.gioLamViecTheoCa ?? 0) ? (
+                        )?.nghiPhep ? (
+                        <span style={{ color: "#31cd23" }}>
+                          {
+                            monthlyData
+                              ?.find(
+                                (day) => day.maNhanVien === employee.maNhanVien,
+                              )
+                              ?.duLieuChamCongResponses?.find(
+                                (dlcc) => dlcc.ngayLamViec === currentDate,
+                              )?.gioLamViecTheoCa
+                          }
+                        </span>
+                      ) : (monthlyData
+                          ?.find(
+                            (day) => day.maNhanVien === employee.maNhanVien,
+                          )
+                          ?.duLieuChamCongResponses?.find(
+                            (dlcc) => dlcc.ngayLamViec === currentDate,
+                          )?.gioLamViec ?? 0) <
+                        (monthlyData
+                          ?.find(
+                            (day) => day.maNhanVien === employee.maNhanVien,
+                          )
+                          ?.duLieuChamCongResponses?.find(
+                            (dlcc) => dlcc.ngayLamViec === currentDate,
+                          )?.gioLamViecTheoCa ?? 0) ? (
                         <span style={{ color: "red" }}>
                           {" "}
                           {monthlyData
@@ -403,10 +453,6 @@ const MonthlyReportTable: React.FC = () => {
                     : 0,
                 };
 
-                const shiftName = shiftList.find(
-                  (shift) => shift.maCa === employee.maCa,
-                )?.tenCa;
-
                 const days: { [key: string]: React.JSX.Element } = {};
 
                 const startDate = new Date(getDate.year(), getDate.month(), 1);
@@ -425,19 +471,55 @@ const MonthlyReportTable: React.FC = () => {
                         alignItems: "center",
                       }}
                     >
-                      <span> {shiftName} </span>
-
-                      {(monthlyData
+                      {monthlyData
                         ?.find((day) => day.maNhanVien === employee.maNhanVien)
                         ?.duLieuChamCongResponses?.find(
                           (dlcc) => dlcc.ngayLamViec === currentDate,
-                        )?.gioLamViec ?? 0) <
-                      (monthlyData
-                        ?.find((day) => day.maNhanVien === employee.maNhanVien)
-                        ?.duLieuChamCongResponses?.find(
-                          (dlcc) => dlcc.ngayLamViec === currentDate,
-                        )?.gioLamViecTheoCa ?? 0) ? (
+                        )?.nghiPhep ? (
+                        <span style={{ color: "#31cd23" }}>AL</span>
+                      ) : (
                         <span>
+                          {monthlyData
+                            ?.find(
+                              (day) => day.maNhanVien === employee.maNhanVien,
+                            )
+                            ?.duLieuChamCongResponses?.find(
+                              (dlcc) => dlcc.ngayLamViec === currentDate,
+                            )?.tenCa ?? ""}
+                        </span>
+                      )}
+
+                      {monthlyData
+                        ?.find((day) => day.maNhanVien === employee.maNhanVien)
+                        ?.duLieuChamCongResponses?.find(
+                          (dlcc) => dlcc.ngayLamViec === currentDate,
+                        )?.nghiPhep ? (
+                        <span style={{ color: "#31cd23" }}>
+                          {
+                            monthlyData
+                              ?.find(
+                                (day) => day.maNhanVien === employee.maNhanVien,
+                              )
+                              ?.duLieuChamCongResponses?.find(
+                                (dlcc) => dlcc.ngayLamViec === currentDate,
+                              )?.gioLamViecTheoCa
+                          }
+                        </span>
+                      ) : (monthlyData
+                          ?.find(
+                            (day) => day.maNhanVien === employee.maNhanVien,
+                          )
+                          ?.duLieuChamCongResponses?.find(
+                            (dlcc) => dlcc.ngayLamViec === currentDate,
+                          )?.gioLamViec ?? 0) <
+                        (monthlyData
+                          ?.find(
+                            (day) => day.maNhanVien === employee.maNhanVien,
+                          )
+                          ?.duLieuChamCongResponses?.find(
+                            (dlcc) => dlcc.ngayLamViec === currentDate,
+                          )?.gioLamViecTheoCa ?? 0) ? (
+                        <span style={{ color: "red" }}>
                           {" "}
                           {monthlyData
                             ?.find(
@@ -531,16 +613,6 @@ const MonthlyReportTable: React.FC = () => {
     generateDataTable();
   }, [date]);
 
-  // useEffect(() => {
-  //   if (!open) {
-  //     // Xóa lớp CSS trước
-  //     const highlightedCells = document.querySelectorAll(".highlighted-cell");
-  //     highlightedCells.forEach((cell) => {
-  //       cell.classList.remove("highlighted-cell");
-  //     });
-  //   }
-  // }, [open]);
-
   useEffect(() => {
     setSpinning(true);
     generateDataTable();
@@ -632,7 +704,7 @@ const MonthlyReportTable: React.FC = () => {
               <Button
                 type="primary"
                 style={{ marginLeft: "12px" }}
-                onClick={() => console.log("Phân ca")}
+                onClick={() => assignShift()}
               >
                 Phân ca
               </Button>

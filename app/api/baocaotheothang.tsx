@@ -24,6 +24,11 @@ const BaoCaoTheoThangApi = {
     const payload: SearchDuLieuChamCongRequest = data;
     return rest.postAsync("BaoCaoTheoThang/GetAll", JSON.stringify(payload));
   },
+
+  assignShiftToEmployee: async () => {
+    const rest = new RestConnection();
+    return rest.postAsync("BaoCaoTheoThang/AssignShifts", null);
+  },
 };
 
 export default BaoCaoTheoThangApi;

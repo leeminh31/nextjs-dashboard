@@ -1,8 +1,21 @@
 export interface QuyPhepResponse {
-  id: number;
-  code: string;
-  name: string;
-  url: string;
-  status: number;
-  description: string;
+  maNhanVien: string;
+  hoTen: string;
+  phongBan: string;
+  nam: number;
+  tongPhep: number;
+  thang1: number;
+  thang2: number;
+  thang3: number;
+  thang4: number;
+  thang5: number;
+  thang6: number;
+  thang7: number;
+  thang8: number;
+  thang9: number;
+  thang10: number;
+  thang11: number;
+  thang12: number;
+  conLai: number;
+  suDung: number;
 }

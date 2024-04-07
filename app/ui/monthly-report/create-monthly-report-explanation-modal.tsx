@@ -10,16 +10,18 @@ const { Option } = Select;
 
 const CreateMonthlyReportExplanationModal = (props: any) => {
   const [form] = useForm();
-  const { show, refresh, generalData, close } = props;
+  const { show, refresh, generalData, close, ngayLamViec, employeeData } =
+    props;
   const [messageApi, contextHolder] = message.useMessage();
 
   const onCreateExplanation = async (values: any) => {
-    const ngayLamViec = currentDate;
-    ngayLamViec.setDate(ngayLamViec.getDate() + 1);
+    const ngaylamViecInsert = dayjs(ngayLamViec)
+      .add(1, "day")
+      .format("DD/MM/YYYY");
 
     const requestData: CreateGiaiTrinhRequest = {
       maNhanVien: generalData?.maNhanVien,
-      ngayLamViec: new Date(ngayLamViec),
+      ngayLamViec: new Date(ngaylamViecInsert),
       ngayTaoGiaiTrinh: new Date(),
       lyDo: values.lyDo,
       nguoiDuyet: "",
@@ -29,7 +31,7 @@ const CreateMonthlyReportExplanationModal = (props: any) => {
 
     const response = await GiaiTrinhApi.createGiaiTrinh(requestData);
     if (response.statusCode === "200") {
-      refresh();
+      refresh(generalData?.maNhanVien);
       close();
       messageApi.open({
         type: "success",
@@ -125,7 +127,7 @@ const CreateMonthlyReportExplanationModal = (props: any) => {
             <span>Mã nhân viên: {generalData?.maNhanVien} </span>
             <span>
               Ngày làm việc:{" "}
-              {dayjs(generalData?.ngayLamViec).format("DD/MM/YYYY")}
+              {dayjs(ngayLamViec).tz("Asia/Ho_Chi_Minh").format("DD/MM/YYYY")}
             </span>
           </Space>
           <Space
@@ -148,10 +150,11 @@ const CreateMonthlyReportExplanationModal = (props: any) => {
           >
             <span>
               Chức vụ:{" "}
-              {/* {
-                employeeData?.find((e) => e.maNhanVien === data?.maNhanVien)
-                  ?.chucVu
-              }{" "} */}
+              {
+                employeeData?.find(
+                  (e) => e.maNhanVien === generalData?.maNhanVien,
+                )?.chucVu
+              }{" "}
             </span>
           </Space>
           <Space

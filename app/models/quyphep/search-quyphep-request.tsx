@@ -1,7 +1,6 @@
 export interface SearchQuyPhepRequest {
-  page: number;
-  pageSize: number;
-  code: string;
-  name: string;
-  orderby: string;
+  tenNhanVien: string | null;
+  maNhanVien: string | null;
+  maPhongBan: string | null;
+  nam: number;
 }

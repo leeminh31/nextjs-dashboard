@@ -1,8 +1,10 @@
 export interface UpdateDonConNhoRequest {
-  id: number;
-  code: string;
-  name: string;
-  url: string;
-  status: number;
-  description: string;
+  ngayTaoDon: Date;
+  tuNgay: Date;
+  denNgay: Date;
+  lyDo: string;
+  nguoiDuyet: string;
+  trangThai: string;
+  maNhanVien: string;
+  maDonConNho: number;
 }

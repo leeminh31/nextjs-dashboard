@@ -1,6 +1,7 @@
 import qs from "qs";
 import { CreateGiaiTrinhRequest } from "../models/giaitrinh/create-giaitrinh-request";
 import { SearchGiaiTrinhRequest } from "../models/giaitrinh/search-giaitrinh-request";
+import { UpdateGiaiTrinhRequest } from "../models/giaitrinh/update-giaitrinh-request";
 import RestConnection from "./rest";
 
 const GiaiTrinhApi = {
@@ -46,6 +47,12 @@ const GiaiTrinhApi = {
     const rest = new RestConnection();
     const payload: CreateGiaiTrinhRequest = data;
     return rest.postAsync("DanhSachGiaiTrinh/Create", JSON.stringify(payload));
+  },
+
+  updateGiaiTrinh: async (data: UpdateGiaiTrinhRequest) => {
+    const rest = new RestConnection();
+    const payload: UpdateGiaiTrinhRequest = data;
+    return rest.postAsync("DanhSachGiaiTrinh/Update", JSON.stringify(payload));
   },
 };
 
