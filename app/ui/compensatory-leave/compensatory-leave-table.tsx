@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import PhongBanApi from "@/app/api/phongban";
 import QuyBuApi from "@/app/api/quybu";
+import { PhongBanResponse } from "@/app/models/phongban/phongban-response";
+import { SearchPhongBanRequest } from "@/app/models/phongban/search-phongban-request";
 import { QuyBuResponse } from "@/app/models/quybu/quybu-response";
 import { SearchQuyBuRequest } from "@/app/models/quybu/search-quybu-request";
 import { EyeTwoTone } from "@ant-design/icons";
@@ -36,6 +39,18 @@ const CompensatoryLeaveTable: React.FC = () => {
   const [totalRecords, setTotalRecords] = useState(0);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [departmentData, setDepartmentData] = useState<PhongBanResponse[]>([]);
+
+  const getPhongBanByParams = async (searchRequest: SearchPhongBanRequest) => {
+    const response = await PhongBanApi.getPhongBan(searchRequest);
+    if (response.statusCode === "200") {
+      setDepartmentData(response.data?.reverse());
+    } else if (response.statusCode === "545") {
+      setDepartmentData([]);
+    } else {
+      console.log(response.message);
+    }
+  };
 
   const getQuyBuByParams = async (searchRequest: SearchQuyBuRequest) => {
     const response = await QuyBuApi.getQuyBu(searchRequest);
@@ -91,7 +106,7 @@ const CompensatoryLeaveTable: React.FC = () => {
           title: "Họ tên",
           dataIndex: "hoTen",
           key: "hoTen",
-          width: 100,
+          width: 150,
         },
         {
           title: "Phòng ban",
@@ -103,13 +118,7 @@ const CompensatoryLeaveTable: React.FC = () => {
           title: "Năm",
           dataIndex: "nam",
           key: "nam",
-          width: 100,
-        },
-        {
-          title: "Tổng phép",
-          dataIndex: "tongPhep",
-          key: "tongPhep",
-          width: 100,
+          width: 80,
         },
       ],
     },
@@ -129,12 +138,26 @@ const CompensatoryLeaveTable: React.FC = () => {
               dataIndex: "phatSinh",
               key: "phatSinh",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 1)?.phatSinh;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
             {
               title: "Sử dụng",
               dataIndex: "suDung",
               key: "suDung",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 1)?.suDung;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
           ],
         },
@@ -149,12 +172,26 @@ const CompensatoryLeaveTable: React.FC = () => {
               dataIndex: "phatSinh",
               key: "phatSinh",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 2)?.phatSinh;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
             {
               title: "Sử dụng",
               dataIndex: "suDung",
               key: "suDung",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 2)?.suDung;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
           ],
         },
@@ -169,12 +206,26 @@ const CompensatoryLeaveTable: React.FC = () => {
               dataIndex: "phatSinh",
               key: "phatSinh",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 3)?.phatSinh;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
             {
               title: "Sử dụng",
               dataIndex: "suDung",
               key: "suDung",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 3)?.suDung;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
           ],
         },
@@ -189,12 +240,26 @@ const CompensatoryLeaveTable: React.FC = () => {
               dataIndex: "phatSinh",
               key: "phatSinh",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 4)?.phatSinh;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
             {
               title: "Sử dụng",
               dataIndex: "suDung",
               key: "suDung",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 4)?.suDung;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
           ],
         },
@@ -209,12 +274,26 @@ const CompensatoryLeaveTable: React.FC = () => {
               dataIndex: "phatSinh",
               key: "phatSinh",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 5)?.phatSinh;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
             {
               title: "Sử dụng",
               dataIndex: "suDung",
               key: "suDung",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 5)?.suDung;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
           ],
         },
@@ -229,12 +308,26 @@ const CompensatoryLeaveTable: React.FC = () => {
               dataIndex: "phatSinh",
               key: "phatSinh",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 6)?.phatSinh;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
             {
               title: "Sử dụng",
               dataIndex: "suDung",
               key: "suDung",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 6)?.suDung;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
           ],
         },
@@ -249,12 +342,26 @@ const CompensatoryLeaveTable: React.FC = () => {
               dataIndex: "phatSinh",
               key: "phatSinh",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 7)?.phatSinh;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
             {
               title: "Sử dụng",
               dataIndex: "suDung",
               key: "suDung",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 7)?.suDung;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
           ],
         },
@@ -269,12 +376,26 @@ const CompensatoryLeaveTable: React.FC = () => {
               dataIndex: "phatSinh",
               key: "phatSinh",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 8)?.phatSinh;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
             {
               title: "Sử dụng",
               dataIndex: "suDung",
               key: "suDung",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 8)?.suDung;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
           ],
         },
@@ -289,12 +410,26 @@ const CompensatoryLeaveTable: React.FC = () => {
               dataIndex: "phatSinh",
               key: "phatSinh",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 9)?.phatSinh;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
             {
               title: "Sử dụng",
               dataIndex: "suDung",
               key: "suDung",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 9)?.suDung;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
           ],
         },
@@ -309,12 +444,26 @@ const CompensatoryLeaveTable: React.FC = () => {
               dataIndex: "phatSinh",
               key: "phatSinh",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 10)?.phatSinh;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
             {
               title: "Sử dụng",
               dataIndex: "suDung",
               key: "suDung",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 10)?.suDung;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
           ],
         },
@@ -329,12 +478,26 @@ const CompensatoryLeaveTable: React.FC = () => {
               dataIndex: "phatSinh",
               key: "phatSinh",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 11)?.phatSinh;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
             {
               title: "Sử dụng",
               dataIndex: "suDung",
               key: "suDung",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 11)?.suDung;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
           ],
         },
@@ -349,14 +512,53 @@ const CompensatoryLeaveTable: React.FC = () => {
               dataIndex: "phatSinh",
               key: "phatSinh",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 12)?.phatSinh;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
             {
               title: "Sử dụng",
               dataIndex: "suDung",
               key: "suDung",
               width: 100,
+              render: (value, record) => {
+                const phatSinhValue = data
+                  .find((element) => element.maNhanVien === record.maNhanVien)
+                  ?.quyBuThangs.find((qb) => qb.thang === 12)?.suDung;
+
+                return <>{phatSinhValue !== 0 ? phatSinhValue : ""}</>;
+              },
             },
           ],
+        },
+      ],
+    },
+    {
+      title: "Tổng",
+      key: "tong",
+      dataIndex: "tong",
+      children: [
+        {
+          title: "Phát sinh",
+          dataIndex: "phatSinh",
+          key: "phatSinh",
+          width: 100,
+        },
+        {
+          title: "Sử dụng",
+          dataIndex: "suDung",
+          key: "suDung",
+          width: 100,
+        },
+        {
+          title: "Còn lại",
+          dataIndex: "conLai",
+          key: "conLai",
+          width: 100,
         },
       ],
     },
@@ -373,23 +575,23 @@ const CompensatoryLeaveTable: React.FC = () => {
           key: "xem",
           width: 75,
           align: "center",
+          render: () => {
+            return (
+              <Space style={{ gap: "16px" }}>
+                <Button
+                  icon={<EyeTwoTone />}
+                  style={{
+                    backgroundColor: "transparent",
+                    border: "none",
+                    boxShadow: "none",
+                  }}
+                  onClick={() => onUpdate()}
+                ></Button>
+              </Space>
+            );
+          },
         },
       ],
-      render: () => {
-        return (
-          <Space style={{ gap: "16px" }}>
-            <Button
-              icon={<EyeTwoTone />}
-              style={{
-                backgroundColor: "transparent",
-                border: "none",
-                boxShadow: "none",
-              }}
-              onClick={() => onUpdate()}
-            ></Button>
-          </Space>
-        );
-      },
     },
   ];
 
@@ -412,6 +614,12 @@ const CompensatoryLeaveTable: React.FC = () => {
       tenPhongBan: null,
       nam: new Date().getFullYear(),
     });
+
+    getPhongBanByParams({
+      tenPhongBan: null,
+      truongPhongBan: null,
+      thuKyPhongBan: null,
+    });
     setLoading(false);
   }, []);
 
@@ -429,7 +637,7 @@ const CompensatoryLeaveTable: React.FC = () => {
               label="Tên nhân viên"
               labelCol={{ style: { width: 120, textAlign: "left" } }}
             >
-              <Input />
+              <Input placeholder="Tên nhân viên" />
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -446,10 +654,11 @@ const CompensatoryLeaveTable: React.FC = () => {
               labelCol={{ style: { width: 120, textAlign: "left" } }}
             >
               <Select placeholder="Vui lòng chọn">
-                <Option value="1">Bùi Thị Yên</Option>
-                <Option value="2">Bùi Thị Yên</Option>
-                <Option value="3">Bùi Thị Yên</Option>
-                <Option value="4">Bùi Thị Yên</Option>
+                {departmentData.map((phong) => (
+                  <Option key={phong.maPhongBan} value={phong.tenPhongBan}>
+                    {phong.tenPhongBan}
+                  </Option>
+                ))}
               </Select>
             </Form.Item>
           </Col>
@@ -463,7 +672,9 @@ const CompensatoryLeaveTable: React.FC = () => {
           </Col>
         </Row>
         <Row justify="end">
-          <Button type="primary">Tìm kiếm</Button>
+          <Button type="primary" htmlType="submit">
+            Tìm kiếm
+          </Button>
           <Button>Tạo lại</Button>
         </Row>
       </Form>
@@ -487,11 +698,6 @@ const CompensatoryLeaveTable: React.FC = () => {
             <span>
               <b>Quỹ bù nhân viên</b>
             </span>
-            <Row>
-              <Button type="primary" style={{ marginLeft: "12px" }}>
-                Import
-              </Button>
-            </Row>
           </Flex>
           <Table
             size="small"

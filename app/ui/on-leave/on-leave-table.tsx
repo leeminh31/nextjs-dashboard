@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import PhongBanApi from "@/app/api/phongban";
 import QuyPhepApi from "@/app/api/quyphep";
+import { PhongBanResponse } from "@/app/models/phongban/phongban-response";
+import { SearchPhongBanRequest } from "@/app/models/phongban/search-phongban-request";
 import { QuyPhepResponse } from "@/app/models/quyphep/quyphep-response";
 import { SearchQuyPhepRequest } from "@/app/models/quyphep/search-quyphep-request";
 import { EyeTwoTone } from "@ant-design/icons";
@@ -20,6 +23,7 @@ import {
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { TableRowSelection } from "antd/es/table/interface";
+import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 const { Option } = Select;
 
@@ -33,6 +37,19 @@ const OnLeaveTable: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
+  const [year, setYear] = useState(new Date().getFullYear());
+  const [departmentData, setDepartmentData] = useState<PhongBanResponse[]>([]);
+
+  const getPhongBanByParams = async (searchRequest: SearchPhongBanRequest) => {
+    const response = await PhongBanApi.getPhongBan(searchRequest);
+    if (response.statusCode === "200") {
+      setDepartmentData(response.data?.reverse());
+    } else if (response.statusCode === "545") {
+      setDepartmentData([]);
+    } else {
+      console.log(response.message);
+    }
+  };
 
   const getQuyPhepByParams = async (searchRequest: SearchQuyPhepRequest) => {
     const response = await QuyPhepApi.getQuyPhep(searchRequest);
@@ -57,6 +74,13 @@ const OnLeaveTable: React.FC = () => {
 
   const onFinish = (values: any) => {
     console.log("Received values of form: ", values);
+    const searchData: SearchQuyPhepRequest = {
+      tenNhanVien: values.tenNhanVien?.trimStart().trimEnd().toUpperCase(),
+      maNhanVien: values.maNhanVien?.trimStart().trimEnd().toUpperCase(),
+      tenPhongBan: values.phongBan,
+      nam: year,
+    };
+    getQuyPhepByParams(searchData);
   };
 
   const rowSelection: TableRowSelection<QuyPhepResponse> = {
@@ -82,7 +106,24 @@ const OnLeaveTable: React.FC = () => {
       tenPhongBan: null,
       nam: new Date().getUTCFullYear(),
     });
+
+    getPhongBanByParams({
+      tenPhongBan: null,
+      truongPhongBan: null,
+      thuKyPhongBan: null,
+    });
   }, []);
+
+  useEffect(() => {
+    if (year) {
+      getQuyPhepByParams({
+        tenNhanVien: null,
+        maNhanVien: null,
+        tenPhongBan: null,
+        nam: year,
+      });
+    }
+  }, [year]);
 
   const columns: ColumnsType<QuyPhepResponse> = [
     {
@@ -103,25 +144,25 @@ const OnLeaveTable: React.FC = () => {
           title: "Mã nhân viên",
           dataIndex: "maNhanVien",
           key: "maNhanVien",
-          width: 100,
+          width: 120,
         },
         {
           title: "Họ tên",
           dataIndex: "hoTen",
           key: "hoTen",
-          width: 100,
+          width: 150,
         },
         {
           title: "Phòng ban",
           dataIndex: "phongBan",
           key: "phongBan",
-          width: 150,
+          width: 180,
         },
         {
           title: "Năm",
           dataIndex: "nam",
           key: "nam",
-          width: 100,
+          width: 80,
         },
         {
           title: "Tổng phép",
@@ -310,14 +351,16 @@ const OnLeaveTable: React.FC = () => {
           <Col span={8}>
             <Form.Item
               label="Tên nhân viên"
+              name="tenNhanVien"
               labelCol={{ style: { width: 120, textAlign: "left" } }}
             >
-              <Input />
+              <Input placeholder="Tên nhân viên" />
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item
               label="Mã nhân viên"
+              name="maNhanVien"
               labelCol={{ style: { width: 120, textAlign: "left" } }}
             >
               <Input placeholder="Mã nhân viên" />
@@ -326,28 +369,46 @@ const OnLeaveTable: React.FC = () => {
           <Col span={8}>
             <Form.Item
               label="Phòng ban"
+              name="phongBan"
               labelCol={{ style: { width: 120, textAlign: "left" } }}
             >
               <Select placeholder="Vui lòng chọn">
-                <Option value="1">Bùi Thị Yên</Option>
-                <Option value="2">Bùi Thị Yên</Option>
-                <Option value="3">Bùi Thị Yên</Option>
-                <Option value="4">Bùi Thị Yên</Option>
+                {departmentData.map((phong) => (
+                  <Option key={phong.maPhongBan} value={phong.tenPhongBan}>
+                    {phong.tenPhongBan}
+                  </Option>
+                ))}
               </Select>
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item
               label="Năm"
+              name="nam"
               labelCol={{ style: { width: 120, textAlign: "left" } }}
             >
-              <DatePicker placeholder="Vui lòng chọn" picker="year" />
+              <DatePicker
+                placeholder="Vui lòng chọn"
+                picker="year"
+                onChange={(e) => {
+                  setYear(e?.year() ?? new Date().getFullYear());
+                }}
+              />
             </Form.Item>
           </Col>
         </Row>
         <Row justify="end">
-          <Button type="primary">Tìm kiếm</Button>
-          <Button>Tạo lại</Button>
+          <Button type="primary" htmlType="submit">
+            Tìm kiếm
+          </Button>
+          <Button
+            onClick={() => {
+              form.resetFields();
+              form.setFieldValue("nam", dayjs(new Date()));
+            }}
+          >
+            Tạo lại
+          </Button>
         </Row>
       </Form>
       <div
@@ -376,7 +437,7 @@ const OnLeaveTable: React.FC = () => {
           </Row>
         </Flex>
         <Table
-          scroll={{ x: 2000, y: 350 }}
+          scroll={{ x: 2000, y: 400 }}
           rowSelection={rowSelection}
           columns={columns}
           dataSource={data}
