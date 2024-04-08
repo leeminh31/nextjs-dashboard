@@ -37,14 +37,14 @@ const { Option } = Select;
 
 interface DataType {
   key: React.Key;
-  hoTen: string;
+  hoTen: string | undefined;
   ngayTao: string;
   caHienTai: string;
   caMoi: string;
   ngayBatDauCaMoi: string;
   nguoiDuyet: string;
-  phongBan: string;
-  chucVu: string;
+  phongBan: string | undefined;
+  chucVu: string | undefined;
   trangThai: string;
   maNhanVien: string;
 }
@@ -86,16 +86,16 @@ const RegisterShiftTable: React.FC = () => {
       nguoiDuyet: data[i].nguoiDuyet,
       trangThai: data[i].trangThai,
       hoTen: employeeData?.find((e) => e.maNhanVien === data[i].maNhanVien)
-        ?.hoTen!,
+        ?.hoTen,
       maNhanVien: data[i].maNhanVien,
       phongBan: departmentData?.find(
         (d) =>
           d.maPhongBan ===
           employeeData?.find((e) => e.maNhanVien === data[i].maNhanVien)
-            ?.maPhongBan!,
-      )?.tenPhongBan!,
+            ?.maPhongBan,
+      )?.tenPhongBan,
       chucVu: employeeData?.find((e) => e.maNhanVien === data[i].maNhanVien)
-        ?.chucVu!,
+        ?.chucVu,
     });
   }
 

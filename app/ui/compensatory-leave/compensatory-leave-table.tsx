@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import QuyBuApi from "@/app/api/quybu";
+import { QuyBuResponse } from "@/app/models/quybu/quybu-response";
+import { SearchQuyBuRequest } from "@/app/models/quybu/search-quybu-request";
 import { EyeTwoTone } from "@ant-design/icons";
 import {
   Button,
@@ -22,223 +25,56 @@ import React, { useEffect, useState } from "react";
 import ImportCompensatoryLeave from "./import-compensatory-leave";
 const { Option } = Select;
 
-interface DataType {
-  key: string;
-  employee: string;
-  employeeId: string;
-  contract: string;
-  department: string;
-  role: string;
-  signDate: Date;
-  startDate: Date;
-  endDate: Date;
-  contractType: string;
-  status: string;
-}
-
-const data: DataType[] = [
-  {
-    key: "1",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "2",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "3",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Nghỉ việc",
-  },
-  {
-    key: "4",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Nghỉ việc",
-  },
-  {
-    key: "5",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "6",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "7",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "8",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "9",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "10",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "11",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "12",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-  {
-    key: "13",
-    employee: "Bùi Thị Yên",
-    employeeId: "APG112233",
-    contract: "APG112233",
-    department: "Develope",
-    role: "BA",
-    signDate: new Date(Date.now()),
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
-    contractType: "Thử việc",
-    status: "Đang chạy",
-  },
-];
-
-const rowSelection: TableRowSelection<DataType> = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(
-      `selectedRowKeys: ${selectedRowKeys}`,
-      "selectedRows: ",
-      selectedRows,
-    );
-  },
-  onSelect: (record, selected, selectedRows) => {
-    console.log(record, selected, selectedRows);
-  },
-  onSelectAll: (selected, selectedRows, changeRows) => {
-    console.log(selected, selectedRows, changeRows);
-  },
-};
-
 const CompensatoryLeaveTable: React.FC = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
   const { token } = theme.useToken();
-  const [importOpen, setImportOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [form] = Form.useForm();
+  const [data, setData] = useState<QuyBuResponse[]>([]);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  const columns: ColumnsType<DataType> = [
+  const getQuyBuByParams = async (searchRequest: SearchQuyBuRequest) => {
+    const response = await QuyBuApi.getQuyBu(searchRequest);
+    if (response.statusCode === "200") {
+      setData(response.data?.reverse());
+      setTotalRecords(response.data?.length);
+    } else if (response.statusCode === "545") {
+      setData([]);
+      setTotalRecords(0);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  const rowSelection: TableRowSelection<QuyBuResponse> = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(
+        `selectedRowKeys: ${selectedRowKeys}`,
+        "selectedRows: ",
+        selectedRows,
+      );
+    },
+    onSelect: (record, selected, selectedRows) => {
+      console.log(record, selected, selectedRows);
+    },
+    onSelectAll: (selected, selectedRows, changeRows) => {
+      console.log(selected, selectedRows, changeRows);
+    },
+  };
+
+  const columns: ColumnsType<QuyBuResponse> = [
     {
       title: "#",
       dataIndex: "key",
       key: "key",
       width: 50,
+      render: (value, record, index) => {
+        return <>{(page - 1) * pageSize + index + 1}</>;
+      },
     },
     {
       title: "Thông tin nhân viên",
@@ -570,6 +406,12 @@ const CompensatoryLeaveTable: React.FC = () => {
   };
 
   useEffect(() => {
+    getQuyBuByParams({
+      tenNhanVien: null,
+      maNhanVien: null,
+      tenPhongBan: null,
+      nam: new Date().getFullYear(),
+    });
     setLoading(false);
   }, []);
 
@@ -646,11 +488,7 @@ const CompensatoryLeaveTable: React.FC = () => {
               <b>Quỹ bù nhân viên</b>
             </span>
             <Row>
-              <Button
-                type="primary"
-                style={{ marginLeft: "12px" }}
-                onClick={() => setImportOpen(true)}
-              >
+              <Button type="primary" style={{ marginLeft: "12px" }}>
                 Import
               </Button>
             </Row>
@@ -662,10 +500,15 @@ const CompensatoryLeaveTable: React.FC = () => {
             columns={columns}
             dataSource={data}
             pagination={{
+              total: totalRecords,
               showQuickJumper: true,
               defaultPageSize: 10,
               showSizeChanger: true,
               pageSizeOptions: ["10", "20", "30"],
+              onChange: (page, pageSize) => {
+                setPage(page);
+                setPageSize(pageSize);
+              },
               locale: {
                 jump_to: "Đến",
                 page: "Trang",

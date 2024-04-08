@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HRMSystemApi } from "../constant/constant";
 
 class RestConnection {

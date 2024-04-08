@@ -1,1 +1,1 @@
-export const HRMSystemApi = 'https://localhost:7007/api/v1/'
+export const HRMSystemApi = "https://localhost:7007/api/v1/";

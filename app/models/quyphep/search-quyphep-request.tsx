@@ -1,6 +1,6 @@
 export interface SearchQuyPhepRequest {
   tenNhanVien: string | null;
   maNhanVien: string | null;
-  maPhongBan: string | null;
+  tenPhongBan: string | null;
   nam: number;
 }

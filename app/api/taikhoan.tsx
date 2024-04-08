@@ -4,7 +4,7 @@ import { LoginRequestModel } from "../models/taikhoan/login-request";
 import RestConnection from "./rest";
 
 export const LoginApi = {
-  login: async (tenDangNhap: any, matKhau: any) => {
+  login: async (tenDangNhap: string, matKhau: string) => {
     const login: LoginRequestModel = {
       tenDangNhap: tenDangNhap,
       matKhau: matKhau,

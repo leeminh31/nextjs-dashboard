@@ -5,7 +5,6 @@ import NhanVienApi from "@/app/api/nhanvien";
 import PhongBanApi from "@/app/api/phongban";
 import { CaLamViecResponse } from "@/app/models/calamviec/calamviec-response";
 import { CreateDangKyCaRequest } from "@/app/models/dangkyca/create-dangkyca-request";
-import { DangKyCaResponse } from "@/app/models/dangkyca/dangkyca-response";
 import { NhanVienResponse } from "@/app/models/nhanvien/nhanvien-response";
 import { SearchNhanVienRequest } from "@/app/models/nhanvien/search-nhanvien-request";
 import { PhongBanResponse } from "@/app/models/phongban/phongban-response";
@@ -33,7 +32,6 @@ const CreateRegisterShift = (props: any) => {
   const [departmentData, setDepartmentData] = useState<PhongBanResponse[]>([]);
   const [employeeData, setEmployeeData] = useState<NhanVienResponse[]>([]);
   const [shiftList, setShiftList] = useState<CaLamViecResponse[]>([]);
-  const [data, setData] = useState<DangKyCaResponse[]>([]);
   const [form] = Form.useForm();
 
   const getShiftName = async (maCa: number | null, tenCa: string | null) => {
@@ -85,7 +83,7 @@ const CreateRegisterShift = (props: any) => {
       ngayTao: values.ngayTao,
       caLamViecHienTai: shiftList.find(
         (shift) => shift.maCa == values.caLamViecHienTai,
-      )?.tenCa!,
+      )!.tenCa,
       caLamViecMoi: values.caLamViecMoi,
       ngayBatDauCaMoi: values.ngayBatDauCaLamViecMoi,
       nguoiDuyet: "",

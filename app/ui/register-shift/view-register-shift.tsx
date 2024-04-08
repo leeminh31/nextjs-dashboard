@@ -12,7 +12,6 @@ import {
 } from "antd";
 import dayjs from "dayjs";
 import { useEffect } from "react";
-const { Option } = Select;
 
 const ViewRegisterShift = (props: any) => {
   const { show, close, data } = props;

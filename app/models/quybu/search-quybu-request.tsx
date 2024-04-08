@@ -1,7 +1,6 @@
 export interface SearchQuyBuRequest {
-  page: number;
-  pageSize: number;
-  code: string;
-  name: string;
-  orderby: string;
+  tenNhanVien: string | null;
+  maNhanVien: string | null;
+  tenPhongBan: string | null;
+  nam: number;
 }

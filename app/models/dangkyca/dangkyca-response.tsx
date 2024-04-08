@@ -1,5 +1,5 @@
 export interface DangKyCaResponse {
-  hoTen: any;
+  hoTen: string;
   maDangKyCa: number;
   ngayTao: Date;
   caLamViecHienTai: string;

@@ -432,7 +432,10 @@ const CreateMonthlyReportRequestModal = (props: any) => {
 
   useEffect(() => {
     if (requestType === 1) {
-      getQuyBuHienCo(generalData?.maNhanVien);
+      getQuyBuHienCo(
+        generalData?.maNhanVien,
+        new Date(ngayLamViec).getFullYear(),
+      );
     }
   }, [requestType]);
 
@@ -534,7 +537,8 @@ const CreateMonthlyReportRequestModal = (props: any) => {
               Chức vụ:{" "}
               {
                 employeeData?.find(
-                  (e) => e.maNhanVien === generalData?.maNhanVien,
+                  (e: { maNhanVien: any }) =>
+                    e.maNhanVien === generalData?.maNhanVien,
                 )?.chucVu
               }{" "}
             </span>

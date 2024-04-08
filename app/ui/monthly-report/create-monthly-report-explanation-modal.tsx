@@ -152,7 +152,8 @@ const CreateMonthlyReportExplanationModal = (props: any) => {
               Chức vụ:{" "}
               {
                 employeeData?.find(
-                  (e) => e.maNhanVien === generalData?.maNhanVien,
+                  (e: { maNhanVien: any }) =>
+                    e.maNhanVien === generalData?.maNhanVien,
                 )?.chucVu
               }{" "}
             </span>

@@ -2,11 +2,9 @@
 "use client";
 
 import BaoCaoTheoThangApi from "@/app/api/baocaotheothang";
-import CaLamViecApi from "@/app/api/calamviec";
 import NhanVienApi from "@/app/api/nhanvien";
 import PhongBanApi from "@/app/api/phongban";
 import { BaoCaoTheoThangAllResponse } from "@/app/models/baocaotheothang/baocaotheothangall-response";
-import { CaLamViecResponse } from "@/app/models/calamviec/calamviec-response";
 import { SearchDuLieuChamCongRequest } from "@/app/models/dulieuchamcong/search-dulieuchamcong-request";
 import { NhanVienResponse } from "@/app/models/nhanvien/nhanvien-response";
 import { SearchNhanVienRequest } from "@/app/models/nhanvien/search-nhanvien-request";
@@ -47,7 +45,6 @@ const MonthlyReportTable: React.FC = () => {
   const [date, setDate] = useState(new Date());
   const [employeeData, setEmployeeData] = useState<NhanVienResponse[]>([]);
   const [departmentData, setDepartmentData] = useState<PhongBanResponse[]>();
-  const [shiftList, setShiftList] = useState<CaLamViecResponse[]>([]);
   const [spinning, setSpinning] = useState(true);
   const [currentDateClick, setCurrentDateClick] = useState(0);
   const [open, setOpen] = useState(false);
@@ -80,17 +77,6 @@ const MonthlyReportTable: React.FC = () => {
       setMonthlyData(response?.data);
     } else {
       console.log(response?.message);
-    }
-  };
-
-  const getShiftName = async () => {
-    const response = await CaLamViecApi.getCaLamViec(null, null);
-    if (response?.statusCode === "200") {
-      setShiftList(response.data.reverse());
-    } else if (response.statusCode === "545") {
-      setShiftList(response.data);
-    } else {
-      console.log(response.message);
     }
   };
 
@@ -148,8 +134,6 @@ const MonthlyReportTable: React.FC = () => {
       thuKyPhongBan: null,
       truongPhongBan: null,
     });
-
-    getShiftName();
   };
 
   const onFinish = (values: any) => {

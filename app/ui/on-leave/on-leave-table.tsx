@@ -28,7 +28,6 @@ const OnLeaveTable: React.FC = () => {
     token: { colorBgContainer },
   } = theme.useToken();
   const { token } = theme.useToken();
-  const [importOpen, setImportOpen] = useState(false);
   const [form] = Form.useForm();
   const [data, setData] = useState<QuyPhepResponse[]>([]);
   const [page, setPage] = useState(1);
@@ -80,7 +79,7 @@ const OnLeaveTable: React.FC = () => {
     getQuyPhepByParams({
       tenNhanVien: null,
       maNhanVien: null,
-      maPhongBan: null,
+      tenPhongBan: null,
       nam: new Date().getUTCFullYear(),
     });
   }, []);
@@ -142,7 +141,7 @@ const OnLeaveTable: React.FC = () => {
           dataIndex: "thang1",
           key: "thang1",
           width: 80,
-          render: (value, record, index) => {
+          render: (value, record) => {
             return <>{record.thang1 !== 0 ? record.thang1 : ""}</>;
           },
         },
@@ -151,7 +150,7 @@ const OnLeaveTable: React.FC = () => {
           dataIndex: "thang2",
           key: "thang2",
           width: 80,
-          render: (value, record, index) => {
+          render: (value, record) => {
             return <>{record.thang2 !== 0 ? record.thang2 : ""}</>;
           },
         },
@@ -160,7 +159,7 @@ const OnLeaveTable: React.FC = () => {
           dataIndex: "thang3",
           key: "thang3",
           width: 80,
-          render: (value, record, index) => {
+          render: (value, record) => {
             return <>{record.thang3 !== 0 ? record.thang3 : ""}</>;
           },
         },
@@ -169,7 +168,7 @@ const OnLeaveTable: React.FC = () => {
           dataIndex: "thang4",
           key: "thang4",
           width: 80,
-          render: (value, record, index) => {
+          render: (value, record) => {
             return <>{record.thang4 !== 0 ? record.thang4 : ""}</>;
           },
         },
@@ -178,7 +177,7 @@ const OnLeaveTable: React.FC = () => {
           dataIndex: "thang5",
           key: "thang5",
           width: 80,
-          render: (value, record, index) => {
+          render: (value, record) => {
             return <>{record.thang5 !== 0 ? record.thang5 : ""}</>;
           },
         },
@@ -187,7 +186,7 @@ const OnLeaveTable: React.FC = () => {
           dataIndex: "thang6",
           key: "thang6",
           width: 80,
-          render: (value, record, index) => {
+          render: (value, record) => {
             return <>{record.thang6 !== 0 ? record.thang6 : ""}</>;
           },
         },
@@ -196,7 +195,7 @@ const OnLeaveTable: React.FC = () => {
           dataIndex: "thang7",
           key: "thang7",
           width: 80,
-          render: (value, record, index) => {
+          render: (value, record) => {
             return <>{record.thang7 !== 0 ? record.thang7 : ""}</>;
           },
         },
@@ -205,7 +204,7 @@ const OnLeaveTable: React.FC = () => {
           dataIndex: "thang8",
           key: "thang8",
           width: 80,
-          render: (value, record, index) => {
+          render: (value, record) => {
             return <>{record.thang8 !== 0 ? record.thang8 : ""}</>;
           },
         },
@@ -214,7 +213,7 @@ const OnLeaveTable: React.FC = () => {
           dataIndex: "thang9",
           key: "thang9",
           width: 80,
-          render: (value, record, index) => {
+          render: (value, record) => {
             return <>{record.thang9 !== 0 ? record.thang9 : ""}</>;
           },
         },
@@ -223,7 +222,7 @@ const OnLeaveTable: React.FC = () => {
           dataIndex: "thang10",
           key: "thang10",
           width: 80,
-          render: (value, record, index) => {
+          render: (value, record) => {
             return <>{record.thang10 !== 0 ? record.thang10 : ""}</>;
           },
         },
@@ -232,7 +231,7 @@ const OnLeaveTable: React.FC = () => {
           dataIndex: "thang11",
           key: "thang11",
           width: 80,
-          render: (value, record, index) => {
+          render: (value, record) => {
             return <>{record.thang11 !== 0 ? record.thang11 : ""}</>;
           },
         },
@@ -241,7 +240,7 @@ const OnLeaveTable: React.FC = () => {
           dataIndex: "thang12",
           key: "thang12",
           width: 80,
-          render: (value, record, index) => {
+          render: (value, record) => {
             return <>{record.thang12 !== 0 ? record.thang12 : ""}</>;
           },
         },
@@ -371,11 +370,7 @@ const OnLeaveTable: React.FC = () => {
             <b>Quỹ phép nhân viên</b>
           </span>
           <Row>
-            <Button
-              type="primary"
-              style={{ marginLeft: "12px" }}
-              onClick={() => setImportOpen(true)}
-            >
+            <Button type="primary" style={{ marginLeft: "12px" }}>
               Import
             </Button>
           </Row>

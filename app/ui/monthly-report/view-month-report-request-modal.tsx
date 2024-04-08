@@ -13,8 +13,8 @@ const ViewMonthlyReportRequestModal = (props: any) => {
   const [quyBu, setQuyBu] = useState(0);
   const { data, generalData, show, close, employeeData } = props;
 
-  const getQuyBuHienCo = async (maNhanVien: string) => {
-    const response = await DanhSachDonApi.getQuyBuHienCo(maNhanVien);
+  const getQuyBuHienCo = async (maNhanVien: string, nam: number) => {
+    const response = await DanhSachDonApi.getQuyBuHienCo(maNhanVien, nam);
     if (response?.statusCode === "200") {
       setQuyBu(response?.data);
     } else {
@@ -249,7 +249,10 @@ const ViewMonthlyReportRequestModal = (props: any) => {
     console.log(data);
 
     if (data && data.loaiDon === 1) {
-      getQuyBuHienCo(generalData?.maNhanVien);
+      getQuyBuHienCo(
+        generalData?.maNhanVien,
+        new Date(data?.ngayLamViec).getFullYear(),
+      );
       form.setFieldsValue({
         loaiDon: data.loaiDon,
         soPhutXinBu: data.soPhutXinBu,
