@@ -162,10 +162,10 @@ export default function LayoutDashboard({
       ? JSON.parse(localStorage.getItem("token")!)
       : null;
 
-    if (!getTokenFromLocalStorage) {
-      router.replace("/login");
-      return;
-    }
+    // if (!getTokenFromLocalStorage) {
+    //   router.replace("/login");
+    //   return;
+    // }
     setUsername(getTokenFromLocalStorage?.hoTen);
     setCurrent(pathname);
     setLoading(false);

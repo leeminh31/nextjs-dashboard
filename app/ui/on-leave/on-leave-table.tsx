@@ -25,6 +25,7 @@ import type { ColumnsType } from "antd/es/table";
 import type { TableRowSelection } from "antd/es/table/interface";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
+import ViewOnLeaveDrawer from "./view-on-leave-drawer";
 const { Option } = Select;
 
 const OnLeaveTable: React.FC = () => {
@@ -39,6 +40,8 @@ const OnLeaveTable: React.FC = () => {
   const [totalRecords, setTotalRecords] = useState(0);
   const [year, setYear] = useState(new Date().getFullYear());
   const [departmentData, setDepartmentData] = useState<PhongBanResponse[]>([]);
+  const [viewOpen, setViewOpen] = useState(true);
+  const [rowData, setRowData] = useState<QuyPhepResponse>();
 
   const getPhongBanByParams = async (searchRequest: SearchPhongBanRequest) => {
     const response = await PhongBanApi.getPhongBan(searchRequest);
@@ -64,7 +67,10 @@ const OnLeaveTable: React.FC = () => {
     }
   };
 
-  const onUpdate = () => {};
+  const onView = (record: QuyPhepResponse) => {
+    setViewOpen(true);
+    setRowData(record);
+  };
 
   const formStyle: React.CSSProperties = {
     maxWidth: "none",
@@ -294,8 +300,8 @@ const OnLeaveTable: React.FC = () => {
       children: [
         {
           title: "Đã dùng",
-          dataIndex: "daDung",
-          key: "daDung",
+          dataIndex: "suDung",
+          key: "suDung",
           width: 100,
         },
         {
@@ -319,7 +325,7 @@ const OnLeaveTable: React.FC = () => {
           key: "xem",
           width: 75,
           align: "center",
-          render: () => {
+          render: (value, record) => {
             return (
               <Space style={{ gap: "16px" }}>
                 <Button
@@ -329,7 +335,7 @@ const OnLeaveTable: React.FC = () => {
                     border: "none",
                     boxShadow: "none",
                   }}
-                  onClick={() => onUpdate()}
+                  onClick={() => onView(record)}
                 ></Button>
               </Space>
             );
@@ -430,11 +436,6 @@ const OnLeaveTable: React.FC = () => {
           <span>
             <b>Quỹ phép nhân viên</b>
           </span>
-          <Row>
-            <Button type="primary" style={{ marginLeft: "12px" }}>
-              Import
-            </Button>
-          </Row>
         </Flex>
         <Table
           scroll={{ x: 2000, y: 400 }}
@@ -460,6 +461,11 @@ const OnLeaveTable: React.FC = () => {
           }}
         />
       </div>
+      <ViewOnLeaveDrawer
+        show={viewOpen}
+        close={() => setViewOpen(false)}
+        data={rowData}
+      />
     </>
   );
 };

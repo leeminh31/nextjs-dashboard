@@ -25,7 +25,7 @@ import {
 import type { ColumnsType } from "antd/es/table";
 import type { TableRowSelection } from "antd/es/table/interface";
 import React, { useEffect, useState } from "react";
-import ImportCompensatoryLeave from "./import-compensatory-leave";
+import ViewCompensatoryLeaveDrawer from "./view-compensatory-leave-drawer";
 const { Option } = Select;
 
 const CompensatoryLeaveTable: React.FC = () => {
@@ -40,6 +40,8 @@ const CompensatoryLeaveTable: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [departmentData, setDepartmentData] = useState<PhongBanResponse[]>([]);
+  const [viewOpen, setViewOpen] = useState(true);
+  const [rowData, setRowData] = useState<QuyBuResponse>();
 
   const getPhongBanByParams = async (searchRequest: SearchPhongBanRequest) => {
     const response = await PhongBanApi.getPhongBan(searchRequest);
@@ -725,7 +727,11 @@ const CompensatoryLeaveTable: React.FC = () => {
           />
         </div>
       </Skeleton>
-      <ImportCompensatoryLeave />
+      <ViewCompensatoryLeaveDrawer
+        show={viewOpen}
+        close={() => setViewOpen(false)}
+        data={rowData}
+      />
     </>
   );
 };
