@@ -40,7 +40,7 @@ const OnLeaveTable: React.FC = () => {
   const [totalRecords, setTotalRecords] = useState(0);
   const [year, setYear] = useState(new Date().getFullYear());
   const [departmentData, setDepartmentData] = useState<PhongBanResponse[]>([]);
-  const [viewOpen, setViewOpen] = useState(true);
+  const [viewOpen, setViewOpen] = useState(false);
   const [rowData, setRowData] = useState<QuyPhepResponse>();
 
   const getPhongBanByParams = async (searchRequest: SearchPhongBanRequest) => {
@@ -300,8 +300,8 @@ const OnLeaveTable: React.FC = () => {
       children: [
         {
           title: "Đã dùng",
-          dataIndex: "suDung",
-          key: "suDung",
+          dataIndex: "daDung",
+          key: "daDung",
           width: 100,
         },
         {

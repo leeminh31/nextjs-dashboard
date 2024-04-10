@@ -24,6 +24,7 @@ import {
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { TableRowSelection } from "antd/es/table/interface";
+import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import ViewCompensatoryLeaveDrawer from "./view-compensatory-leave-drawer";
 const { Option } = Select;
@@ -40,8 +41,9 @@ const CompensatoryLeaveTable: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [departmentData, setDepartmentData] = useState<PhongBanResponse[]>([]);
-  const [viewOpen, setViewOpen] = useState(true);
+  const [viewOpen, setViewOpen] = useState(false);
   const [rowData, setRowData] = useState<QuyBuResponse>();
+  const [year, setYear] = useState(new Date().getFullYear());
 
   const getPhongBanByParams = async (searchRequest: SearchPhongBanRequest) => {
     const response = await PhongBanApi.getPhongBan(searchRequest);
@@ -65,6 +67,11 @@ const CompensatoryLeaveTable: React.FC = () => {
     } else {
       console.log(response.message);
     }
+  };
+
+  const onView = (record: QuyBuResponse) => {
+    setViewOpen(true);
+    setRowData(record);
   };
 
   const rowSelection: TableRowSelection<QuyBuResponse> = {
@@ -577,7 +584,7 @@ const CompensatoryLeaveTable: React.FC = () => {
           key: "xem",
           width: 75,
           align: "center",
-          render: () => {
+          render: (value, record) => {
             return (
               <Space style={{ gap: "16px" }}>
                 <Button
@@ -587,7 +594,7 @@ const CompensatoryLeaveTable: React.FC = () => {
                     border: "none",
                     boxShadow: "none",
                   }}
-                  onClick={() => onUpdate()}
+                  onClick={() => onView(record)}
                 ></Button>
               </Space>
             );
@@ -597,8 +604,6 @@ const CompensatoryLeaveTable: React.FC = () => {
     },
   ];
 
-  const onUpdate = () => {};
-
   const formStyle: React.CSSProperties = {
     maxWidth: "none",
     background: token.colorBgContainer,
@@ -607,6 +612,13 @@ const CompensatoryLeaveTable: React.FC = () => {
 
   const onFinish = (values: any) => {
     console.log("Received values of form: ", values);
+    const searchData: SearchQuyBuRequest = {
+      tenNhanVien: values.tenNhanVien?.trimStart().trimEnd().toUpperCase(),
+      maNhanVien: values.maNhanVien?.trimStart().trimEnd().toUpperCase(),
+      tenPhongBan: values.phongBan,
+      nam: year,
+    };
+    getQuyBuByParams(searchData);
   };
 
   useEffect(() => {
@@ -625,6 +637,17 @@ const CompensatoryLeaveTable: React.FC = () => {
     setLoading(false);
   }, []);
 
+  useEffect(() => {
+    if (year) {
+      getQuyBuByParams({
+        tenNhanVien: null,
+        maNhanVien: null,
+        tenPhongBan: null,
+        nam: year,
+      });
+    }
+  }, [year]);
+
   return (
     <>
       <Form
@@ -637,6 +660,7 @@ const CompensatoryLeaveTable: React.FC = () => {
           <Col span={8}>
             <Form.Item
               label="Tên nhân viên"
+              name="tenNhanVien"
               labelCol={{ style: { width: 120, textAlign: "left" } }}
             >
               <Input placeholder="Tên nhân viên" />
@@ -645,6 +669,7 @@ const CompensatoryLeaveTable: React.FC = () => {
           <Col span={8}>
             <Form.Item
               label="Mã nhân viên"
+              name="maNhanVien"
               labelCol={{ style: { width: 120, textAlign: "left" } }}
             >
               <Input placeholder="Mã nhân viên" />
@@ -653,6 +678,7 @@ const CompensatoryLeaveTable: React.FC = () => {
           <Col span={8}>
             <Form.Item
               label="Phòng ban"
+              name="phongBan"
               labelCol={{ style: { width: 120, textAlign: "left" } }}
             >
               <Select placeholder="Vui lòng chọn">
@@ -667,9 +693,16 @@ const CompensatoryLeaveTable: React.FC = () => {
           <Col span={8}>
             <Form.Item
               label="Năm"
+              name="nam"
               labelCol={{ style: { width: 120, textAlign: "left" } }}
             >
-              <DatePicker placeholder="Vui lòng chọn" picker="year" />
+              <DatePicker
+                placeholder="Vui lòng chọn"
+                picker="year"
+                onChange={(e) => {
+                  setYear(e?.year() ?? new Date().getFullYear());
+                }}
+              />
             </Form.Item>
           </Col>
         </Row>
@@ -677,7 +710,14 @@ const CompensatoryLeaveTable: React.FC = () => {
           <Button type="primary" htmlType="submit">
             Tìm kiếm
           </Button>
-          <Button>Tạo lại</Button>
+          <Button
+            onClick={() => {
+              form.resetFields();
+              form.setFieldValue("nam", dayjs(new Date()));
+            }}
+          >
+            Tạo lại
+          </Button>
         </Row>
       </Form>
       <Skeleton loading={loading} active>
@@ -694,7 +734,6 @@ const CompensatoryLeaveTable: React.FC = () => {
             align="center"
             style={{
               height: "50px",
-              marginBottom: "10px",
             }}
           >
             <span>

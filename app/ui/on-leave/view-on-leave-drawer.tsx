@@ -13,7 +13,13 @@ const ViewOnLeave = (props: any) => {
   useEffect(() => {}, []);
 
   return (
-    <Drawer onClose={close} size="default" placement="right" open={show}>
+    <Drawer
+      className="on-leave-drawer"
+      onClose={close}
+      size="default"
+      placement="right"
+      open={show}
+    >
       <Space direction="vertical" style={{ width: "100%" }}>
         <Space style={{ display: "flex", justifyContent: "center" }}>
           <h2 style={{ color: "#b98868" }}>Quỹ phép nhân viên</h2>
@@ -89,8 +95,7 @@ const ViewOnLeave = (props: any) => {
             padding: "8px",
           }}
         >
-          <span>Tổng phép: </span>
-          <span>{data?.tongPhep}</span>
+          <span>Tổng phép: {data?.tongPhep}</span>
         </Space>
         <Space
           style={{
@@ -176,7 +181,7 @@ const ViewOnLeave = (props: any) => {
             padding: "8px",
           }}
         >
-          <span>Tổng sử dụng: {data?.suDung} </span>
+          <span>Tổng sử dụng: {data?.daDung} </span>
         </Space>
         <Space
           style={{

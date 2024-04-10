@@ -56,6 +56,14 @@ input[type="number"]::-webkit-outer-spin-button {
   text-align: center !important;
 }
 
+.compensatory-leave-drawer .ant-drawer-header {
+  display: none;
+}
+
+.on-leave-drawer .ant-drawer-header {
+  display: none;
+}
+
 .manage-request-drawer .ant-picker:hover {
   border-color: #b98868;
 }

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { QuyBuThang } from "@/app/models/quybu/quybuthang-response";
 import { Drawer, Form, Space } from "antd";
 import { memo, useEffect } from "react";
 
@@ -13,7 +14,13 @@ const ViewCompensatoryLeave = (props: any) => {
   useEffect(() => {}, []);
 
   return (
-    <Drawer onClose={close} size="default" placement="right" open={show}>
+    <Drawer
+      className="compensatory-leave-drawer"
+      onClose={close}
+      size="default"
+      placement="right"
+      open={show}
+    >
       <Space direction="vertical" style={{ width: "100%" }}>
         <Space style={{ display: "flex", justifyContent: "center" }}>
           <h2 style={{ color: "#b98868" }}>Quỹ bù nhân viên</h2>
@@ -83,8 +90,9 @@ const ViewCompensatoryLeave = (props: any) => {
         </Space>
         <Space
           style={{
-            display: "flex",
-            justifyContent: "space-between",
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            justifyItems: "center",
             color: "#996B4D",
             padding: "8px",
           }}
@@ -93,13 +101,14 @@ const ViewCompensatoryLeave = (props: any) => {
           <span>Phát sinh</span>
           <span>Sử dụng</span>
         </Space>
-        {data?.thang.map((item: any, index: number) => {
+        {data?.quyBuThangs.map((item: QuyBuThang, index: number) => {
           return (
             <Space
               key={index}
               style={{
-                display: "flex",
-                justifyContent: "space-between",
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)",
+                justifyItems: "center",
                 color: "#996B4D",
                 padding: "8px",
               }}
@@ -110,15 +119,17 @@ const ViewCompensatoryLeave = (props: any) => {
             </Space>
           );
         })}
+
         <Space
           style={{
-            display: "flex",
-            justifyContent: "space-between",
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            justifyItems: "center",
             color: "#996B4D",
             padding: "8px",
           }}
         >
-          <span>Tổng:</span>
+          <b>Tổng:</b>
           <span>{data?.phatSinh} </span>
           <span>{data?.suDung} </span>
         </Space>
@@ -130,7 +141,7 @@ const ViewCompensatoryLeave = (props: any) => {
             padding: "8px",
           }}
         >
-          <span>Còn lại: {data?.conLai} </span>
+          <span>Còn lại (phút): {data?.conLai} </span>
         </Space>
       </Space>
     </Drawer>
