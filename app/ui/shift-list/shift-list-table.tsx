@@ -114,10 +114,10 @@ const ShiftListTable: React.FC = () => {
       key: shiftList[i].maCa,
       maCa: shiftList[i].maCa,
       tenCa: shiftList[i].tenCa,
-      gioBatDauCa: shiftList[i].gioBatDauCa,
-      gioKetThucCa: shiftList[i].gioKetThucCa,
-      gioBatDauNghi: shiftList[i].gioBatDauNghi,
-      gioKetThucNghi: shiftList[i].gioKetThucNghi,
+      gioBatDauCa: shiftList[i].gioBatDauCa.slice(0,5),
+      gioKetThucCa: shiftList[i].gioKetThucCa.slice(0,5),
+      gioBatDauNghi: shiftList[i].gioBatDauNghi.slice(0,5),
+      gioKetThucNghi: shiftList[i].gioKetThucNghi.slice(0,5),
     });
   }
 

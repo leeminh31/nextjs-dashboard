@@ -274,7 +274,7 @@ const CreateRegisterShift = (props: any) => {
               wrapperCol={{ span: 24 }}
             >
               <Select disabled placeholder="Vui lòng chọn">
-                {shiftList.map((item) => (
+                {shiftList?.map((item) => (
                   <Option key={item.maCa} value={item.maCa}>
                     {item.tenCa}
                   </Option>
@@ -296,7 +296,7 @@ const CreateRegisterShift = (props: any) => {
               ]}
             >
               <Select placeholder="Vui lòng chọn">
-                {shiftList.map((item) => (
+                {shiftList?.map((item) => (
                   <Option key={item.maCa} value={item.tenCa}>
                     {item.tenCa}
                   </Option>

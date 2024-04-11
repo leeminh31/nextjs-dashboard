@@ -475,7 +475,7 @@ const RegisterShiftTable: React.FC = () => {
               labelCol={{ style: { width: 110, textAlign: "left" } }}
             >
               <Select placeholder="Vui lòng chọn">
-                {shiftList.map((item) => (
+                {shiftList?.map((item) => (
                   <Option key={item.maCa} value={item.tenCa}>
                     {item.tenCa}
                   </Option>

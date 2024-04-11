@@ -158,6 +158,8 @@ const CreateShiftList = (props: any) => {
             </Form.Item>
           </Col>
           <Col span={12}>
+          </Col>
+          <Col span={12}>
             <Form.Item
               name={"gioBatDauCa"}
               label={"Giờ bắt đầu ca"}
@@ -172,9 +174,8 @@ const CreateShiftList = (props: any) => {
             >
               <TimePicker
                 style={{ width: "100%", height: "40px" }}
-                use12Hours
                 placeholder="Vui lòng chọn"
-                format="hh:mm a"
+                format="HH:mm"
               />
             </Form.Item>
           </Col>
@@ -193,9 +194,8 @@ const CreateShiftList = (props: any) => {
             >
               <TimePicker
                 style={{ width: "100%", height: "40px" }}
-                use12Hours
                 placeholder="Vui lòng chọn"
-                format="hh:mm a"
+                format="HH:mm"
               />
             </Form.Item>
           </Col>
@@ -214,9 +214,8 @@ const CreateShiftList = (props: any) => {
             >
               <TimePicker
                 style={{ width: "100%", height: "40px" }}
-                use12Hours
                 placeholder="Vui lòng chọn"
-                format="hh:mm a"
+                format="HH:mm"
               />
             </Form.Item>
           </Col>
@@ -235,9 +234,8 @@ const CreateShiftList = (props: any) => {
             >
               <TimePicker
                 style={{ width: "100%", height: "40px" }}
-                use12Hours
                 placeholder="Vui lòng chọn"
-                format="hh:mm a"
+                format="HH:mm"
               />
             </Form.Item>
           </Col>
