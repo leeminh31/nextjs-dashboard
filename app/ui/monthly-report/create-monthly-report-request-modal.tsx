@@ -68,15 +68,6 @@ const CreateMonthlyReportRequestModal = (props: any) => {
     }
   };
 
-  const getQuyPhepHienCo = async (maNhanVien: string, nam: number) => {
-    const response = await DanhSachDonApi.getQuyPhepHienCo(maNhanVien, nam);
-    if (response?.statusCode === "200") {
-      setQuyBu(response?.data);
-    } else {
-      console.log(response?.message);
-    }
-  };
-
   const onFinish = async (values: any) => {
     const ngaylamViecInsert = dayjs(ngayLamViec)
       .add(1, "day")
@@ -218,7 +209,6 @@ const CreateMonthlyReportRequestModal = (props: any) => {
         console.log(response.message);
       }
     }
-
     close();
   };
 
@@ -236,7 +226,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
                 display: "flex",
                 justifyContent: "space-between",
                 color: "#996B4D",
-                padding: "0 16px",
+                padding: "8px 16px",
               }}
             >
               <Form.Item
@@ -256,7 +246,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
                 display: "flex",
                 justifyContent: "space-between",
                 color: "#996B4D",
-                padding: "0 16px",
+                padding: "8px 16px",
               }}
             >
               <Form.Item
@@ -275,7 +265,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
               direction="vertical"
               style={{
                 color: "#996B4D",
-                padding: "0 16px",
+                padding: "8px 16px",
                 width: "100%",
               }}
             >
@@ -294,7 +284,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
                 display: "flex",
                 justifyContent: "space-between",
                 color: "#996B4D",
-                padding: "0 16px",
+                padding: "8px 16px",
               }}
             >
               <Form.Item
@@ -313,7 +303,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
               direction="vertical"
               style={{
                 color: "#996B4D",
-                padding: "0 16px",
+                padding: "8px 16px",
                 width: "100%",
               }}
             >
@@ -331,19 +321,19 @@ const CreateMonthlyReportRequestModal = (props: any) => {
               style={{
                 display: "flex",
                 color: "#996B4D",
-                padding: "0 16px",
+                padding: "8px 16px",
               }}
             >
               <Form.Item label="Từ ngày: " name="tuNgay">
                 <DatePicker
-                  style={{ width: "120px" }}
+                  style={{ width: "120px", border: "none", outline: "none" }}
                   placeholder="Chọn ngày"
                   format={"DD/MM/YYYY"}
                 />
               </Form.Item>
               <Form.Item label="Đến ngày: " name="denNgay">
                 <DatePicker
-                  style={{ width: "120px" }}
+                  style={{ width: "120px", border: "none", outline: "none" }}
                   placeholder="Chọn ngày"
                   format={"DD/MM/YYYY"}
                 />
@@ -353,7 +343,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
               direction="vertical"
               style={{
                 color: "#996B4D",
-                padding: "0 16px",
+                padding: "8px 16px",
                 width: "100%",
               }}
             >
@@ -371,21 +361,23 @@ const CreateMonthlyReportRequestModal = (props: any) => {
               style={{
                 display: "flex",
                 color: "#996B4D",
-                padding: "0 16px",
+                padding: "8px 16px",
               }}
             >
               <Form.Item label="Tăng ca từ" name="tangCaTu">
                 <TimePicker
                   onChange={(e) => setTangCaTu(e)}
-                  style={{ width: "100px" }}
+                  style={{ width: "100px", border: "none", outline: "none" }}
                   placeholder="Vui lòng chọn"
+                  format="HH:mm"
                 />
               </Form.Item>
               <Form.Item label="đến: " name="tangCaDen">
                 <TimePicker
                   onChange={(e) => setTangCaDen(e)}
-                  style={{ width: "100px" }}
+                  style={{ width: "100px", border: "none", outline: "none" }}
                   placeholder="Vui lòng chọn"
+                  format="HH:mm"
                 />
               </Form.Item>
             </Space>
@@ -393,7 +385,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
               style={{
                 display: "flex",
                 color: "#996B4D",
-                padding: "0 16px",
+                padding: "8px 16px",
               }}
             >
               <span>Quy đổi số phút: </span>
@@ -403,7 +395,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
               direction="vertical"
               style={{
                 color: "#996B4D",
-                padding: "0 16px",
+                padding: "8px 16px",
                 width: "100%",
               }}
             >
@@ -523,7 +515,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
               padding: "0 16px",
             }}
           >
-            <span>Phòng ban: {generalData?.phongBan} </span>
+            <span>Phòng ban: {generalData?.phong} </span>
           </Space>
           <Space
             style={{

@@ -11,11 +11,14 @@ const GiaiTrinhApi = {
     return rest.postAsync("DanhSachGiaiTrinh", JSON.stringify(payload));
   },
 
-  getDanhSachGiaiTrinhByEmployeeId: async (data: string | null) => {
+  getDanhSachGiaiTrinhByEmployeeId: async (data: string, ngayLamViec: Date) => {
     const rest = new RestConnection();
     return rest.getAsync(
       "DanhSachGiaiTrinh?" +
-        qs.stringify({ maNhanVien: data }, { skipNulls: true }),
+        qs.stringify(
+          { maNhanVien: data, ngayLamViec: ngayLamViec },
+          { skipNulls: true },
+        ),
     );
   },
 

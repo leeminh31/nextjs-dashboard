@@ -2,14 +2,8 @@
 "use client";
 
 import BaoCaoTheoThangApi from "@/app/api/baocaotheothang";
-import NhanVienApi from "@/app/api/nhanvien";
-import PhongBanApi from "@/app/api/phongban";
 import { BaoCaoTheoThangAllResponse } from "@/app/models/baocaotheothang/baocaotheothangall-response";
 import { SearchDuLieuChamCongRequest } from "@/app/models/dulieuchamcong/search-dulieuchamcong-request";
-import { NhanVienResponse } from "@/app/models/nhanvien/nhanvien-response";
-import { SearchNhanVienRequest } from "@/app/models/nhanvien/search-nhanvien-request";
-import { PhongBanResponse } from "@/app/models/phongban/phongban-response";
-import { SearchPhongBanRequest } from "@/app/models/phongban/search-phongban-request";
 import {
   Button,
   Col,
@@ -32,7 +26,7 @@ import MonthlyReportDrawer from "./monthly-report-drawer";
 interface DataType {
   key: React.Key;
   STT: number;
-  phongBan: string;
+  phong: string;
   children?: any[];
 }
 
@@ -43,12 +37,10 @@ const MonthlyReportTable: React.FC = () => {
   const { token } = theme.useToken();
   const [form] = Form.useForm();
   const [date, setDate] = useState(new Date());
-  const [employeeData, setEmployeeData] = useState<NhanVienResponse[]>([]);
-  const [departmentData, setDepartmentData] = useState<PhongBanResponse[]>();
   const [spinning, setSpinning] = useState(true);
   const [currentDateClick, setCurrentDateClick] = useState(0);
   const [open, setOpen] = useState(false);
-  const [isSearch, setIsSearch] = useState(false);
+  const [shiftId, setShiftId] = useState<string>();
   const [monthlyData, setMonthlyData] = useState<BaoCaoTheoThangAllResponse[]>(
     [],
   );
@@ -80,30 +72,6 @@ const MonthlyReportTable: React.FC = () => {
     }
   };
 
-  const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
-    const response = await NhanVienApi.getNhanVien(searchRequest);
-    if (response?.statusCode === "200") {
-      setEmployeeData(response.data.reverse());
-    } else if (response?.statusCode === "545") {
-      setEmployeeData(response.data);
-    } else {
-      console.log(response.message);
-    }
-  };
-
-  const getDepartmentsByParams = async (
-    searchRequest: SearchPhongBanRequest,
-  ) => {
-    const response = await PhongBanApi.getPhongBan(searchRequest);
-    if (response?.statusCode === "200") {
-      setDepartmentData(response?.data);
-    } else if (response?.statusCode === "545") {
-      setDepartmentData([]);
-    } else {
-      console.log(response.message);
-    }
-  };
-
   const assignShift = async () => {
     const response = await BaoCaoTheoThangApi.assignShiftToEmployee();
     if (response?.statusCode === "200") {
@@ -114,47 +82,24 @@ const MonthlyReportTable: React.FC = () => {
         tenNhanVien: null,
         idVanTay: null,
       });
-      refresh();
+      // refresh();
     } else {
       console.log(response.message);
     }
   };
 
-  const refresh = () => {
-    getEmployeeByParams({
-      hoTen: null,
-      maNhanVien: null,
-      idVanTay: null,
-      maPhongBan: null,
-      chucVu: null,
-    });
-
-    getDepartmentsByParams({
-      tenPhongBan: null,
-      thuKyPhongBan: null,
-      truongPhongBan: null,
-    });
-  };
-
   const onFinish = (values: any) => {
     console.log(values);
 
-    if (values.maNhanVien || values.tenNhanVien) {
-      setIsSearch(true);
-      getEmployeeByParams({
-        hoTen: values.tenNhanVien,
-        maNhanVien: values.maNhanVien,
-        idVanTay: null,
-        maPhongBan: null,
-        chucVu: null,
-      });
-      return;
-    }
+    const getDate = dayjs(new Date(date)).tz();
 
-    if (!values.maNhanVien && !values.tenNhanVien) {
-      refresh();
-      return;
-    }
+    getMonthlyReportByMonth({
+      ngayBatDau: new Date(getDate.year(), getDate.month(), 2),
+      ngayKetThuc: dayjs(getDate).endOf("month").toDate(),
+      maNhanVien: values.maNhanVien,
+      tenNhanVien: values.tenNhanVien,
+      idVanTay: null,
+    });
   };
 
   const generateColumns = () => {
@@ -175,8 +120,8 @@ const MonthlyReportTable: React.FC = () => {
       },
       {
         title: "Phòng",
-        dataIndex: "phongBan",
-        key: "phongBan",
+        dataIndex: "phong",
+        key: "phong",
         fixed: "left",
         width: 80,
       },
@@ -258,7 +203,11 @@ const MonthlyReportTable: React.FC = () => {
     return cols;
   };
 
-  const handleRowClick = (e: React.MouseEvent, dateNumber: number) => {
+  const handleRowClick = (
+    e: React.MouseEvent,
+    dateNumber: number,
+    currentShiftId: string | undefined,
+  ) => {
     // Xóa lớp CSS trước
     const highlightedCells = document.querySelectorAll(".highlighted-cell");
     highlightedCells.forEach((cell) => {
@@ -272,6 +221,7 @@ const MonthlyReportTable: React.FC = () => {
 
     setOpen(true);
     setCurrentDateClick(dateNumber);
+    setShiftId(currentShiftId);
   };
 
   const generateDataTable = () => {
@@ -279,270 +229,139 @@ const MonthlyReportTable: React.FC = () => {
 
     const getDate = dayjs(new Date(date)).tz();
 
-    !isSearch
-      ? departmentData?.map((x, index) => {
-          const childrenData = employeeData
-            ?.filter((employee) => employee.maPhongBan === x.maPhongBan)
-            .map((employee, index) => {
-              const rowSpecifyKey: any = {
-                // key: `${employee.maNhanVien}`,
-                STT: index + 1,
-              };
+    const listDepartment = new Set<string>();
 
-              const rowFixedData = {
-                phongBan: x.tenPhongBan,
-                maNhanVien: employee.maNhanVien,
-                hoTen: employee.hoTen,
-                maCa: employee.maCa,
-                tongCong: monthlyData?.find(
-                  (data) => data.maNhanVien === employee.maNhanVien,
-                )
-                  ? monthlyData?.find(
-                      (data) => data.maNhanVien === employee.maNhanVien,
-                    )?.tongCong
-                  : 0,
-              };
+    monthlyData?.forEach((obj) => {
+      listDepartment.add(obj["phong"]);
+    });
 
-              const days: { [key: string]: React.JSX.Element } = {};
+    const departmentArray = [...listDepartment];
 
-              const startDate = new Date(getDate.year(), getDate.month(), 1);
-              while (startDate.getMonth() === getDate.month()) {
-                const currentDate = startDate.getDate();
-                days[startDate.getDate()] = (
-                  <div
-                    onClick={(e) => handleRowClick(e, currentDate)}
-                    style={{
-                      width: "100%",
-                      padding: "0 5px",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      minHeight: "50px",
-                      cursor: "pointer",
-                      alignItems: "center",
-                    }}
-                  >
+    departmentArray?.map((x, index) => {
+      const childrenData = monthlyData
+        ?.filter((data) => data.phong === x)
+        .map((employee, index) => {
+          const rowSpecifyKey: any = {
+            // key: `${employee.maNhanVien}`,
+            STT: index + 1,
+          };
+
+          const rowFixedData: any = {
+            phong: employee.phong,
+            maNhanVien: employee.maNhanVien,
+            hoTen: employee.hoTen,
+            tongCong: employee.tongCong ? employee.tongCong.toFixed(2) : 0,
+          };
+
+          const days: { [key: string]: React.JSX.Element } = {};
+
+          const startDate = new Date(getDate.year(), getDate.month(), 1);
+          while (startDate.getMonth() === getDate.month()) {
+            const currentDate = startDate.getDate();
+            const currentShiftId = monthlyData
+              ?.find((day) => day.maNhanVien === employee.maNhanVien)
+              ?.duLieuChamCongResponses?.find(
+                (dlcc) => dlcc.ngayLamViec === currentDate,
+              )?.tenCa;
+            days[startDate.getDate()] = (
+              <div
+                onClick={(e) => handleRowClick(e, currentDate, currentShiftId)}
+                style={{
+                  width: "100%",
+                  padding: "0 5px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  minHeight: "50px",
+                  cursor: "pointer",
+                  alignItems: "center",
+                  backgroundColor: monthlyData
+                    ?.find((day) => day.maNhanVien === employee.maNhanVien)
+                    ?.duLieuChamCongResponses?.find(
+                      (dlcc) => dlcc.ngayLamViec === currentDate,
+                    )?.isYellow
+                    ? "gold"
+                    : "transparent",
+                }}
+              >
+                {monthlyData
+                  ?.find((day) => day.maNhanVien === employee.maNhanVien)
+                  ?.duLieuChamCongResponses?.find(
+                    (dlcc) => dlcc.ngayLamViec === currentDate,
+                  )?.nghiPhep ? (
+                  <span style={{ color: "#31cd23" }}>AL</span>
+                ) : (
+                  <span>
                     {monthlyData
                       ?.find((day) => day.maNhanVien === employee.maNhanVien)
                       ?.duLieuChamCongResponses?.find(
                         (dlcc) => dlcc.ngayLamViec === currentDate,
-                      )?.nghiPhep ? (
-                      <span style={{ color: "#31cd23" }}>AL</span>
-                    ) : (
-                      <span>
-                        {monthlyData
+                      )?.tenCa ?? ""}
+                  </span>
+                )}
+                <span>
+                  {" "}
+                  {monthlyData
+                    ?.find((day) => day.maNhanVien === employee.maNhanVien)
+                    ?.duLieuChamCongResponses?.find(
+                      (dlcc) => dlcc.ngayLamViec === currentDate,
+                    )?.nghiPhep ? (
+                    <span style={{ color: "#31cd23" }}>
+                      {
+                        monthlyData
                           ?.find(
                             (day) => day.maNhanVien === employee.maNhanVien,
                           )
                           ?.duLieuChamCongResponses?.find(
                             (dlcc) => dlcc.ngayLamViec === currentDate,
-                          )?.tenCa ?? ""}
-                      </span>
-                    )}
+                          )?.gioLamViecTheoCa
+                      }
+                    </span>
+                  ) : (monthlyData
+                      ?.find((day) => day.maNhanVien === employee.maNhanVien)
+                      ?.duLieuChamCongResponses?.find(
+                        (dlcc) => dlcc.ngayLamViec === currentDate,
+                      )?.gioLamViec ?? 0) <
+                    (monthlyData
+                      ?.find((day) => day.maNhanVien === employee.maNhanVien)
+                      ?.duLieuChamCongResponses?.find(
+                        (dlcc) => dlcc.ngayLamViec === currentDate,
+                      )?.gioLamViecTheoCa ?? 0) ? (
+                    <span style={{ color: "red" }}>
+                      {" "}
+                      {monthlyData
+                        ?.find((day) => day.maNhanVien === employee.maNhanVien)
+                        ?.duLieuChamCongResponses?.find(
+                          (dlcc) => dlcc.ngayLamViec === currentDate,
+                        )?.gioLamViec || 0}{" "}
+                    </span>
+                  ) : (
                     <span>
                       {" "}
                       {monthlyData
                         ?.find((day) => day.maNhanVien === employee.maNhanVien)
                         ?.duLieuChamCongResponses?.find(
                           (dlcc) => dlcc.ngayLamViec === currentDate,
-                        )?.nghiPhep ? (
-                        <span style={{ color: "#31cd23" }}>
-                          {
-                            monthlyData
-                              ?.find(
-                                (day) => day.maNhanVien === employee.maNhanVien,
-                              )
-                              ?.duLieuChamCongResponses?.find(
-                                (dlcc) => dlcc.ngayLamViec === currentDate,
-                              )?.gioLamViecTheoCa
-                          }
-                        </span>
-                      ) : (monthlyData
-                          ?.find(
-                            (day) => day.maNhanVien === employee.maNhanVien,
-                          )
-                          ?.duLieuChamCongResponses?.find(
-                            (dlcc) => dlcc.ngayLamViec === currentDate,
-                          )?.gioLamViec ?? 0) <
-                        (monthlyData
-                          ?.find(
-                            (day) => day.maNhanVien === employee.maNhanVien,
-                          )
-                          ?.duLieuChamCongResponses?.find(
-                            (dlcc) => dlcc.ngayLamViec === currentDate,
-                          )?.gioLamViecTheoCa ?? 0) ? (
-                        <span style={{ color: "red" }}>
-                          {" "}
-                          {monthlyData
-                            ?.find(
-                              (day) => day.maNhanVien === employee.maNhanVien,
-                            )
-                            ?.duLieuChamCongResponses?.find(
-                              (dlcc) => dlcc.ngayLamViec === currentDate,
-                            )?.gioLamViec || 0}{" "}
-                        </span>
-                      ) : (
-                        <span>
-                          {" "}
-                          {monthlyData
-                            ?.find(
-                              (day) => day.maNhanVien === employee.maNhanVien,
-                            )
-                            ?.duLieuChamCongResponses?.find(
-                              (dlcc) => dlcc.ngayLamViec === currentDate,
-                            )?.gioLamViec || 0}{" "}
-                        </span>
-                      )}{" "}
+                        )?.gioLamViec || 0}{" "}
                     </span>
-                  </div>
-                );
-                startDate.setDate(startDate.getDate() + 1);
-              }
+                  )}{" "}
+                </span>
+              </div>
+            );
+            startDate.setDate(startDate.getDate() + 1);
+          }
 
-              const row = Object.assign(rowSpecifyKey, rowFixedData, days);
+          const row = Object.assign(rowSpecifyKey, rowFixedData, days);
 
-              return row;
-            });
+          return row;
+        });
 
-          getData.push({
-            key: index + 1,
-            STT: index + 1,
-            phongBan: x.tenPhongBan,
-            children: childrenData,
-          });
-        })
-      : departmentData
-          ?.filter((c) =>
-            employeeData?.some((e) => e.maPhongBan === c.maPhongBan),
-          )
-          .map((x, index) => {
-            const childrenData = employeeData
-              .filter((employee) => employee.maPhongBan === x.maPhongBan)
-              .map((employee, index) => {
-                const rowSpecifyKey: any = {
-                  // key: `${employee.maNhanVien}`,
-                  STT: index + 1,
-                };
-
-                const rowFixedData = {
-                  phongBan: x.tenPhongBan,
-                  maNhanVien: employee.maNhanVien,
-                  hoTen: employee.hoTen,
-                  maCa: employee.maCa,
-                  tongCong: monthlyData?.find(
-                    (data) => data.maNhanVien === employee.maNhanVien,
-                  )
-                    ? monthlyData?.find(
-                        (data) => data.maNhanVien === employee.maNhanVien,
-                      )?.tongCong
-                    : 0,
-                };
-
-                const days: { [key: string]: React.JSX.Element } = {};
-
-                const startDate = new Date(getDate.year(), getDate.month(), 1);
-                while (startDate.getMonth() === getDate.month()) {
-                  const currentDate = startDate.getDate();
-                  days[startDate.getDate()] = (
-                    <div
-                      onClick={(e) => handleRowClick(e, currentDate)}
-                      style={{
-                        width: "100%",
-                        padding: "0 5px",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        minHeight: "50px",
-                        cursor: "pointer",
-                        alignItems: "center",
-                      }}
-                    >
-                      {monthlyData
-                        ?.find((day) => day.maNhanVien === employee.maNhanVien)
-                        ?.duLieuChamCongResponses?.find(
-                          (dlcc) => dlcc.ngayLamViec === currentDate,
-                        )?.nghiPhep ? (
-                        <span style={{ color: "#31cd23" }}>AL</span>
-                      ) : (
-                        <span>
-                          {monthlyData
-                            ?.find(
-                              (day) => day.maNhanVien === employee.maNhanVien,
-                            )
-                            ?.duLieuChamCongResponses?.find(
-                              (dlcc) => dlcc.ngayLamViec === currentDate,
-                            )?.tenCa ?? ""}
-                        </span>
-                      )}
-
-                      {monthlyData
-                        ?.find((day) => day.maNhanVien === employee.maNhanVien)
-                        ?.duLieuChamCongResponses?.find(
-                          (dlcc) => dlcc.ngayLamViec === currentDate,
-                        )?.nghiPhep ? (
-                        <span style={{ color: "#31cd23" }}>
-                          {
-                            monthlyData
-                              ?.find(
-                                (day) => day.maNhanVien === employee.maNhanVien,
-                              )
-                              ?.duLieuChamCongResponses?.find(
-                                (dlcc) => dlcc.ngayLamViec === currentDate,
-                              )?.gioLamViecTheoCa
-                          }
-                        </span>
-                      ) : (monthlyData
-                          ?.find(
-                            (day) => day.maNhanVien === employee.maNhanVien,
-                          )
-                          ?.duLieuChamCongResponses?.find(
-                            (dlcc) => dlcc.ngayLamViec === currentDate,
-                          )?.gioLamViec ?? 0) <
-                        (monthlyData
-                          ?.find(
-                            (day) => day.maNhanVien === employee.maNhanVien,
-                          )
-                          ?.duLieuChamCongResponses?.find(
-                            (dlcc) => dlcc.ngayLamViec === currentDate,
-                          )?.gioLamViecTheoCa ?? 0) ? (
-                        <span style={{ color: "red" }}>
-                          {" "}
-                          {monthlyData
-                            ?.find(
-                              (day) => day.maNhanVien === employee.maNhanVien,
-                            )
-                            ?.duLieuChamCongResponses?.find(
-                              (dlcc) => dlcc.ngayLamViec === currentDate,
-                            )?.gioLamViec || 0}{" "}
-                        </span>
-                      ) : (
-                        <span>
-                          {" "}
-                          {monthlyData
-                            ?.find(
-                              (day) => day.maNhanVien === employee.maNhanVien,
-                            )
-                            ?.duLieuChamCongResponses?.find(
-                              (dlcc) => dlcc.ngayLamViec === currentDate,
-                            )?.gioLamViec || 0}{" "}
-                        </span>
-                      )}
-                    </div>
-                  );
-                  startDate.setDate(startDate.getDate() + 1);
-                }
-
-                const row = Object.assign(rowSpecifyKey, rowFixedData, days);
-
-                return row;
-              });
-
-            getData.push({
-              key: index + 1,
-              STT: index + 1,
-              phongBan: x.tenPhongBan,
-              children: childrenData,
-            });
-          });
-
+      getData.push({
+        key: index + 1,
+        STT: index + 1,
+        phong: x,
+        children: childrenData,
+      });
+    });
     setData(getData);
   };
 
@@ -563,7 +382,6 @@ const MonthlyReportTable: React.FC = () => {
       idVanTay: null,
     });
 
-    refresh();
     generateColumns();
     generateDataTable();
 
@@ -571,15 +389,7 @@ const MonthlyReportTable: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (isSearch) {
-      generateDataTable();
-      setIsSearch(false);
-    }
-  }, [employeeData]);
-
-  useEffect(() => {
     generateDataTable();
-    setIsSearch(false);
   }, [monthlyData]);
 
   useEffect(() => {
@@ -596,12 +406,6 @@ const MonthlyReportTable: React.FC = () => {
     generateColumns();
     generateDataTable();
   }, [date]);
-
-  useEffect(() => {
-    setSpinning(true);
-    generateDataTable();
-    setSpinning(false);
-  }, [departmentData]);
 
   return (
     <>
@@ -709,6 +513,7 @@ const MonthlyReportTable: React.FC = () => {
         date={currentDateClick}
         data={reportData}
         show={open}
+        shiftName={shiftId}
         close={() => {
           setReportData(undefined);
           setOpen(false);

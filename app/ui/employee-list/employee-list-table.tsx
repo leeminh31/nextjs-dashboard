@@ -198,7 +198,7 @@ const EmployeeListTable: React.FC = () => {
       dataIndex: "action",
       fixed: "right",
       align: "center",
-      width: 100,
+      width: 120,
       render: (value, record) => {
         return (
           <Space style={{}}>

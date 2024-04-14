@@ -18,10 +18,14 @@ const DanhSachDonApi = {
     return rest.postAsync("DanhSachDon", JSON.stringify(payload));
   },
 
-  getDanhSachDonByEmployeeId: async (data: string | null) => {
+  getDanhSachDonByEmployeeId: async (data: string, ngayLamViec: Date) => {
     const rest = new RestConnection();
     return rest.getAsync(
-      "DanhSachDon?" + qs.stringify({ maNhanVien: data }, { skipNulls: true }),
+      "DanhSachDon?" +
+        qs.stringify(
+          { maNhanVien: data, ngayLamViec: ngayLamViec },
+          { skipNulls: true },
+        ),
     );
   },
 

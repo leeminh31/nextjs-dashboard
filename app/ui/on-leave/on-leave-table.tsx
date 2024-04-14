@@ -136,7 +136,7 @@ const OnLeaveTable: React.FC = () => {
       title: "#",
       dataIndex: "key",
       key: "key",
-      width: 50,
+      width: 70,
       render: (value, record, index) => {
         return <>{(page - 1) * pageSize + index + 1}</>;
       },

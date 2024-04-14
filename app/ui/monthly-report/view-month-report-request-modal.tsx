@@ -348,7 +348,7 @@ const ViewMonthlyReportRequestModal = (props: any) => {
               padding: "2px 0px",
             }}
           >
-            <span>Phòng ban: {generalData?.phongBan} </span>
+            <span>Phòng ban: {generalData?.phong} </span>
           </Space>
           <Space
             style={{

@@ -521,7 +521,7 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
               padding: "0 16px",
             }}
           >
-            <span>Phòng ban: {generalData?.phongBan} </span>
+            <span>Phòng ban: {generalData?.phong} </span>
           </Space>
           <Space
             style={{

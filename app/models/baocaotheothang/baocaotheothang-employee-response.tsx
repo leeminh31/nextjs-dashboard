@@ -4,4 +4,6 @@ export interface BaoCaoTheoThangEmployeeResponse {
   gioLamViecTheoCa: number;
   nghiPhep: boolean;
   tenCa: string;
+  conNho: boolean;
+  isYellow: boolean;
 }

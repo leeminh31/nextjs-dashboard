@@ -23,7 +23,7 @@ import UpdateMonthlyReportRequestModal from "./update-monthly-report-request-mod
 import ViewMonthReportRequestModal from "./view-month-report-request-modal";
 import ViewMonthlyReportExplanationModal from "./view-monthly-report-explanation-modal";
 const MonthlyReportDrawer = (props: any) => {
-  const { show, close, data, date, dateFull } = props;
+  const { show, close, data, date, dateFull, shiftName } = props;
   const [shiftList, setShiftList] = useState<CaLamViecResponse[]>([]);
   const [listRequestData, setListRequestData] = useState<DanhSachDonResponse>();
   const [listExplanationData, setListExplanationData] = useState<
@@ -44,9 +44,14 @@ const MonthlyReportDrawer = (props: any) => {
     DuLieuChamCongResponse[]
   >([]);
 
-  const getListRequestByParams = async (maNhanVien: string | null) => {
-    const response =
-      await DanhSachDonApi.getDanhSachDonByEmployeeId(maNhanVien);
+  const getListRequestByParams = async (
+    maNhanVien: string,
+    ngayLamViec: Date,
+  ) => {
+    const response = await DanhSachDonApi.getDanhSachDonByEmployeeId(
+      maNhanVien,
+      ngayLamViec,
+    );
     if (response?.statusCode === "200") {
       setListRequestData(response?.data);
     } else if (response?.statusCode === "545") {
@@ -56,9 +61,14 @@ const MonthlyReportDrawer = (props: any) => {
     }
   };
 
-  const getListExplanationByParams = async (maNhanVien: string | null) => {
-    const response =
-      await GiaiTrinhApi.getDanhSachGiaiTrinhByEmployeeId(maNhanVien);
+  const getListExplanationByParams = async (
+    maNhanVien: string,
+    ngayLamViec: Date,
+  ) => {
+    const response = await GiaiTrinhApi.getDanhSachGiaiTrinhByEmployeeId(
+      maNhanVien,
+      ngayLamViec,
+    );
     if (response?.statusCode === "200") {
       setListExplanationData(response?.data);
     } else if (response?.statusCode === "545") {
@@ -145,6 +155,7 @@ const MonthlyReportDrawer = (props: any) => {
       getTimekeepingByDay({
         maNhanVien: data?.maNhanVien,
         ngayLamViec: startDate,
+        tenCa: shiftName,
       });
     }
   }, [date]);
@@ -161,11 +172,12 @@ const MonthlyReportDrawer = (props: any) => {
       getTimekeepingByDay({
         maNhanVien: data?.maNhanVien,
         ngayLamViec: startDate,
+        tenCa: shiftName,
       });
 
-      getListRequestByParams(data?.maNhanVien);
+      getListRequestByParams(data.maNhanVien, startDate);
 
-      getListExplanationByParams(data?.maNhanVien);
+      getListExplanationByParams(data.maNhanVien, startDate);
       setGeneralData(data);
     }
   }, [data]);
@@ -176,6 +188,7 @@ const MonthlyReportDrawer = (props: any) => {
       getTimekeepingByDay({
         maNhanVien: data?.maNhanVien,
         ngayLamViec: date,
+        tenCa: shiftName,
       });
       // setShiftName();
     }
@@ -213,12 +226,7 @@ const MonthlyReportDrawer = (props: any) => {
                     }}
                   >
                     <span>Tên ca: </span>
-                    <span>
-                      {
-                        shiftList.find((shift) => shift.maCa === data?.maCa)
-                          ?.tenCa
-                      }
-                    </span>
+                    <span>{shiftName ?? ""}</span>
                   </Space>
                   <Space
                     style={{
@@ -251,17 +259,17 @@ const MonthlyReportDrawer = (props: any) => {
                       {
                         <>
                           {subTime(
-                            shiftList.find((shift) => shift.maCa === data?.maCa)
+                            shiftList.find((shift) => shift.tenCa === shiftName)
                               ?.gioBatDauCa,
-                            shiftList.find((shift) => shift.maCa === data?.maCa)
+                            shiftList.find((shift) => shift.tenCa === shiftName)
                               ?.gioKetThucCa,
                           ) -
                             subTime(
                               shiftList.find(
-                                (shift) => shift.maCa === data?.maCa,
+                                (shift) => shift.tenCa === shiftName,
                               )?.gioBatDauNghi,
                               shiftList.find(
-                                (shift) => shift.maCa === data?.maCa,
+                                (shift) => shift.tenCa === shiftName,
                               )?.gioKetThucNghi,
                             )}
                         </>
@@ -279,7 +287,7 @@ const MonthlyReportDrawer = (props: any) => {
                     <span>Giờ bắt đầu ca: </span>
                     <span>
                       {
-                        shiftList.find((shift) => shift.maCa === data?.maCa)
+                        shiftList.find((shift) => shift.tenCa === shiftName)
                           ?.gioBatDauCa
                       }
                     </span>
@@ -295,7 +303,7 @@ const MonthlyReportDrawer = (props: any) => {
                     <span>Giờ kết thúc ca: </span>
                     <span>
                       {
-                        shiftList.find((shift) => shift.maCa === data?.maCa)
+                        shiftList.find((shift) => shift.tenCa === shiftName)
                           ?.gioKetThucCa
                       }
                     </span>
@@ -313,9 +321,9 @@ const MonthlyReportDrawer = (props: any) => {
                       {
                         <>
                           {subTime(
-                            shiftList.find((shift) => shift.maCa === data?.maCa)
+                            shiftList.find((shift) => shift.tenCa === shiftName)
                               ?.gioBatDauNghi,
-                            shiftList.find((shift) => shift.maCa === data?.maCa)
+                            shiftList.find((shift) => shift.tenCa === shiftName)
                               ?.gioKetThucNghi,
                           )}
                         </>
@@ -342,7 +350,7 @@ const MonthlyReportDrawer = (props: any) => {
                     }}
                   >
                     <span>Tính công: </span>
-                    <span>480</span>
+                    <span>{listTimekeeping[0]?.tinhCong}</span>
                   </Space>
                   <Space style={{ display: "flex", justifyContent: "center" }}>
                     <h2 style={{ color: "#b98868" }}>Lịch sử chấm công</h2>
@@ -368,27 +376,8 @@ const MonthlyReportDrawer = (props: any) => {
                       </span>
                     </Space>
                   ))}
-                  <Space style={{ display: "flex", justifyContent: "center" }}>
-                    <h2 style={{ color: "#b98868" }}>Lịch sử sửa ca</h2>
-                  </Space>
-                  <Space
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      color: "#996B4D",
-                      padding: "0px 8px 32px 8px",
-                    }}
-                  >
-                    <span>Lần 1:</span>
-                    <span>8A -{">"} 9A</span>
-                  </Space>
                 </Space>
               ),
-            },
-            {
-              label: "Sửa ca",
-              key: "2",
-              children: "Sửa ca",
             },
             {
               label: "Đơn",

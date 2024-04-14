@@ -12,10 +12,10 @@ import {
   Col,
   Form,
   Input,
+  message,
   Row,
   Space,
   Table,
-  message,
   theme,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -58,7 +58,7 @@ const ShiftListTable: React.FC = () => {
     {
       title: "STT",
       dataIndex: "key",
-      width: 50,
+      width: 70,
       render: (value, record, index) => {
         return <>{(page - 1) * pageSize + index + 1}</>;
       },
@@ -114,10 +114,10 @@ const ShiftListTable: React.FC = () => {
       key: shiftList[i].maCa,
       maCa: shiftList[i].maCa,
       tenCa: shiftList[i].tenCa,
-      gioBatDauCa: shiftList[i].gioBatDauCa.slice(0,5),
-      gioKetThucCa: shiftList[i].gioKetThucCa.slice(0,5),
-      gioBatDauNghi: shiftList[i].gioBatDauNghi.slice(0,5),
-      gioKetThucNghi: shiftList[i].gioKetThucNghi.slice(0,5),
+      gioBatDauCa: shiftList[i].gioBatDauCa.slice(0, 5),
+      gioKetThucCa: shiftList[i].gioKetThucCa.slice(0, 5),
+      gioBatDauNghi: shiftList[i].gioBatDauNghi.slice(0, 5),
+      gioKetThucNghi: shiftList[i].gioKetThucNghi.slice(0, 5),
     });
   }
 

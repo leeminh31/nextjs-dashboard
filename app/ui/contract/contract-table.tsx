@@ -54,7 +54,7 @@ const ContractTable: React.FC = () => {
     {
       title: "STT",
       key: "key",
-      width: 50,
+      width: 70,
       render: (value, record, index) => {
         return <>{(page - 1) * pageSize + index + 1}</>;
       },
@@ -112,7 +112,8 @@ const ContractTable: React.FC = () => {
       dataIndex: "trangThaiHopDong",
       width: 150,
       render: (value, record, index) => {
-        const dateEnd = new Date(record.ngayKetThucHopDong);
+        const parts = record.ngayKetThucHopDong.split("/");
+        const dateEnd = new Date(`${parts[1]}/${parts[0]}/${parts[2]}`);
         const color = dateEnd.getTime() < Date.now() ? "volcano" : "green";
 
         return (
@@ -201,11 +202,6 @@ const ContractTable: React.FC = () => {
     );
     if (values.hoTen !== "" && values.hoTen !== undefined) {
       getEmployeeIdByName(values.hoTen);
-      // console.log(idList)
-      // let newResult = contractData.filter((item) => idList.includes(item.maNhanVien))
-      // console.log(newResult)
-      // setContractData(newResult)
-      // return
     }
   };
 

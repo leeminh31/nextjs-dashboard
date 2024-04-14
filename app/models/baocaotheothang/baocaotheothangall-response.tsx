@@ -3,5 +3,8 @@ import { BaoCaoTheoThangEmployeeResponse } from "./baocaotheothang-employee-resp
 export interface BaoCaoTheoThangAllResponse {
   maNhanVien: string;
   tongCong: number;
+  hoTen: string;
+  phong: string;
+  idVanTay: number;
   duLieuChamCongResponses: BaoCaoTheoThangEmployeeResponse[];
 }

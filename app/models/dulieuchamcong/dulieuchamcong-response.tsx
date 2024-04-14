@@ -5,4 +5,5 @@ export interface DuLieuChamCongResponse {
   lanChamCong: number;
   gioChamCong: string;
   thoiGianLamViecThucTe: number;
+  tinhCong: number;
 }

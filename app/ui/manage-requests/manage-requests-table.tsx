@@ -437,7 +437,7 @@ const ManageRequestsTable: React.FC = () => {
       title: "STT",
       dataIndex: "STT",
       key: "STT",
-      width: 50,
+      width: 70,
       render: (value, record, index) => {
         return <>{(page - 1) * pageSize + index + 1}</>;
       },
