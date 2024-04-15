@@ -31,6 +31,11 @@ const NhanVienApi = {
     const rest = new RestConnection();
     return rest.getAsync(`NhanVien/HoTen/${hoTen}`);
   },
+
+  createListAccount: async (maNhanVien: string) => {
+    const rest = new RestConnection();
+    return rest.postAsync(`NhanVien/CreateAccount`, maNhanVien);
+  },
 };
 
 export default NhanVienApi;

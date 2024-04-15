@@ -20,9 +20,11 @@ import {
   Skeleton,
   Space,
   Table,
+  message,
   theme,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import { TableRowSelection } from "antd/es/table/interface";
 import "dotenv/config";
 import React, { useEffect, useState } from "react";
 import ChangePassword from "./change-password";
@@ -34,6 +36,7 @@ const EmployeeListTable: React.FC = () => {
   const { token } = theme.useToken();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [messageApi, contextHolder] = message.useMessage();
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [loading, setLoading] = useState(true);
   const [addOpen, setAddOpen] = useState(false);
@@ -243,14 +246,50 @@ const EmployeeListTable: React.FC = () => {
     form.setFieldValue("phongBan", e);
   };
 
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
-    setSelectedRowKeys(newSelectedRowKeys);
+  const rowSelection: TableRowSelection<DataType> = {
+    selectedRowKeys,
+    onChange: (selectedRowKeys) => {
+      setSelectedRowKeys(selectedRowKeys);
+    },
+    getCheckboxProps: (record) => ({
+      disabled: listId.some((id) => id === record.maNhanVien),
+    }),
   };
 
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
+  const createListAccount = async (selectedRowKeys: string) => {
+    const response = await NhanVienApi.createListAccount(selectedRowKeys);
+    if (response.statusCode === "200") {
+      refresh();
+      messageApi.open({
+        type: "success",
+        content: "Tạo tài khoản thành công",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  const onCreate = () => {
+    if (selectedRowKeys.length) {
+      messageApi.open({
+        type: "error",
+        content: "Vui lòng chọn ít nhất một nhân viên!",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
+      return;
+    }
+
+    const employeeId = selectedRowKeys.join(",");
+    createListAccount(employeeId);
   };
 
   const onFinish = async (values: any) => {
@@ -287,6 +326,7 @@ const EmployeeListTable: React.FC = () => {
 
   return (
     <>
+      {contextHolder}
       <Skeleton loading={loading} active>
         <Form
           form={form}
@@ -390,7 +430,7 @@ const EmployeeListTable: React.FC = () => {
               <Button
                 type="primary"
                 style={{ marginLeft: "12px" }}
-                onClick={() => {}}
+                onClick={() => onCreate()}
               >
                 Tạo tài khoản
               </Button>

@@ -20,7 +20,7 @@ class RestConnection {
         headers: {
           Accept: "*/*",
           "Content-Type": "application/json",
-          // "Authorization": `Bearer ${token.accessToken}`
+          Authorization: `Bearer ${token.accessToken}`,
         },
         body: body,
       })
