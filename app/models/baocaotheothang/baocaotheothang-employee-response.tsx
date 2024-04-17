@@ -6,4 +6,5 @@ export interface BaoCaoTheoThangEmployeeResponse {
   tenCa: string;
   conNho: boolean;
   isYellow: boolean;
+  allowOT: boolean;
 }

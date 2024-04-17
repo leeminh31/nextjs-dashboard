@@ -126,6 +126,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
         tuNgay: values.tuNgay,
         denNgay: values.denNgay,
         trangThai: "0",
+        ngayLamViec: new Date(ngaylamViecInsert),
       };
 
       const response = await DanhSachDonApi.createDonConNho(requestData);

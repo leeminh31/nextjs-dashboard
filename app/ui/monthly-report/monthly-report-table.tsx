@@ -296,6 +296,13 @@ const MonthlyReportTable: React.FC = () => {
                       ?.duLieuChamCongResponses?.find(
                         (dlcc) => dlcc.ngayLamViec === currentDate,
                       )?.tenCa ?? ""}
+                    {monthlyData
+                      ?.find((day) => day.maNhanVien === employee.maNhanVien)
+                      ?.duLieuChamCongResponses?.find(
+                        (dlcc) => dlcc.ngayLamViec === currentDate,
+                      )?.allowOT
+                      ? "*"
+                      : ""}
                   </span>
                 )}
                 <span>

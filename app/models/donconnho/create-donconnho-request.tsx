@@ -6,4 +6,5 @@ export interface CreateDonConNhoRequest {
   nguoiDuyet: string;
   trangThai: string;
   maNhanVien: string;
+  ngayLamViec: Date;
 }
