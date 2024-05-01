@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import DanhSachDonApi from "@/app/api/danhsachdon";
+import QuyPhepApi from "@/app/api/quyphep";
 import { UpdateDonBuRequest } from "@/app/models/donbu/update-donbu-request";
 import { UpdateDonConNhoRequest } from "@/app/models/donconnho/update-donconnho-request";
 import { UpdateDonPhepRequest } from "@/app/models/donphep/update-donphep-request";
 import { UpdateDonTangCaRequest } from "@/app/models/dontangca/update-dontangca-request";
+import { SearchQuyPhepRequest } from "@/app/models/quyphep/search-quyphep-request";
 import {
   Button,
   DatePicker,
@@ -28,6 +30,16 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
   const [requestType, setRequestType] = useState(0);
   const [messageApi, contextHolder] = message.useMessage();
   const [quyBu, setQuyBu] = useState(0);
+  const [quyPhep, setQuyPhep] = useState(0);
+
+  const getQuyPhepHienCo = async (request: SearchQuyPhepRequest) => {
+    const response = await QuyPhepApi.getQuyPhep(request);
+    if (response?.statusCode === "200") {
+      setQuyPhep(response?.data[0]?.conLai);
+    } else {
+      console.log(response?.message);
+    }
+  };
 
   const getQuyBuHienCo = async (maNhanVien: string, nam: number) => {
     const response = await DanhSachDonApi.getQuyBuHienCo(maNhanVien, nam);
@@ -76,7 +88,7 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
 
       const response = await DanhSachDonApi.updateDonBu(requestData);
       if (response.statusCode === "200") {
-        refresh(generalData?.maNhanVien);
+        refresh(generalData?.maNhanVien, new Date(ngaylamViecInsert));
         close();
         messageApi.open({
           type: "success",
@@ -95,6 +107,26 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
     }
 
     if (data?.loaiDon === 2) {
+      const dateTuNgay = new Date(values.tuNgay);
+      const dateDenNgay = new Date(values.denNgay);
+
+      if (
+        Math.floor(
+          (dateDenNgay.getTime() - dateTuNgay.getTime()) / (24 * 3600 * 1000),
+        ) > 366
+      ) {
+        messageApi.open({
+          type: "error",
+          content: "Khoảng thời gian không được phép lớn hơn 12 tháng",
+          className: "custom-class",
+          style: {
+            fontSize: "16px",
+          },
+          duration: 1.5,
+        });
+        return;
+      }
+
       const requestData: UpdateDonConNhoRequest = {
         maNhanVien: generalData?.maNhanVien,
         ngayTaoDon: new Date(),
@@ -108,7 +140,7 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
 
       const response = await DanhSachDonApi.updateDonConNho(requestData);
       if (response.statusCode === "200") {
-        refresh(generalData?.maNhanVien);
+        refresh(generalData?.maNhanVien, new Date(ngaylamViecInsert));
         close();
         messageApi.open({
           type: "success",
@@ -139,7 +171,7 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
 
       const response = await DanhSachDonApi.updateDonPhep(requestData);
       if (response.statusCode === "200") {
-        refresh(generalData?.maNhanVien);
+        refresh(generalData?.maNhanVien, new Date(ngaylamViecInsert));
         close();
         messageApi.open({
           type: "success",
@@ -172,7 +204,7 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
 
       const response = await DanhSachDonApi.updateDonTangCa(requestData);
       if (response.statusCode === "200") {
-        refresh(generalData?.maNhanVien);
+        refresh(generalData?.maNhanVien, new Date(ngaylamViecInsert));
         close();
         messageApi.open({
           type: "success",
@@ -238,6 +270,12 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
                 wrapperCol={{
                   style: { width: 180 },
                 }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập đầy đủ thông tin",
+                  },
+                ]}
               >
                 <Input style={{ width: "70px" }} type={"number"} />
               </Form.Item>
@@ -251,7 +289,15 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
               }}
             >
               <span>Lý do: </span>
-              <Form.Item name="lyDo">
+              <Form.Item
+                name="lyDo"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập đầy đủ thông tin",
+                  },
+                ]}
+              >
                 <TextArea style={{ width: "420px" }} rows={4} />
               </Form.Item>
             </Space>
@@ -280,7 +326,7 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
                 <Input
                   style={{ width: "70px" }}
                   type={"number"}
-                  defaultValue="960"
+                  defaultValue={quyPhep * 480}
                   disabled
                 />
               </Form.Item>
@@ -294,7 +340,15 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
               }}
             >
               <span>Lý do: </span>
-              <Form.Item name="lyDo">
+              <Form.Item
+                name="lyDo"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập đầy đủ thông tin",
+                  },
+                ]}
+              >
                 <TextArea style={{ width: "420px" }} rows={4} />
               </Form.Item>
             </Space>
@@ -310,14 +364,32 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
                 padding: "0 16px",
               }}
             >
-              <Form.Item label="Từ ngày: " name="tuNgay">
+              <Form.Item
+                label="Từ ngày: "
+                name="tuNgay"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập đầy đủ thông tin",
+                  },
+                ]}
+              >
                 <DatePicker
                   style={{ width: "120px" }}
                   placeholder="Chọn ngày"
                   format={"DD/MM/YYYY"}
                 />
               </Form.Item>
-              <Form.Item label="Đến ngày: " name="denNgay">
+              <Form.Item
+                label="Đến ngày: "
+                name="denNgay"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập đầy đủ thông tin",
+                  },
+                ]}
+              >
                 <DatePicker
                   style={{ width: "120px" }}
                   placeholder="Chọn ngày"
@@ -334,7 +406,15 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
               }}
             >
               <span>Lý do: </span>
-              <Form.Item name="lyDo">
+              <Form.Item
+                name="lyDo"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập đầy đủ thông tin",
+                  },
+                ]}
+              >
                 <TextArea style={{ width: "420px" }} rows={4} />
               </Form.Item>
             </Space>
@@ -350,13 +430,31 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
                 padding: "0 16px",
               }}
             >
-              <Form.Item label="Tăng ca từ" name="tangCaTu">
+              <Form.Item
+                label="Tăng ca từ"
+                name="tangCaTu"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập đầy đủ thông tin",
+                  },
+                ]}
+              >
                 <TimePicker
                   style={{ width: "100px" }}
                   placeholder="Vui lòng chọn"
                 />
               </Form.Item>
-              <Form.Item label="đến: " name="tangCaDen">
+              <Form.Item
+                label="đến: "
+                name="tangCaDen"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập đầy đủ thông tin",
+                  },
+                ]}
+              >
                 <TimePicker
                   style={{ width: "100px" }}
                   placeholder="Vui lòng chọn"
@@ -384,7 +482,15 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
               }}
             >
               <span>Lý do: </span>
-              <Form.Item name="lyDo">
+              <Form.Item
+                name="lyDo"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập đầy đủ thông tin",
+                  },
+                ]}
+              >
                 <TextArea style={{ width: "420px" }} rows={4} />
               </Form.Item>
             </Space>
@@ -396,7 +502,6 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
   };
 
   useEffect(() => {
-    console.log(data);
     if (data && data.loaiDon === 1) {
       getQuyBuHienCo(
         generalData?.maNhanVien,
@@ -419,6 +524,12 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
     }
 
     if (data && data.loaiDon === 3) {
+      getQuyPhepHienCo({
+        tenNhanVien: null,
+        maNhanVien: data.maNhanVien,
+        tenPhongBan: null,
+        nam: new Date(ngayLamViec).getFullYear(),
+      });
       form.setFieldsValue({
         loaiDon: data.loaiDon,
         lyDo: data.lyDo,

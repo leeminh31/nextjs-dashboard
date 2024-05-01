@@ -14,7 +14,6 @@ class RestConnection {
     try {
       let token: any;
       if (strToken) token = JSON.parse(strToken);
-
       const response = await fetch(HRMSystemApi + url, {
         method: method,
         headers: {
@@ -27,6 +26,8 @@ class RestConnection {
         .then(async (res) => {
           if (res.status === 401) {
             const user = JSON.parse(localStorage.getItem("user") ?? "");
+            localStorage.clear();
+            window.location.href = "/login";
             return;
           }
           return res.clone().json();

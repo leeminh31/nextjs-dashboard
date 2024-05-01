@@ -34,7 +34,7 @@ const NhanVienApi = {
 
   createListAccount: async (maNhanVien: string) => {
     const rest = new RestConnection();
-    return rest.postAsync(`NhanVien/CreateAccount`, maNhanVien);
+    return rest.postAsync(`NhanVien/CreateAccount`, JSON.stringify(maNhanVien));
   },
 };
 

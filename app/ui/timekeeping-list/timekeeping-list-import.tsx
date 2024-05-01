@@ -5,7 +5,7 @@ import {
   DownloadOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
-import { Button, Drawer, Form, Row, Space, message } from "antd";
+import { Button, Drawer, Form, message, Row, Space } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 
 const ImportTimeKeeping = (props: any) => {
@@ -16,10 +16,14 @@ const ImportTimeKeeping = (props: any) => {
   const [] = Form.useForm();
 
   const dowloadFile = async () => {
+    const strToken = localStorage.getItem("token");
+    let token: any;
+    if (strToken) token = JSON.parse(strToken);
     fetch(HRMSystemApi + "DuLieuChamCong/dowload", {
       method: "GET",
       headers: {
         "content-type": "application/json",
+        Authorization: `Bearer ${token.accessToken}`,
       },
       body: null,
     })
@@ -36,8 +40,14 @@ const ImportTimeKeeping = (props: any) => {
   };
 
   const uploadFile = async (file: any) => {
+    const strToken = localStorage.getItem("token");
+    let token: any;
+    if (strToken) token = JSON.parse(strToken);
     fetch(HRMSystemApi + "DuLieuChamCong/upload", {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${token.accessToken}`,
+      },
       body: file,
     })
       .then((r) => r.json())

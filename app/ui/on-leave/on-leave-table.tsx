@@ -79,7 +79,6 @@ const OnLeaveTable: React.FC = () => {
   };
 
   const onFinish = (values: any) => {
-    console.log("Received values of form: ", values);
     const searchData: SearchQuyPhepRequest = {
       tenNhanVien: values.tenNhanVien?.trimStart().trimEnd().toUpperCase(),
       maNhanVien: values.maNhanVien?.trimStart().trimEnd().toUpperCase(),

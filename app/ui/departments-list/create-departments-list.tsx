@@ -51,7 +51,7 @@ const CreateDepartmentsList = (props: any) => {
       close();
       messageApi.open({
         type: "success",
-        content: "Thêm mới phòng ban thành công",
+        content: "Tạo phòng ban mới thành công",
         className: "custom-class",
         style: {
           fontSize: "16px",
@@ -158,6 +158,12 @@ const CreateDepartmentsList = (props: any) => {
               label={"Trưởng phòng ban"}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập đầy đủ thông tin",
+                },
+              ]}
             >
               <Select showSearch optionFilterProp="value">
                 {data?.map((item) => {
@@ -172,6 +178,12 @@ const CreateDepartmentsList = (props: any) => {
               label={"Thư ký"}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập đầy đủ thông tin",
+                },
+              ]}
             >
               <Select showSearch optionFilterProp="value">
                 {data?.map((item) => {

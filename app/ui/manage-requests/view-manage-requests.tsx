@@ -1,12 +1,35 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import DanhSachDonApi from "@/app/api/danhsachdon";
+import QuyPhepApi from "@/app/api/quyphep";
+import { SearchQuyPhepRequest } from "@/app/models/quyphep/search-quyphep-request";
 import { Button, Form, Modal, Space } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const ViewManageRequest = (props: any) => {
   const { show, close, data } = props;
   const [form] = Form.useForm();
+  const [quyBu, setQuyBu] = useState(0);
+  const [quyPhep, setQuyPhep] = useState(0);
+
+  const getQuyPhepHienCo = async (request: SearchQuyPhepRequest) => {
+    const response = await QuyPhepApi.getQuyPhep(request);
+    if (response?.statusCode === "200") {
+      setQuyPhep(response?.data[0]?.conLai);
+    } else {
+      console.log(response?.message);
+    }
+  };
+
+  const getQuyBuHienCo = async (maNhanVien: string, nam: number) => {
+    const response = await DanhSachDonApi.getQuyBuHienCo(maNhanVien, nam);
+    if (response?.statusCode === "200") {
+      setQuyBu(response?.data);
+    } else {
+      console.log(response?.message);
+    }
+  };
 
   const onFinish = () => {};
 
@@ -54,7 +77,7 @@ const ViewManageRequest = (props: any) => {
               }}
             >
               <span>Quỹ nghỉ bù hiện có: </span>
-              <span>960</span>
+              <span>{quyBu}</span>
             </Space>
             <Space
               style={{
@@ -108,7 +131,7 @@ const ViewManageRequest = (props: any) => {
               }}
             >
               <span>Quỹ nghỉ phép hiện có: </span>
-              <span>960</span>
+              <span>{quyPhep * 480}</span>
             </Space>
             <Space
               direction="vertical"
@@ -232,7 +255,23 @@ const ViewManageRequest = (props: any) => {
   };
 
   useEffect(() => {
-    if (data != null) {
+    if (data) {
+      console.log(dayjs(data?.ngayLamViec, "dd/MM/YYYY").year());
+      if (data?.loaiDon === 3) {
+        getQuyPhepHienCo({
+          tenNhanVien: null,
+          maNhanVien: data.maNhanVien,
+          tenPhongBan: null,
+          nam: dayjs(data?.ngayLamViec, "dd/MM/YYYY").year(),
+        });
+      }
+
+      if (data?.loaiDon === 1) {
+        getQuyBuHienCo(
+          data.maNhanVien,
+          dayjs(data?.ngayLamViec, "dd/MM/YYYY").year(),
+        );
+      }
       form.setFieldsValue({
         maNhanVien: data.maNhanVien,
         hoTen: data.hoTen,
@@ -257,8 +296,6 @@ const ViewManageRequest = (props: any) => {
       });
     }
   }, [data]);
-
-  useEffect(() => {}, []);
 
   return (
     <Modal

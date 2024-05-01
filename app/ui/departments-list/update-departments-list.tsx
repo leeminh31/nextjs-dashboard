@@ -51,7 +51,7 @@ const UpdateDepartmentsList = (props: any) => {
       close();
       messageApi.open({
         type: "success",
-        content: "Cập nhật phòng ban thành công",
+        content: "Chỉnh sửa phòng ban thành công",
         className: "custom-class",
         style: {
           fontSize: "16px",
@@ -69,15 +69,7 @@ const UpdateDepartmentsList = (props: any) => {
         duration: 1.5,
       });
     } else {
-      messageApi.open({
-        type: "error",
-        content: "Cập nhật phòng ban thất bại",
-        className: "custom-class",
-        style: {
-          fontSize: "16px",
-        },
-        duration: 1.5,
-      });
+      console.log(response.message);
     }
   };
 
@@ -195,6 +187,12 @@ const UpdateDepartmentsList = (props: any) => {
               label={"Trưởng phòng ban"}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập đầy đủ thông tin",
+                },
+              ]}
             >
               <Select showSearch optionFilterProp="value">
                 {employeeData?.map((item) => {
@@ -209,6 +207,12 @@ const UpdateDepartmentsList = (props: any) => {
               label={"Thư ký"}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập đầy đủ thông tin",
+                },
+              ]}
             >
               <Select showSearch optionFilterProp="value">
                 {employeeData?.map((item) => {

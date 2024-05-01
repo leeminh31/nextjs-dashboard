@@ -58,10 +58,10 @@ const CompensatoryLeaveTable: React.FC = () => {
 
   const getQuyBuByParams = async (searchRequest: SearchQuyBuRequest) => {
     const response = await QuyBuApi.getQuyBu(searchRequest);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       setData(response.data?.reverse());
       setTotalRecords(response.data?.length);
-    } else if (response.statusCode === "545") {
+    } else if (response?.statusCode === "545") {
       setData([]);
       setTotalRecords(0);
     } else {
@@ -611,7 +611,6 @@ const CompensatoryLeaveTable: React.FC = () => {
   };
 
   const onFinish = (values: any) => {
-    console.log("Received values of form: ", values);
     const searchData: SearchQuyBuRequest = {
       tenNhanVien: values.tenNhanVien?.trimStart().trimEnd().toUpperCase(),
       maNhanVien: values.maNhanVien?.trimStart().trimEnd().toUpperCase(),

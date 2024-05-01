@@ -21,6 +21,7 @@ import {
   Layout,
   Menu,
   MenuProps,
+  message,
   Skeleton,
   Space,
   theme,
@@ -96,6 +97,7 @@ export default function LayoutDashboard({
   const [collapsed, setCollapsed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
+  const [messageApi, contextHolder] = message.useMessage();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -112,7 +114,18 @@ export default function LayoutDashboard({
     setLoading(true);
     localStorage.clear();
     setLoading(false);
-    router.replace("/login");
+    messageApi.open({
+      type: "success",
+      content: "Đăng xuất thành công",
+      className: "custom-class",
+      style: {
+        fontSize: "16px",
+      },
+      duration: 0.5,
+    });
+    setTimeout(() => {
+      router.replace("/login");
+    }, 500);
   };
 
   const itemLogout: MenuProps["items"] = [
@@ -129,43 +142,15 @@ export default function LayoutDashboard({
     },
   ];
 
-  // useEffect(() => {
-  //   if (token) {
-  //     var user = JSON.parse(token);
-  //     var expiredTime = new Date(user.expiredTimeUTC).getTime();
-  //     if (expiredTime > Date.now()) {
-  //       router.replace("/login");
-  //       localStorage.clear();
-  //       return;
-  //     }
-  //   }
-  // });
-
-  // useEffect(() => {
-  //   if (token) {
-  //     var user = JSON.parse(token);
-  //     var expiredTime = new Date(user.expiredTimeUTC).getTime();
-  //     if (expiredTime > Date.now()) {
-  //       router.replace("/login");
-  //       localStorage.clear();
-  //       return;
-  //     }
-  //     setUsername(user.hoTen);
-  //   } else {
-  //     router.replace("/login");
-  //     localStorage.clear();
-  //   }
-  // }, [token]);
-
   useEffect(() => {
     const getTokenFromLocalStorage = localStorage?.getItem("token")
       ? JSON.parse(localStorage.getItem("token")!)
       : null;
 
-    // if (!getTokenFromLocalStorage) {
-    //   router.replace("/login");
-    //   return;
-    // }
+    if (!getTokenFromLocalStorage) {
+      router.replace("/login");
+      return;
+    }
     setUsername(getTokenFromLocalStorage?.hoTen);
     setCurrent(pathname);
     setLoading(false);
@@ -173,6 +158,7 @@ export default function LayoutDashboard({
 
   return (
     <Skeleton loading={loading} active>
+      {contextHolder}
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }}>
           <Flex justify={"space-between"}>

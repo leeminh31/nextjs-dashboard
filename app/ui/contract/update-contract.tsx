@@ -5,7 +5,6 @@ import { UpdateHopDongRequest } from "@/app/models/hopdong/update-hopdong-reques
 import { NhanVienResponse } from "@/app/models/nhanvien/nhanvien-response";
 import { SearchNhanVienRequest } from "@/app/models/nhanvien/search-nhanvien-request";
 import { FormatDate } from "@/app/utils/formatDate";
-import { monthDiff } from "@/app/utils/validateInput";
 import {
   Button,
   Col,
@@ -59,7 +58,9 @@ const UpdateContract = (props: any) => {
 
     if (
       values.loaiHopDong === "Thử việc" &&
-      monthDiff(dateStart, dateEnd) > 3
+      Math.floor(
+        (dateEnd.getTime() - dateStart.getTime()) / (24 * 3600 * 1000),
+      ) > 90
     ) {
       messageApi.open({
         type: "error",
@@ -75,7 +76,9 @@ const UpdateContract = (props: any) => {
 
     if (
       values.loaiHopDong === "Chính thức" &&
-      monthDiff(dateStart, dateEnd) > 12
+      Math.floor(
+        (dateEnd.getTime() - dateStart.getTime()) / (24 * 3600 * 1000),
+      ) > 366
     ) {
       messageApi.open({
         type: "error",
@@ -222,7 +225,7 @@ const UpdateContract = (props: any) => {
           <Col span={12}>
             <Form.Item
               name={"tenNhanVien"}
-              label={"Tên Nhân viên"}
+              label={"Tên nhân viên"}
               rules={[
                 {
                   required: true,

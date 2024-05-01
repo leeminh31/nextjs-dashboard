@@ -8,10 +8,10 @@ import {
   Drawer,
   Form,
   Input,
+  message,
   Row,
   Space,
   TimePicker,
-  message,
 } from "antd";
 import dayjs from "dayjs";
 
@@ -81,10 +81,10 @@ const CreateShiftList = (props: any) => {
 
     const requestData: CreateCaLamViecRequest = {
       tenCa: values.tenCa,
-      gioBatDauCa: dayjs(values.gioBatDauCa).format("HH:mm:ss"),
-      gioKetThucCa: dayjs(values.gioKetThucCa).format("HH:mm:ss"),
-      gioBatDauNghi: dayjs(values.gioBatDauNghi).format("HH:mm:ss"),
-      gioKetThucNghi: dayjs(values.gioKetThucNghi).format("HH:mm:ss"),
+      gioBatDauCa: dayjs(values.gioBatDauCa).format("HH:mm:00"),
+      gioKetThucCa: dayjs(values.gioKetThucCa).format("HH:mm:00"),
+      gioBatDauNghi: dayjs(values.gioBatDauNghi).format("HH:mm:00"),
+      gioKetThucNghi: dayjs(values.gioKetThucNghi).format("HH:mm:00"),
     };
 
     const response = await CaLamViecApi.addCaLamViec(requestData);
@@ -93,7 +93,7 @@ const CreateShiftList = (props: any) => {
       close();
       messageApi.open({
         type: "success",
-        content: "Thêm mới ca làm việc thành công",
+        content: "Tạo mới ca làm việc thành công",
         className: "custom-class",
         style: {
           fontSize: "16px",
@@ -157,8 +157,7 @@ const CreateShiftList = (props: any) => {
               <Input placeholder="Vui lòng nhập Tên ca" />
             </Form.Item>
           </Col>
-          <Col span={12}>
-          </Col>
+          <Col span={12}></Col>
           <Col span={12}>
             <Form.Item
               name={"gioBatDauCa"}

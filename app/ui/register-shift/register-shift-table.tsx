@@ -381,8 +381,6 @@ const RegisterShiftTable: React.FC = () => {
   ];
 
   const onFinish = (values: any) => {
-    console.log("Received values of form: ", values);
-
     const requestData: SearchDangKyCaRequest = {
       tenNhanVien: values.tenNhanVien,
       maNhanVien: values.maNhanVien,

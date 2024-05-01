@@ -15,12 +15,12 @@ import {
   Col,
   Form,
   Input,
+  message,
   Row,
   Select,
   Skeleton,
   Space,
   Table,
-  message,
   theme,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -260,6 +260,7 @@ const EmployeeListTable: React.FC = () => {
     const response = await NhanVienApi.createListAccount(selectedRowKeys);
     if (response.statusCode === "200") {
       refresh();
+      setSelectedRowKeys([]);
       messageApi.open({
         type: "success",
         content: "Tạo tài khoản thành công",
@@ -275,7 +276,7 @@ const EmployeeListTable: React.FC = () => {
   };
 
   const onCreate = () => {
-    if (selectedRowKeys.length) {
+    if (!selectedRowKeys.length) {
       messageApi.open({
         type: "error",
         content: "Vui lòng chọn ít nhất một nhân viên!",
@@ -311,6 +312,7 @@ const EmployeeListTable: React.FC = () => {
       maPhongBan: null,
       chucVu: null,
     });
+    getEmployeeId();
   };
 
   useEffect(() => {

@@ -71,7 +71,7 @@ const CreateContract = (props: any) => {
       values.loaiHopDong === "Chính thức" &&
       Math.floor(
         (dateEnd.getTime() - dateStart.getTime()) / (24 * 3600 * 1000),
-      ) > 365
+      ) > 366
     ) {
       messageApi.open({
         type: "error",

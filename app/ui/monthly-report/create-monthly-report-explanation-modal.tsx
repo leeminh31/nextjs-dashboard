@@ -5,7 +5,7 @@ import { Button, Form, message, Modal, Select, Space } from "antd";
 import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
-import { memo, useEffect } from "react";
+import { memo } from "react";
 const { Option } = Select;
 
 const CreateMonthlyReportExplanationModal = (props: any) => {
@@ -17,7 +17,7 @@ const CreateMonthlyReportExplanationModal = (props: any) => {
   const onCreateExplanation = async (values: any) => {
     const ngaylamViecInsert = dayjs(ngayLamViec)
       .add(1, "day")
-      .format("DD/MM/YYYY");
+      .format("MM/DD/YYYY");
 
     const requestData: CreateGiaiTrinhRequest = {
       maNhanVien: generalData?.maNhanVien,
@@ -31,11 +31,11 @@ const CreateMonthlyReportExplanationModal = (props: any) => {
 
     const response = await GiaiTrinhApi.createGiaiTrinh(requestData);
     if (response.statusCode === "200") {
-      refresh(generalData?.maNhanVien);
+      refresh(generalData?.maNhanVien, new Date(ngaylamViecInsert));
       close();
       messageApi.open({
         type: "success",
-        content: "Thêm mới giải trình thành công",
+        content: "Tạo giải trình thành công",
         className: "custom-class",
         style: {
           fontSize: "16px",
@@ -49,10 +49,6 @@ const CreateMonthlyReportExplanationModal = (props: any) => {
 
     close();
   };
-
-  useEffect(() => {
-    console.log(generalData);
-  }, [show]);
 
   return (
     <Modal
@@ -166,7 +162,16 @@ const CreateMonthlyReportExplanationModal = (props: any) => {
               padding: "0 16px",
             }}
           >
-            <Form.Item label="Loại giải trình" name="loaiGiaiTrinh">
+            <Form.Item
+              label="Loại giải trình"
+              name="loaiGiaiTrinh"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng chọn đầy đủ thông tin",
+                },
+              ]}
+            >
               <Select>
                 <Option value="Đi muộn">Đi muộn</Option>
                 <Option value="Về sớm">Về sớm</Option>
@@ -182,7 +187,15 @@ const CreateMonthlyReportExplanationModal = (props: any) => {
             }}
           >
             <span>Lý do: </span>
-            <Form.Item name="lyDo">
+            <Form.Item
+              name="lyDo"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập đầy đủ thông tin",
+                },
+              ]}
+            >
               <TextArea style={{ width: "420px" }} rows={4} />
             </Form.Item>
           </Space>

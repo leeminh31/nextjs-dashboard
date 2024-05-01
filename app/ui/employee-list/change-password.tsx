@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { LoginApi } from "@/app/api/taikhoan";
-import { Button, Col, Drawer, Form, Input, Row, Space } from "antd";
+import { Button, Col, Drawer, Form, Input, message, Row, Space } from "antd";
 import { useEffect } from "react";
 
 const ChangePassword = (props: any) => {
   const { show, close, id } = props;
   const [form] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const onFinish = async (values: any) => {
     const response = await LoginApi.changePassword({
@@ -14,6 +15,27 @@ const ChangePassword = (props: any) => {
     });
     if (response.statusCode === "200") {
       close();
+      messageApi.open({
+        type: "success",
+        content: "Đổi mật khẩu thành công",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
+    } else if (response.statusCode === "560") {
+      close();
+      messageApi.open({
+        type: "error",
+        content: response.message,
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
+      form.setFieldValue("matKhau", null);
     } else {
       console.log(response.message);
     }
@@ -22,6 +44,10 @@ const ChangePassword = (props: any) => {
   useEffect(() => {
     if (id !== null) form.setFieldValue("maNhanVien", id);
   }, [id]);
+
+  useEffect(() => {
+    if (show) form.setFieldValue("matKhau", null);
+  }, [show]);
 
   return (
     <Drawer
@@ -40,6 +66,7 @@ const ChangePassword = (props: any) => {
         </Row>
       }
     >
+      {contextHolder}
       <Form form={form} name="changePassword" onFinish={onFinish}>
         <Row gutter={24}>
           <Col span={16}>
@@ -65,13 +92,39 @@ const ChangePassword = (props: any) => {
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng nhập mật khẩu!",
+                  message: "Vui lòng nhập ",
+                },
+                {
+                  validator(_, value) {
+                    if (value !== null && value !== undefined && value !== "")
+                      if (value.length < 6)
+                        return Promise.reject("Mật khẩu không đủ 6 ký tự");
+                    return Promise.resolve();
+                  },
+                },
+                {
+                  validator(_, value) {
+                    const upperCaseRegex = /[A-Z]/g;
+                    if (value !== null && value !== undefined && value !== "")
+                      if (!upperCaseRegex.test(value))
+                        return Promise.reject("Mật khẩu phải có ký tự in hoa");
+                    return Promise.resolve();
+                  },
+                },
+                {
+                  validator(_, value) {
+                    const upperCaseRegex = /[0-9]/g;
+                    if (value !== null && value !== undefined && value !== "")
+                      if (!upperCaseRegex.test(value))
+                        return Promise.reject("Mật khẩu phải có ký tự số");
+                    return Promise.resolve();
+                  },
                 },
               ]}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
             >
-              <Input placeholder="Mật khẩu" />
+              <Input placeholder="Mật khẩu" type="password" />
             </Form.Item>
           </Col>
         </Row>

@@ -177,6 +177,17 @@ const ShiftListTable: React.FC = () => {
         },
         duration: 1.5,
       });
+    } else if (response.statusCode === "210") {
+      messageApi.open({
+        type: "error",
+        content:
+          "Ca làm việc này đang được phân cho nhân viên, bạn không được phép xóa!",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
     } else {
       console.log(response.message);
     }
@@ -195,27 +206,6 @@ const ShiftListTable: React.FC = () => {
       });
       return;
     }
-
-    let flag = false;
-    selectedRowKeys.forEach((value) => {
-      if (employeeData.some((item) => item.maCa == value)) {
-        flag = true;
-      }
-    });
-
-    if (flag) {
-      messageApi.open({
-        type: "error",
-        content: "Ca làm việc này đang có nhân viên, bạn không được phép xóa!",
-        className: "custom-class",
-        style: {
-          fontSize: "16px",
-        },
-        duration: 1.5,
-      });
-      return;
-    }
-
     const shiftListsId = selectedRowKeys.join(",");
     deleteShiftLists(shiftListsId);
   };

@@ -19,8 +19,6 @@ const ViewRegisterShift = (props: any) => {
 
   useEffect(() => {
     if (data != null) {
-      console.log(data);
-
       form.setFieldsValue({
         tenNhanVien: data.hoTen,
         maNhanVien: data.maNhanVien,

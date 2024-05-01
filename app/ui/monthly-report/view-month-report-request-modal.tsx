@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import DanhSachDonApi from "@/app/api/danhsachdon";
+import QuyPhepApi from "@/app/api/quyphep";
+import { SearchQuyPhepRequest } from "@/app/models/quyphep/search-quyphep-request";
 import { Button, Form, Modal, Select, Space } from "antd";
 import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
@@ -11,7 +13,17 @@ const { Option } = Select;
 const ViewMonthlyReportRequestModal = (props: any) => {
   const [form] = useForm();
   const [quyBu, setQuyBu] = useState(0);
+  const [quyPhep, setQuyPhep] = useState(0);
   const { data, generalData, show, close, employeeData } = props;
+
+  const getQuyPhepHienCo = async (request: SearchQuyPhepRequest) => {
+    const response = await QuyPhepApi.getQuyPhep(request);
+    if (response?.statusCode === "200") {
+      setQuyPhep(response?.data[0]?.conLai);
+    } else {
+      console.log(response?.message);
+    }
+  };
 
   const getQuyBuHienCo = async (maNhanVien: string, nam: number) => {
     const response = await DanhSachDonApi.getQuyBuHienCo(maNhanVien, nam);
@@ -246,8 +258,6 @@ const ViewMonthlyReportRequestModal = (props: any) => {
   };
 
   useEffect(() => {
-    console.log(data);
-
     if (data && data.loaiDon === 1) {
       getQuyBuHienCo(
         generalData?.maNhanVien,
@@ -270,6 +280,12 @@ const ViewMonthlyReportRequestModal = (props: any) => {
     }
 
     if (data && data.loaiDon === 3) {
+      getQuyPhepHienCo({
+        tenNhanVien: null,
+        maNhanVien: generalData?.maNhanVien,
+        tenPhongBan: null,
+        nam: new Date(data?.ngayLamViec).getFullYear(),
+      });
       form.setFieldsValue({
         loaiDon: data.loaiDon,
         lyDo: data.lyDo,

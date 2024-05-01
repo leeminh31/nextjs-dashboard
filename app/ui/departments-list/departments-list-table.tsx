@@ -73,7 +73,7 @@ const DepartmentsListTable: React.FC = () => {
     searchRequest: SearchPhongBanRequest,
   ) => {
     const response = await PhongBanApi.getPhongBan(searchRequest);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       setData(response.data?.reverse());
       setTotalRecords(response.data?.length);
     } else if (response.statusCode === "545") {
@@ -99,6 +99,16 @@ const DepartmentsListTable: React.FC = () => {
       messageApi.open({
         type: "success",
         content: "Xóa phòng ban thành công",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 1.5,
+      });
+    } else if (response.statusCode === "210") {
+      messageApi.open({
+        type: "error",
+        content: "Phòng ban này đang có nhân viên, bạn không được phép xóa!",
         className: "custom-class",
         style: {
           fontSize: "16px",
@@ -153,27 +163,6 @@ const DepartmentsListTable: React.FC = () => {
       });
       return;
     }
-
-    let flag = false;
-    selectedRowKeys.forEach((value) => {
-      if (employeeData.some((item) => item.maPhongBan == value)) {
-        flag = true;
-      }
-    });
-
-    if (flag) {
-      messageApi.open({
-        type: "error",
-        content: "Phòng ban này đang có nhân viên, bạn không được phép xóa!",
-        className: "custom-class",
-        style: {
-          fontSize: "16px",
-        },
-        duration: 1.5,
-      });
-      return;
-    }
-
     const departmentsId = selectedRowKeys.join(",");
     deleteDepartments(departmentsId);
   };

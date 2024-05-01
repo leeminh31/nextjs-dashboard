@@ -8,10 +8,10 @@ import {
   Drawer,
   Form,
   Input,
+  message,
   Row,
   Space,
   TimePicker,
-  message,
 } from "antd";
 import dayjs from "dayjs";
 import { useEffect } from "react";
@@ -83,10 +83,10 @@ const UpdateShiftList = (props: any) => {
     const requestData: UpdateCaLamViecRequest = {
       maCa: values.maCa,
       tenCa: values.tenCa,
-      gioBatDauCa: dayjs(values.gioBatDauCa).format("HH:mm:ss"),
-      gioKetThucCa: dayjs(values.gioKetThucCa).format("HH:mm:ss"),
-      gioBatDauNghi: dayjs(values.gioBatDauNghi).format("HH:mm:ss"),
-      gioKetThucNghi: dayjs(values.gioKetThucNghi).format("HH:mm:ss"),
+      gioBatDauCa: dayjs(values.gioBatDauCa).format("HH:mm:00"),
+      gioKetThucCa: dayjs(values.gioKetThucCa).format("HH:mm:00"),
+      gioBatDauNghi: dayjs(values.gioBatDauNghi).format("HH:mm:00"),
+      gioKetThucNghi: dayjs(values.gioKetThucNghi).format("HH:mm:00"),
     };
 
     const response = await CaLamViecApi.updateCaLamViec(requestData);
@@ -95,7 +95,7 @@ const UpdateShiftList = (props: any) => {
       close();
       messageApi.open({
         type: "success",
-        content: "Cập nhật ca làm việc thành công",
+        content: "Chỉnh sửa ca làm việc thành công",
         className: "custom-class",
         style: {
           fontSize: "16px",
@@ -130,23 +130,22 @@ const UpdateShiftList = (props: any) => {
       form.setFieldsValue({
         maCa: data.maCa,
         tenCa: data.tenCa,
-        gioBatDauCa: dayjs(data.gioBatDauCa, "hh:mm:ss"),
-        gioKetThucCa: dayjs(data.gioKetThucCa, "hh:mm:ss"),
-        gioBatDauNghi: dayjs(data.gioBatDauNghi, "hh:mm:ss"),
-        gioKetThucNghi: dayjs(data.gioKetThucNghi, "hh:mm:ss"),
+        gioBatDauCa: dayjs(data.gioBatDauCa, "HH:mm"),
+        gioKetThucCa: dayjs(data.gioKetThucCa, "HH:mm"),
+        gioBatDauNghi: dayjs(data.gioBatDauNghi, "HH:mm"),
+        gioKetThucNghi: dayjs(data.gioKetThucNghi, "HH:mm"),
       });
   }, [show]);
 
   useEffect(() => {
     if (data != null) {
-      console.log(data);
       form.setFieldsValue({
         maCa: data.maCa,
         tenCa: data.tenCa,
-        gioBatDauCa: dayjs(data.gioBatDauCa, "hh:mm:ss"),
-        gioKetThucCa: dayjs(data.gioKetThucCa, "hh:mm:ss"),
-        gioBatDauNghi: dayjs(data.gioBatDauNghi, "hh:mm:ss"),
-        gioKetThucNghi: dayjs(data.gioKetThucNghi, "hh:mm:ss"),
+        gioBatDauCa: dayjs(data.gioBatDauCa, "HH:mm"),
+        gioKetThucCa: dayjs(data.gioKetThucCa, "HH:mm"),
+        gioBatDauNghi: dayjs(data.gioBatDauNghi, "HH:mm"),
+        gioKetThucNghi: dayjs(data.gioKetThucNghi, "HH:mm"),
       });
     }
   }, [data]);
@@ -202,8 +201,7 @@ const UpdateShiftList = (props: any) => {
               <Input placeholder="Vui lòng nhập Tên ca" />
             </Form.Item>
           </Col>
-          <Col span={12}>
-          </Col>
+          <Col span={12}></Col>
           <Col span={12}>
             <Form.Item
               name={"gioBatDauCa"}

@@ -161,11 +161,6 @@ const MonthlyReportDrawer = (props: any) => {
   }, [date]);
 
   useEffect(() => {
-    console.log(dateFull);
-  }, [dateFull]);
-
-  useEffect(() => {
-    console.log("Du lieu can xem: ", data);
     const getDate = dayjs(new Date(dateFull));
     const startDate = new Date(getDate.year(), getDate.month(), date + 1);
     if (data) {
@@ -884,6 +879,7 @@ const MonthlyReportDrawer = (props: any) => {
         show={createRequestShow}
         generalData={generalData}
         close={() => setCreateRequestShow(false)}
+        tinhCong={listTimekeeping[0]?.tinhCong}
         ngayLamViec={currentDate}
         employeeData={employeeData}
         refresh={getListRequestByParams}
@@ -892,6 +888,7 @@ const MonthlyReportDrawer = (props: any) => {
         show={viewRequestShow}
         generalData={generalData}
         data={requestData}
+        tinhCong={listTimekeeping[0]?.tinhCong}
         employeeData={employeeData}
         close={() => setViewRequestShow(false)}
       />

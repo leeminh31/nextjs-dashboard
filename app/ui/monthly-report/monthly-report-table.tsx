@@ -89,9 +89,11 @@ const MonthlyReportTable: React.FC = () => {
   };
 
   const onFinish = (values: any) => {
-    console.log(values);
-
     const getDate = dayjs(new Date(date)).tz();
+
+    if (!values.maNhanVien) values.maNhanVien = null;
+
+    if (!values.tenNhanVien) values.tenNhanVien = null;
 
     getMonthlyReportByMonth({
       ngayBatDau: new Date(getDate.year(), getDate.month(), 2),
@@ -214,8 +216,6 @@ const MonthlyReportTable: React.FC = () => {
       cell.classList.remove("highlighted-cell");
     });
 
-    console.log(e.currentTarget.closest("td"));
-
     // Thêm lớp CSS mới vào ô được click
     e.currentTarget.classList.add("highlighted-cell");
 
@@ -296,13 +296,6 @@ const MonthlyReportTable: React.FC = () => {
                       ?.duLieuChamCongResponses?.find(
                         (dlcc) => dlcc.ngayLamViec === currentDate,
                       )?.tenCa ?? ""}
-                    {monthlyData
-                      ?.find((day) => day.maNhanVien === employee.maNhanVien)
-                      ?.duLieuChamCongResponses?.find(
-                        (dlcc) => dlcc.ngayLamViec === currentDate,
-                      )?.allowOT
-                      ? "*"
-                      : ""}
                   </span>
                 )}
                 <span>
@@ -342,14 +335,29 @@ const MonthlyReportTable: React.FC = () => {
                         )?.gioLamViec || 0}{" "}
                     </span>
                   ) : (
-                    <span>
-                      {" "}
-                      {monthlyData
-                        ?.find((day) => day.maNhanVien === employee.maNhanVien)
-                        ?.duLieuChamCongResponses?.find(
-                          (dlcc) => dlcc.ngayLamViec === currentDate,
-                        )?.gioLamViec || 0}{" "}
-                    </span>
+                    <>
+                      <span>
+                        {" "}
+                        {monthlyData
+                          ?.find(
+                            (day) => day.maNhanVien === employee.maNhanVien,
+                          )
+                          ?.duLieuChamCongResponses?.find(
+                            (dlcc) => dlcc.ngayLamViec === currentDate,
+                          )?.gioLamViec || 0}{" "}
+                      </span>
+                      <span style={{ color: "red", fontSize: "20px" }}>
+                        {monthlyData
+                          ?.find(
+                            (day) => day.maNhanVien === employee.maNhanVien,
+                          )
+                          ?.duLieuChamCongResponses?.find(
+                            (dlcc) => dlcc.ngayLamViec === currentDate,
+                          )?.allowOT
+                          ? "*"
+                          : ""}
+                      </span>
+                    </>
                   )}{" "}
                 </span>
               </div>

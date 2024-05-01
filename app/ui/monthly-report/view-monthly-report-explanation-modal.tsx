@@ -10,7 +10,6 @@ const ViewMonthlyReportExplanationModal = (props: any) => {
   const [form] = useForm();
   const { data, generalData, show, close, employeeData } = props;
   useEffect(() => {
-    console.log(data);
     if (data) {
       form.setFieldsValue({
         loaiGiaiTrinh: data.loaiGiaiTrinh,

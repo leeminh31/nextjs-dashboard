@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, message } from "antd";
 import { useRouter } from "next/navigation";
 import { LoginApi } from "../api/taikhoan";
 
@@ -12,10 +12,33 @@ type FieldType = {
 
 export default function LoginForm() {
   const router = useRouter();
+  const [messageApi, contextHolder] = message.useMessage();
+
   const onFinish = async (values: any) => {
     const response = await LoginApi.login(values.username, values.password);
     if (response.data !== null) {
-      router.push("/dashboard/employee-list");
+      messageApi.open({
+        type: "success",
+        content: "Đăng nhập thành công",
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 0.5,
+      });
+      setTimeout(() => {
+        router.push("/dashboard/employee-list");
+      }, 500);
+    } else if (response.statusCode === "531") {
+      messageApi.open({
+        type: "error",
+        content: response.message,
+        className: "custom-class",
+        style: {
+          fontSize: "16px",
+        },
+        duration: 0.5,
+      });
     } else {
       console.log(response.message);
     }
@@ -37,6 +60,7 @@ export default function LoginForm() {
       autoComplete="off"
       className="login-form"
     >
+      {contextHolder}
       <h2>Đăng nhập</h2>
       <Form.Item<FieldType>
         label="Tên đăng nhập"
