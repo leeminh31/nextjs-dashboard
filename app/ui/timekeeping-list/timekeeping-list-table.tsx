@@ -166,27 +166,6 @@ const TimekeepingListTable: React.FC = () => {
       dataIndex: "ngayChamCong",
     },
     {
-      title: "Ca làm",
-      key: "caLam",
-      dataIndex: "caLam",
-      width: 75,
-      render: (value, record) => {
-        return (
-          <>
-            {
-              shiftList?.find(
-                (item) =>
-                  item.maCa ===
-                  employeeData?.find(
-                    (item) => item.maNhanVien === record.maNhanVien,
-                  )?.maCa,
-              )?.tenCa
-            }
-          </>
-        );
-      },
-    },
-    {
       title: "Chấm lần 1",
       key: "chamLan1",
       dataIndex: "chamLan1",

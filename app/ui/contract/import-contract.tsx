@@ -36,9 +36,15 @@ const ImportContract = (props: any) => {
   };
 
   const uploadFile = async (file: any) => {
+    const strToken = localStorage.getItem("token");
+    let token: any;
+    if (strToken) token = JSON.parse(strToken);
     fetch(HRMSystemApi + "HopDong/upload", {
       method: "POST",
       body: file,
+      headers: {
+        Authorization: `Bearer ${token.accessToken}`,
+      },
     })
       .then((r) => r.json())
       .then((response) => {
@@ -103,7 +109,7 @@ const ImportContract = (props: any) => {
 
   return (
     <Drawer
-      title="Nhập hợp đồng"
+      title="Nhập hợp đồng từ file"
       placement="right"
       onClose={close}
       open={show}
