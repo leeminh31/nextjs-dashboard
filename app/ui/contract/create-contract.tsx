@@ -109,7 +109,7 @@ const CreateContract = (props: any) => {
         },
         duration: 1.5,
       });
-    } else if (response.statusCode === "552") {
+    } else if (response.statusCode !== "500") {
       messageApi.open({
         type: "error",
         content: response.message,
