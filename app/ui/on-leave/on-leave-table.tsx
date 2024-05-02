@@ -45,9 +45,9 @@ const OnLeaveTable: React.FC = () => {
 
   const getPhongBanByParams = async (searchRequest: SearchPhongBanRequest) => {
     const response = await PhongBanApi.getPhongBan(searchRequest);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       setDepartmentData(response.data?.reverse());
-    } else if (response.statusCode === "545") {
+    } else if (response?.statusCode === "545") {
       setDepartmentData([]);
     } else {
       console.log(response.message);
@@ -56,10 +56,10 @@ const OnLeaveTable: React.FC = () => {
 
   const getQuyPhepByParams = async (searchRequest: SearchQuyPhepRequest) => {
     const response = await QuyPhepApi.getQuyPhep(searchRequest);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       setData(response.data?.reverse());
       setTotalRecords(response.data?.length);
-    } else if (response.statusCode === "545") {
+    } else if (response?.statusCode === "545") {
       setData([]);
       setTotalRecords(0);
     } else {

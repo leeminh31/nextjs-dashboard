@@ -88,7 +88,7 @@ const CreateShiftList = (props: any) => {
     };
 
     const response = await CaLamViecApi.addCaLamViec(requestData);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       refresh();
       close();
       messageApi.open({
@@ -100,7 +100,7 @@ const CreateShiftList = (props: any) => {
         },
         duration: 1.5,
       });
-    } else if (response.statusCode === "557") {
+    } else if (response?.statusCode === "557") {
       messageApi.open({
         type: "error",
         content: response.message,

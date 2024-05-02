@@ -38,7 +38,7 @@ const CreateRegisterShift = (props: any) => {
     const response = await CaLamViecApi.getCaLamViec(maCa, tenCa);
     if (response?.statusCode === "200") {
       setShiftList(response.data);
-    } else if (response.statusCode === "545") {
+    } else if (response?.statusCode === "545") {
       setShiftList(response.data);
     } else {
       console.log(response.message);
@@ -47,9 +47,9 @@ const CreateRegisterShift = (props: any) => {
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
     const response = await NhanVienApi.getNhanVien(searchRequest);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       setEmployeeData(response.data);
-    } else if (response.statusCode === "545") {
+    } else if (response?.statusCode === "545") {
       setEmployeeData(response.data);
     } else {
       console.log(response.message);
@@ -60,9 +60,9 @@ const CreateRegisterShift = (props: any) => {
     searchRequest: SearchPhongBanRequest,
   ) => {
     const response = await PhongBanApi.getPhongBan(searchRequest);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       setDepartmentData(response.data?.reverse());
-    } else if (response.statusCode === "545") {
+    } else if (response?.statusCode === "545") {
       setDepartmentData([]);
     } else {
       console.log(response.message);
@@ -118,7 +118,7 @@ const CreateRegisterShift = (props: any) => {
     }
 
     const response = await DangKyCaApi.addDangKyCa(requestData);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       refresh();
       close();
       messageApi.open({

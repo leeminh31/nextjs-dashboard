@@ -87,7 +87,7 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
       };
 
       const response = await DanhSachDonApi.updateDonBu(requestData);
-      if (response.statusCode === "200") {
+      if (response?.statusCode === "200") {
         refresh(generalData?.maNhanVien, new Date(ngaylamViecInsert));
         close();
         messageApi.open({
@@ -139,7 +139,7 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
       };
 
       const response = await DanhSachDonApi.updateDonConNho(requestData);
-      if (response.statusCode === "200") {
+      if (response?.statusCode === "200") {
         refresh(generalData?.maNhanVien, new Date(ngaylamViecInsert));
         close();
         messageApi.open({
@@ -170,7 +170,7 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
       };
 
       const response = await DanhSachDonApi.updateDonPhep(requestData);
-      if (response.statusCode === "200") {
+      if (response?.statusCode === "200") {
         refresh(generalData?.maNhanVien, new Date(ngaylamViecInsert));
         close();
         messageApi.open({
@@ -203,7 +203,7 @@ const UpdateMonthlyReportRequestModal = (props: any) => {
       };
 
       const response = await DanhSachDonApi.updateDonTangCa(requestData);
-      if (response.statusCode === "200") {
+      if (response?.statusCode === "200") {
         refresh(generalData?.maNhanVien, new Date(ngaylamViecInsert));
         close();
         messageApi.open({

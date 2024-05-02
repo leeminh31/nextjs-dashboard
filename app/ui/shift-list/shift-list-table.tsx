@@ -140,7 +140,7 @@ const ShiftListTable: React.FC = () => {
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
     const response = await NhanVienApi.getNhanVien(searchRequest);
-    if (response.statusCode === "200" || response.statusCode === "545") {
+    if (response?.statusCode === "200" || response?.statusCode === "545") {
       setEmployeeData(response.data);
     } else {
       console.log(response.message);
@@ -150,9 +150,9 @@ const ShiftListTable: React.FC = () => {
   const getShiftName = async (maCa: number | null, tenCa: string | null) => {
     const response = await CaLamViecApi.getCaLamViec(maCa, tenCa);
     if (response?.statusCode === "200") {
-      setShiftList(response.data.reverse());
+      setShiftList(response.data?.reverse());
       setTotalRecords(response.data?.length);
-    } else if (response.statusCode === "545") {
+    } else if (response?.statusCode === "545") {
       setShiftList(response.data);
       setTotalRecords(0);
     } else {
@@ -166,7 +166,7 @@ const ShiftListTable: React.FC = () => {
 
   const deleteShiftLists = async (selectedRowKeys: any) => {
     const response = await CaLamViecApi.deleteCaLamViec(selectedRowKeys);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       refresh();
       messageApi.open({
         type: "success",
@@ -177,7 +177,7 @@ const ShiftListTable: React.FC = () => {
         },
         duration: 1.5,
       });
-    } else if (response.statusCode === "210") {
+    } else if (response?.statusCode === "210") {
       messageApi.open({
         type: "error",
         content:

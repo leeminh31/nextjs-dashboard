@@ -32,7 +32,7 @@ const UpdateMonthlyReportExplanationModal = (props: any) => {
     };
 
     const response = await GiaiTrinhApi.updateGiaiTrinh(requestData);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       refresh(generalData?.maNhanVien, new Date(ngaylamViecInsert));
       close();
       messageApi.open({

@@ -104,7 +104,7 @@ const EmployeeListTable: React.FC = () => {
 
   const getEmployeeId = async () => {
     const response = await LoginApi.getEmployeeId();
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       setListId(response.data);
     } else {
       console.log(response.message);
@@ -113,10 +113,10 @@ const EmployeeListTable: React.FC = () => {
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
     const response = await NhanVienApi.getNhanVien(searchRequest);
-    if (response.statusCode === "200") {
-      setData(response.data.reverse());
+    if (response?.statusCode === "200") {
+      setData(response.data?.reverse());
       setTotalRecords(response.data?.length);
-    } else if (response.statusCode === "545") {
+    } else if (response?.statusCode === "545") {
       setData(response.data);
       setTotalRecords(0);
     } else {
@@ -128,7 +128,7 @@ const EmployeeListTable: React.FC = () => {
     searchRequest: SearchPhongBanRequest,
   ) => {
     const response = await PhongBanApi.getPhongBan(searchRequest);
-    if (response.statusCode === "200") setDepartments(response.data);
+    if (response?.statusCode === "200") setDepartments(response.data);
     else {
       console.log(response.message);
     }
@@ -258,7 +258,7 @@ const EmployeeListTable: React.FC = () => {
 
   const createListAccount = async (selectedRowKeys: string) => {
     const response = await NhanVienApi.createListAccount(selectedRowKeys);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       refresh();
       setSelectedRowKeys([]);
       messageApi.open({

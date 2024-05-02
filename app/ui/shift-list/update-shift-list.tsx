@@ -90,7 +90,7 @@ const UpdateShiftList = (props: any) => {
     };
 
     const response = await CaLamViecApi.updateCaLamViec(requestData);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       refresh();
       close();
       messageApi.open({

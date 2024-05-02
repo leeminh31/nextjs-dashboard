@@ -71,7 +71,7 @@ const ManageExplanationsTable: React.FC = () => {
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
     const response = await NhanVienApi.getNhanVien(searchRequest);
-    if (response.statusCode === "200" || response.statusCode === "545") {
+    if (response?.statusCode === "200" || response?.statusCode === "545") {
       setEmployeeData(response.data);
     } else {
       console.log(response.message);

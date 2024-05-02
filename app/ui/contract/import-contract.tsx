@@ -5,7 +5,7 @@ import {
   DownloadOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
-import { Button, Drawer, Form, Row, Space, message } from "antd";
+import { Button, Drawer, Form, message, Row, Space } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 
 const ImportContract = (props: any) => {
@@ -42,7 +42,7 @@ const ImportContract = (props: any) => {
     })
       .then((r) => r.json())
       .then((response) => {
-        if (response.statusCode === "200") {
+        if (response?.statusCode === "200") {
           refresh();
           messageApi.open({
             type: "success",

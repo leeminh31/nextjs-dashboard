@@ -242,9 +242,9 @@ const TimekeepingListTable: React.FC = () => {
     searchRequest: SearchPhongBanRequest,
   ) => {
     const response = await PhongBanApi.getPhongBan(searchRequest);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       setDepartmentData(response.data?.reverse());
-    } else if (response.statusCode === "545") {
+    } else if (response?.statusCode === "545") {
       setDepartmentData([]);
     } else {
       console.log(response.message);
@@ -255,7 +255,7 @@ const TimekeepingListTable: React.FC = () => {
     const response = await CaLamViecApi.getCaLamViec(null, null);
     if (response?.statusCode === "200") {
       setShiftList(response.data.reverse());
-    } else if (response.statusCode === "545") {
+    } else if (response?.statusCode === "545") {
       setShiftList(response.data);
     } else {
       console.log(response.message);
@@ -267,9 +267,9 @@ const TimekeepingListTable: React.FC = () => {
   ) => {
     const response = await DuLieuChamCongApi.getHopDong(searchRequest);
     if (response?.statusCode === "200") {
-      setTimeKeeping(response.data.reverse());
-      setData(response.data.reverse());
-      setTableData(response.data.reverse());
+      setTimeKeeping(response.data?.reverse());
+      setData(response.data?.reverse());
+      setTableData(response.data?.reverse());
     } else if (response?.statusCode === "545") {
       setTimeKeeping(response.data);
       setTableData(response.data);
@@ -283,7 +283,7 @@ const TimekeepingListTable: React.FC = () => {
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
     const response = await NhanVienApi.getNhanVien(searchRequest);
     if (response?.statusCode === "200") {
-      setEmployeeData(response.data.reverse());
+      setEmployeeData(response.data?.reverse());
     } else if (response?.statusCode === "545") {
       setEmployeeData(response.data);
     } else {

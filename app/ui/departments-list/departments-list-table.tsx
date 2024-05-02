@@ -62,7 +62,7 @@ const DepartmentsListTable: React.FC = () => {
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
     const response = await NhanVienApi.getNhanVien(searchRequest);
-    if (response.statusCode === "200" || response.statusCode === "545") {
+    if (response?.statusCode === "200" || response?.statusCode === "545") {
       setEmployeeData(response.data);
     } else {
       console.log(response.message);
@@ -76,7 +76,7 @@ const DepartmentsListTable: React.FC = () => {
     if (response?.statusCode === "200") {
       setData(response.data?.reverse());
       setTotalRecords(response.data?.length);
-    } else if (response.statusCode === "545") {
+    } else if (response?.statusCode === "545") {
       setData([]);
       setTotalRecords(0);
     } else {
@@ -94,7 +94,7 @@ const DepartmentsListTable: React.FC = () => {
 
   const deleteDepartments = async (selectedRowKeys: any) => {
     const response = await PhongBanApi.deletePhongBan(selectedRowKeys);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       refresh();
       messageApi.open({
         type: "success",
@@ -105,7 +105,7 @@ const DepartmentsListTable: React.FC = () => {
         },
         duration: 1.5,
       });
-    } else if (response.statusCode === "210") {
+    } else if (response?.statusCode === "210") {
       messageApi.open({
         type: "error",
         content: "Phòng ban này đang có nhân viên, bạn không được phép xóa!",

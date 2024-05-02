@@ -30,7 +30,7 @@ const CreateEmployeeList = (props: any) => {
     searchRequest: SearchPhongBanRequest,
   ) => {
     const response = await PhongBanApi.getPhongBan(searchRequest);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       setDepartments(response.data);
     } else {
       console.log(response.message);
@@ -62,7 +62,7 @@ const CreateEmployeeList = (props: any) => {
     };
 
     const response = await NhanVienApi.addNhanVien(requestData);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       refresh();
       close();
       messageApi.open({
@@ -74,7 +74,7 @@ const CreateEmployeeList = (props: any) => {
         },
         duration: 1.5,
       });
-    } else if (response.statusCode === "553" || response.statusCode === "554") {
+    } else if (response?.statusCode !== "500") {
       messageApi.open({
         type: "error",
         content: response.message,

@@ -153,12 +153,12 @@ const ContractTable: React.FC = () => {
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
     const response = await NhanVienApi.getNhanVien(searchRequest);
-    if (response.statusCode === "200") {
-      setEmployeeData(response.data.reverse());
-    } else if (response.statusCode === "545") {
+    if (response?.statusCode === "200") {
+      setEmployeeData(response.data?.reverse());
+    } else if (response?.statusCode === "545") {
       setEmployeeData(response.data);
     } else {
-      console.log(response.message);
+      console.log(response?.message);
     }
   };
 
@@ -169,25 +169,25 @@ const ContractTable: React.FC = () => {
     let tenHopDongParam = null;
     if (tenHopDong !== "") tenHopDongParam = tenHopDong;
     const response = await HopDongApi.getHopDong(tenHopDongParam, loaiHopDong);
-    if (response.statusCode === "200") {
-      setContractData(response.data.reverse());
-      setTotalRecords(response.data.length);
-    } else if (response.statusCode === "545") {
+    if (response?.statusCode === "200") {
+      setContractData(response.data?.reverse());
+      setTotalRecords(response.data?.length);
+    } else if (response?.statusCode === "545") {
       setContractData(response.data);
       setTotalRecords(0);
     } else {
-      console.log(response.message);
+      console.log(response?.message);
     }
   };
 
   const getEmployeeIdByName = async (hoTen: string) => {
     const response = await NhanVienApi.getAllEmployeeIdByName(hoTen);
-    if (response.statusCode === "200") {
-      setIdList(response.data.reverse());
-    } else if (response.statusCode === "545") {
+    if (response?.statusCode === "200") {
+      setIdList(response.data?.reverse());
+    } else if (response?.statusCode === "545") {
       setIdList(response.data);
     } else {
-      console.log(response.message);
+      console.log(response?.message);
     }
   };
 

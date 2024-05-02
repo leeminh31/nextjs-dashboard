@@ -117,7 +117,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
       };
 
       const response = await DanhSachDonApi.createDonBu(requestData);
-      if (response.statusCode === "200") {
+      if (response?.statusCode === "200") {
         refresh(generalData?.maNhanVien, new Date(ngaylamViecInsert));
         close();
         messageApi.open({
@@ -175,7 +175,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
       };
 
       const response = await DanhSachDonApi.createDonConNho(requestData);
-      if (response.statusCode === "200") {
+      if (response?.statusCode === "200") {
         refresh(generalData?.maNhanVien, new Date(ngaylamViecInsert));
         close();
         messageApi.open({
@@ -189,7 +189,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
         });
         form.resetFields();
         setRequestType(0);
-      } else if (response.statusCode === "209") {
+      } else if (response?.statusCode === "209") {
         messageApi.open({
           type: "error",
           content: response.message,
@@ -216,7 +216,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
       };
 
       const response = await DanhSachDonApi.createDonPhep(requestData);
-      if (response.statusCode === "200") {
+      if (response?.statusCode === "200") {
         refresh(generalData?.maNhanVien, new Date(ngaylamViecInsert));
         close();
         messageApi.open({
@@ -230,7 +230,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
         });
         form.resetFields();
         setRequestType(0);
-      } else if (response.statusCode === "209") {
+      } else if (response?.statusCode === "209") {
         messageApi.open({
           type: "error",
           content: response.message,
@@ -259,7 +259,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
       };
 
       const response = await DanhSachDonApi.createDonTangCa(requestData);
-      if (response.statusCode === "200") {
+      if (response?.statusCode === "200") {
         refresh(generalData?.maNhanVien, new Date(ngaylamViecInsert));
         close();
         messageApi.open({

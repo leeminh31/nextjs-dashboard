@@ -47,12 +47,12 @@ const CompensatoryLeaveTable: React.FC = () => {
 
   const getPhongBanByParams = async (searchRequest: SearchPhongBanRequest) => {
     const response = await PhongBanApi.getPhongBan(searchRequest);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       setDepartmentData(response.data?.reverse());
-    } else if (response.statusCode === "545") {
+    } else if (response?.statusCode === "545") {
       setDepartmentData([]);
     } else {
-      console.log(response.message);
+      console.log(response?.message);
     }
   };
 
@@ -65,7 +65,7 @@ const CompensatoryLeaveTable: React.FC = () => {
       setData([]);
       setTotalRecords(0);
     } else {
-      console.log(response.message);
+      console.log(response?.message);
     }
   };
 

@@ -101,7 +101,7 @@ const RegisterShiftTable: React.FC = () => {
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
     const response = await NhanVienApi.getNhanVien(searchRequest);
-    if (response.statusCode === "200" || response.statusCode === "545") {
+    if (response?.statusCode === "200" || response?.statusCode === "545") {
       setEmployeeData(response.data);
     } else {
       console.log(response.message);
@@ -112,7 +112,7 @@ const RegisterShiftTable: React.FC = () => {
     searchRequest: SearchPhongBanRequest,
   ) => {
     const response = await PhongBanApi.getPhongBan(searchRequest);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       setDepartmentData(response.data);
     } else if (response.statusCode === "545") {
       setDepartmentData([]);
@@ -123,10 +123,10 @@ const RegisterShiftTable: React.FC = () => {
 
   const getDangKyCaByParams = async (searchRequest: SearchDangKyCaRequest) => {
     const response = await DangKyCaApi.getDangKyCa(searchRequest);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       setData(response.data?.reverse());
       setTotalRecords(response.data?.length);
-    } else if (response.statusCode === "545") {
+    } else if (response?.statusCode === "545") {
       setData([]);
       setTotalRecords(0);
     } else {
@@ -138,7 +138,7 @@ const RegisterShiftTable: React.FC = () => {
     const response = await CaLamViecApi.getCaLamViec(maCa, tenCa);
     if (response?.statusCode === "200") {
       setShiftList(response.data);
-    } else if (response.statusCode === "545") {
+    } else if (response?.statusCode === "545") {
       setShiftList(response.data);
     } else {
       console.log(response.message);

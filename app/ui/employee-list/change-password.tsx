@@ -13,7 +13,7 @@ const ChangePassword = (props: any) => {
       maNhanVien: values.maNhanVien,
       matKhau: values.matKhau,
     });
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       close();
       messageApi.open({
         type: "success",
@@ -24,7 +24,7 @@ const ChangePassword = (props: any) => {
         },
         duration: 1.5,
       });
-    } else if (response.statusCode === "560") {
+    } else if (response?.statusCode === "560") {
       close();
       messageApi.open({
         type: "error",

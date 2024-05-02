@@ -28,9 +28,9 @@ const CreateDepartmentsList = (props: any) => {
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
     const response = await NhanVienApi.getNhanVien(searchRequest);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       setData(response.data);
-    } else if (response.statusCode === "545") {
+    } else if (response?.statusCode === "545") {
       setData(response.data);
     } else {
       console.log(response.message);
@@ -46,7 +46,7 @@ const CreateDepartmentsList = (props: any) => {
     };
 
     const response = await PhongBanApi.addPhongBan(requestData);
-    if (response.statusCode === "200") {
+    if (response?.statusCode === "200") {
       refresh();
       close();
       messageApi.open({
@@ -58,7 +58,7 @@ const CreateDepartmentsList = (props: any) => {
         },
         duration: 1.5,
       });
-    } else if (response.statusCode === "551") {
+    } else if (response?.statusCode === "551") {
       messageApi.open({
         type: "error",
         content: response.message,
