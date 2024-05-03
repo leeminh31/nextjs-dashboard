@@ -122,7 +122,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
         close();
         messageApi.open({
           type: "success",
-          content: "Tạo đơn thành công",
+          content: "Tạo đơn bù thành công",
           className: "custom-class",
           style: {
             fontSize: "16px",
@@ -131,6 +131,16 @@ const CreateMonthlyReportRequestModal = (props: any) => {
         });
         form.resetFields();
         setRequestType(0);
+      } else if (response?.statusCode !== "500") {
+        messageApi.open({
+          type: "error",
+          content: response.message,
+          className: "custom-class",
+          style: {
+            fontSize: "16px",
+          },
+          duration: 1.5,
+        });
       } else {
         console.log(response.message);
       }
@@ -189,7 +199,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
         });
         form.resetFields();
         setRequestType(0);
-      } else if (response?.statusCode === "209") {
+      } else if (response?.statusCode !== "500") {
         messageApi.open({
           type: "error",
           content: response.message,
@@ -199,7 +209,6 @@ const CreateMonthlyReportRequestModal = (props: any) => {
           },
           duration: 1.5,
         });
-        form.resetFields();
       } else {
         console.log(response.message);
       }
@@ -221,7 +230,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
         close();
         messageApi.open({
           type: "success",
-          content: "Tạo đơn thành công",
+          content: "Tạo đơn phép thành công",
           className: "custom-class",
           style: {
             fontSize: "16px",
@@ -230,7 +239,7 @@ const CreateMonthlyReportRequestModal = (props: any) => {
         });
         form.resetFields();
         setRequestType(0);
-      } else if (response?.statusCode === "209") {
+      } else if (response?.statusCode !== "500") {
         messageApi.open({
           type: "error",
           content: response.message,
@@ -240,7 +249,6 @@ const CreateMonthlyReportRequestModal = (props: any) => {
           },
           duration: 1.5,
         });
-        form.resetFields();
       } else {
         console.log(response.message);
       }
@@ -273,6 +281,16 @@ const CreateMonthlyReportRequestModal = (props: any) => {
         });
         form.resetFields();
         setRequestType(0);
+      } else if (response?.statusCode !== "500") {
+        messageApi.open({
+          type: "error",
+          content: response.message,
+          className: "custom-class",
+          style: {
+            fontSize: "16px",
+          },
+          duration: 1.5,
+        });
       } else {
         console.log(response.message);
       }
