@@ -9,4 +9,5 @@ export interface DonTangCaResponse {
   nguoiDuyet: string;
   trangThai: string;
   maNhanVien: string;
+  thoiGianCapNhat: Date;
 }

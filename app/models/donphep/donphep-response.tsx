@@ -7,4 +7,5 @@ export interface DonPhepResponse {
   nguoiDuyet: string;
   trangThai: string;
   maNhanVien: string;
+  thoiGianCapNhat: Date;
 }

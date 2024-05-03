@@ -8,4 +8,5 @@ export interface DonBuResponse {
   nguoiDuyet: string;
   trangThai: string;
   maNhanVien: string;
+  thoiGianCapNhat: Date;
 }

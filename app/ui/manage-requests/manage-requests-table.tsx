@@ -69,6 +69,7 @@ const ManageRequestsTable: React.FC = () => {
     denNgay: string;
     tangCaTu: string;
     tangCaDen: string;
+    thoiGianCapNhat: string;
   }
 
   const getEmployeeByParams = async (searchRequest: SearchNhanVienRequest) => {
@@ -304,6 +305,11 @@ const ManageRequestsTable: React.FC = () => {
         chucVu: employeeData?.find((e) => e.maNhanVien === donbu.maNhanVien)!
           .chucVu,
         maDon: donbu.maDonBu,
+        thoiGianCapNhat:
+          new Date(donbu.thoiGianCapNhat).getTime() !==
+          new Date("0001-01-01T00:00:00").getTime()
+            ? dayjs(donbu.thoiGianCapNhat).format("DD/MM/YYYY hh:mm:ss")
+            : "",
       });
     });
 
@@ -333,6 +339,11 @@ const ManageRequestsTable: React.FC = () => {
         chucVu: employeeData?.find((e) => e.maNhanVien === donphep.maNhanVien)!
           .chucVu,
         maDon: donphep.maDonPhep,
+        thoiGianCapNhat:
+          new Date(donphep.thoiGianCapNhat).getTime() !==
+          new Date("0001-01-01T00:00:00").getTime()
+            ? dayjs(donphep.thoiGianCapNhat).format("DD/MM/YYYY hh:mm:ss")
+            : "",
       });
     });
 
@@ -363,6 +374,11 @@ const ManageRequestsTable: React.FC = () => {
           (e) => e.maNhanVien === dontangca.maNhanVien,
         )!.chucVu,
         maDon: dontangca.maDonTangCa,
+        thoiGianCapNhat:
+          new Date(dontangca.thoiGianCapNhat).getTime() !==
+          new Date("0001-01-01T00:00:00").getTime()
+            ? dayjs(dontangca.thoiGianCapNhat).format("DD/MM/YYYY hh:mm:ss")
+            : "",
       });
     });
 
@@ -393,6 +409,11 @@ const ManageRequestsTable: React.FC = () => {
           (e) => e.maNhanVien === donconnho.maNhanVien,
         )!.chucVu,
         maDon: donconnho.maDonConNho,
+        thoiGianCapNhat:
+          new Date(donconnho.thoiGianCapNhat).getTime() !==
+          new Date("0001-01-01T00:00:00").getTime()
+            ? dayjs(donconnho.thoiGianCapNhat).format("DD/MM/YYYY hh:mm:ss")
+            : "",
       });
     });
   } else {
@@ -484,6 +505,11 @@ const ManageRequestsTable: React.FC = () => {
       title: "Người duyệt",
       key: "nguoiDuyet",
       dataIndex: "nguoiDuyet",
+    },
+    {
+      title: "Thời gian cập nhật",
+      key: "thoiGianCapNhat",
+      dataIndex: "thoiGianCapNhat",
     },
     {
       title: "Trạng thái",

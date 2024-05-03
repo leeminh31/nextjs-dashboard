@@ -8,4 +8,5 @@ export interface DonConNhoResponse {
   nguoiDuyet: string;
   trangThai: string;
   maNhanVien: string;
+  thoiGianCapNhat: Date;
 }
